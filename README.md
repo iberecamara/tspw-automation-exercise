@@ -1,10 +1,10 @@
-# Vanilla Playwright Test Automation Framework — Automation Exercise
+# Typescript Vanilla Playwright Test Automation Framework — Automation Exercise
 
 A TypeScript, vanilla [Playwright](https://playwright.dev/) end-to-end and API test automation framework built against [automationexercise.com](https://automationexercise.com). "Vanilla" means no BDD wrapper (no Cucumber/Gherkin) — the framework relies on Playwright's native test runner, fixtures, and `test.step()` calls, organized through a layered Page Object Model.
 
 > Code created without AI help, to showcase knowledge of the Playwright framework.
 
-**Live Allure report:** available at [iberecamara.github.io/pw-automation-exercise-frontend](https://iberecamara.github.io/pw-automation-exercise-frontend/) after every push/merge to `main` (see [CI/CD](#cicd)).
+**Live Allure report:** available at [iberecamara.github.io/tspw-automation-exercise-frontend](https://iberecamara.github.io/tspw-automation-exercise-frontend/) after every push/merge to `main` (see [CI/CD](#cicd)).
 
 ---
 
@@ -240,8 +240,8 @@ When running via `ts-node` (e.g. the `report:*` npm scripts), these aliases are 
 ## Cloning the Project
 
 ```bash
-git clone https://github.com/iberecamara/pw-automation-exercise.git
-cd pw-automation-exercise
+git clone https://github.com/iberecamara/tspw-automation-exercise.git
+cd tspw-automation-exercise
 ```
 
 ## Installing Dependencies
@@ -420,7 +420,7 @@ Use this when a piece of UI is shared by two or more pages (e.g. a footer, a mod
 2. Runs `npm test`.
 3. Generates a single-file Allure report (`npm run report:export`).
 4. Uploads the Allure report and logs as workflow artifacts.
-5. Publishes the Allure report to [**GitHub Pages**](https://iberecamara.github.io/pw-automation-exercise/) is available after the GitHub Action execute (after a push or merge on main branch). on `main`: 
+5. Publishes the Allure report to **GitHub Pages** is available after the GitHub Action execute (after a push or merge on main branch). on `main`: 
 6. Fails the job explicitly if any test failed, even though report generation always runs first (`continue-on-error` on the test step ensures reports are produced regardless of pass/fail).
 
 ## License
