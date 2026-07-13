@@ -4,7 +4,7 @@ A TypeScript, vanilla [Playwright](https://playwright.dev/) end-to-end and API t
 
 > Code created without AI help, to showcase knowledge of the Playwright framework.
 
-**Live Allure report:** available at [iberecamara.github.io/tspw-automation-exercise-frontend](https://iberecamara.github.io/tspw-automation-exercise-frontend/) after every push/merge to `main` (see [CI/CD](#cicd)).
+**Live Allure report:** available at [iberecamara.github.io/tspw-automation-exercise](https://iberecamara.github.io/tspw-automation-exercise/) after every push/merge to `main` (see [CI/CD](#cicd)).
 
 ---
 
