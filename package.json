@@ -1,0 +1,46 @@
+{
+  "name": "tspw-automation-exercise",
+  "version": "1.0.0",
+  "description": "Vanilla Playwright Test Automation Framework targeting https://automationexercise.com",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test --config=src/configs/playwright.config.ts",
+    "test:pwui": "npm test -- --ui",
+    "test:ui": "npm test -- --grep @ui",
+    "test:pwui:ui": "npm test -- --ui --grep @ui",
+    "test:api": "npm test --grep @api",
+    "test:pwui:api": "npm test --ui --grep @api",
+    "report:generate": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts generate",
+    "report:open": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts open",
+    "report:export": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts export",
+    "report": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts all",
+    "clean:logs": "rimraf artifacts/logs/*",
+    "clean:reports": "rimraf artifacts/reports/*",
+    "clean": "npm run clean:logs && npm run clean:reports"
+  },
+  "keywords": [],
+  "author": "Iberê Camara",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "allure": "^3.10.0",
+    "dotenv": "^17.4.2",
+    "joi": "^18.2.1",
+    "playwright-core": "^1.60.0",
+    "playwright-video": "^2.4.0",
+    "rimraf": "^6.1.3",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "uuidv7": "^1.1.0",
+    "winston": "^3.19.0",
+    "winston-transport": "^4.9.0",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^26.0.0",
+    "allure-playwright": "^3.10.0",
+    "playwright": "^1.57.0"
+  }
+}

@@ -1,0 +1,102 @@
+import { Environment } from '@configs/environment.config';
+import * as fs from 'fs';
+import * as path from 'path';
+import { execSync } from "node:child_process";
+import {
+    ALLURE_RESULTS_DIR,
+    ALLURE_REPORT_DIR,
+    ALLURE_REPORT_SINGLE_FILE_DIR,
+} from "@configs/paths";
+import { NEWLINE } from '@data/constants/string.constants';
+
+export class AllureUtils {
+
+    static async allureRemoveResults(): Promise<void> {
+
+        const resultsDir = path.join(__dirname, '../../artifacts/reports/allure/allure-results');
+        if (!fs.existsSync(resultsDir)) {
+            console.log('No allure-results directory found. Skipping cleanup.');
+            return;
+        }
+
+        const files = fs.readdirSync(resultsDir);
+
+        files.forEach((file) => {
+            if (file.endsWith('-result.json')) {
+                const filePath = path.join(resultsDir, file);
+                try {
+                    const fileContent = fs.readFileSync(filePath, 'utf8');
+                    const testResult = JSON.parse(fileContent);
+                    if (Environment.ALLURE_REPORT_REMOVE_STATUS.includes(testResult.status)) {
+                        fs.unlinkSync(filePath);
+                        if (testResult.attachments) {
+                            testResult.attachments.forEach((attachment: any) => {
+                                const attachmentPath = path.join(resultsDir, attachment.source);
+                                if (fs.existsSync(attachmentPath)) {
+                                    fs.unlinkSync(attachmentPath);
+                                }
+                            });
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Failed to process '${file}'`, error);
+                }
+            }
+        });
+
+        if (Environment.ALLURE_REPORT_REMOVE_STATUS) {
+            console.log(`Allure Results Cleanup complete, status results removed: '${Environment.ALLURE_REPORT_REMOVE_STATUS}'.`);
+        } else {
+            console.log('Allure Results Cleanup will not be executed.');
+        }
+    }
+
+    private static run(cmd: string): void {
+        execSync(cmd, { stdio: "inherit" });
+    }
+
+    static generate(): void {
+        this.run(`npx allure generate "${ALLURE_RESULTS_DIR}" -o "${ALLURE_REPORT_DIR}"`);
+    }
+
+    static open(): void {
+        this.run(`npx allure open "${ALLURE_REPORT_DIR}"`);
+    }
+
+    static exportSingleFile(): void {
+        this.run(`npx allure awesome generate "${ALLURE_RESULTS_DIR}" -o "${ALLURE_REPORT_SINGLE_FILE_DIR}" --single-file`);
+    }
+
+    static all(): void {
+        this.generate();
+        this.open();
+    }
+}
+
+if (require.main === module) {
+    type Command = "generate" | "open" | "export" | "all";
+    const command = process.argv[2] as Command | undefined;
+
+    switch (command) {
+        case "generate":
+            AllureUtils.generate();
+            break;
+        case "open":
+            AllureUtils.open();
+            break;
+        case "export":
+            AllureUtils.exportSingleFile();
+            break;
+        case "all":
+            AllureUtils.all();
+            break;
+        default:
+            console.error(
+                `Unknown or missing command: "${command ?? ""}${NEWLINE}Expected one of: generate | open | export | all`
+            );
+            process.exit(1);
+    }
+
+
+
+}

@@ -1,0 +1,114 @@
+name: Vanilla Playwright Test Automation Framework for Automation Exercise frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+env:
+  APPLICATION: Automation Exercise
+  WORKERS: 4
+  LOG_LINE_LENGTH: 100
+  LOG_CONSOLE: true
+  HEADLESS: true
+  JIRA_BOARD: SAMPLE
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      tests_passed: ${{ steps.run-tests.outcome == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v5
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+
+      - name: Install Playwright OS deps only
+        run: npx playwright install-deps
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+
+      - name: Run Tests
+        id: run-tests
+        run: npm test
+        continue-on-error: true
+
+      - name: Generate single file Allure Report
+        run: npm run report:export
+
+      - name: Upload Allure Report - Zipped File
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: Allure Report
+          path: artifacts/reports/allure/allure-report-single
+          retention-days: 30
+          overwrite: true
+          if-no-files-found: warn
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: Automation Logs
+          path: artifacts/logs/**/**/*.log
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Upload Report for Pages (build-time)
+        uses: actions/upload-pages-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          path: artifacts/reports/allure/allure-report-single
+
+      - name: Fail job if tests failed
+        if: steps.run-tests.outcome == 'failure'
+        run: |
+          echo "::error::Test suite failed. See Allure Report/logs artifacts for details."
+          exit 1
+
+  deploy:
+    needs: test
+    if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
