@@ -1,8 +1,8 @@
 import { SubscriptionComponents } from '@components/subscription.components';
-import { CartLocators } from '@locators/cart.locators';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
+import { CartLocators } from '@locators/cart.locators';
 import { BasePage } from '@pages/base.page';
 import { Locator, Page } from '@playwright/test';
 

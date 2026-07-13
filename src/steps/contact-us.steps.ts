@@ -43,7 +43,7 @@ export class ContactUsSteps {
         await test.step('Validate that Contact Us form have the expected text', async () => {
             await expect.soft(
                 contactUsPage.locators.getInTouchText,
-                'Contact Us form "Get In Touch" text should be visible'
+                `Contact Us form 'Get In Touch' text should be visible`
             ).toBeVisible();
         });
     }

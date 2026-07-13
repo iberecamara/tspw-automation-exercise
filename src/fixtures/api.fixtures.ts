@@ -1,7 +1,7 @@
 
-import { APIRequestContext, test as base } from "@playwright/test";
-import { UserApi } from "@api/user.api";
-import { ProductApi } from "@api/product.api";
+import { APIRequestContext, test as base } from '@playwright/test';
+import { UserApi } from '@api/user.api';
+import { ProductApi } from '@api/product.api';
 
 type ApiConstructor<T> = new (request: APIRequestContext) => T;
 

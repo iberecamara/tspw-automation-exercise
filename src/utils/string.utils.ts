@@ -1,5 +1,5 @@
-import { NEWLINE } from "@data/constants/string.constants";
-import { faker } from "@faker-js/faker";
+import { NEWLINE } from '@data/constants/string.constants';
+import { faker } from '@faker-js/faker';
 
 export class StringUtils {
 
@@ -7,10 +7,10 @@ export class StringUtils {
         return text.replace(/^\w/, (c) => c.toUpperCase());
     }
 
-    static prettyJson<T>(target: T, options?: { newline?: boolean }): string {
+    static prettyJson<T>(target: T, options?: { sameline?: boolean }): string {
         let stringfied = JSON.stringify(target, null, 4);
 
-        const shouldAddNewline = options?.newline ?? true;
+        const shouldAddNewline = options?.sameline ?? true;
 
         if (shouldAddNewline) {
             stringfied = `${NEWLINE}${stringfied}`;

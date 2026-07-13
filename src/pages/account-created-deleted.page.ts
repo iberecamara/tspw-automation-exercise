@@ -1,6 +1,6 @@
-import { Page } from '@playwright/test';
-import { BasePage } from '@pages/base.page';
 import { AccountCreatedDeletedLocators } from '@locators/account-created-deleted.locators';
+import { BasePage } from '@pages/base.page';
+import { Page } from '@playwright/test';
 
 export class AccountCreatedDeletedPage extends BasePage {
 

@@ -16,7 +16,7 @@ test.describe('User registration', {
 
             const user: UserType = GenerateRandomUser();
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateNewUserSignupText(logger, signupLoginPage);
             await signupLoginSteps.enterSignupData(logger, signupLoginPage, user);
@@ -42,7 +42,7 @@ test.describe('User registration', {
             const user: UserType = GenerateRandomUser();
             await apiSteps.createAccount(logger, userApi, user);
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateNewUserSignupText(logger, signupLoginPage);
             await signupLoginSteps.enterSignupData(logger, signupLoginPage, user);

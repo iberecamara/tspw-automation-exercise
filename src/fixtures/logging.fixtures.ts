@@ -1,7 +1,7 @@
-import { test as base, TestInfo } from "@playwright/test";
-import { TestAutomationLogger } from "@utils/logger.utils";
-import { NEWLINE } from "@data/constants/constants";
-import { Environment } from "@configs/environment.config";
+import { test as base, TestInfo } from '@playwright/test';
+import { TestAutomationLogger } from '@utils/logger.utils';
+import { NEWLINE } from '@data/constants/constants';
+import { Environment } from '@configs/environment.config';
 
 type LoggingFixtures = {
     logger: TestAutomationLogger;

@@ -11,7 +11,7 @@ test.describe('Subscription validations', async () => {
             logger, page, homeSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.scrolling(logger, homePage, DOWN);
             await sharedSteps.validateSubscriptionHeading(logger, homePage);
             await sharedSteps.subscribeEmail(logger, homePage, StringUtils.generateRandomEmail());
@@ -24,7 +24,7 @@ test.describe('Subscription validations', async () => {
             logger, page, homeSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickCart(logger, homePage.header);
             await sharedSteps.scrolling(logger, homePage, DOWN);
             await sharedSteps.validateSubscriptionHeading(logger, homePage);

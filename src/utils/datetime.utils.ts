@@ -1,4 +1,4 @@
-import { EMPTY } from "@data/constants/string.constants";
+import { EMPTY } from '@data/constants/string.constants';
 
 export class DateTimeUtils {
 

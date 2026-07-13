@@ -1,4 +1,4 @@
-import { faker } from "@faker-js/faker";
+import { faker } from '@faker-js/faker';
 
 export class ArraysUtils {
 
@@ -6,19 +6,19 @@ export class ArraysUtils {
         const amount = options?.quantity ?? 1;
 
         if (array.length === 0) {
-            throw new Error("Array cannot be empty");
+            throw new Error('Array cannot be empty');
         }
 
         if (amount > array.length) {
-            throw new Error("Amount cannot be greater than the array length");
+            throw new Error('Amount cannot be greater than the array length');
         }
 
         if (options?.indexLimit && options?.indexLimit > array.length) {
-            throw new Error("Index limit cannot be greater than the array length");
+            throw new Error('Index limit cannot be greater than the array length');
         }
 
         if (options?.indexLimit && options?.indexLimit < amount) {
-            throw new Error("Amount cannot be lower than the index limit");
+            throw new Error('Amount cannot be lower than the index limit');
         }
 
         if (options?.indexLimit) {

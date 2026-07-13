@@ -1,4 +1,4 @@
-import { ProductCategoryType } from "@data/model/product-category.model";
+import { ProductCategoryType } from '@data/model/product-category.model';
 
 export interface ProductType {
     index?: number,

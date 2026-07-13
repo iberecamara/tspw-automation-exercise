@@ -1,7 +1,7 @@
 import { ProductType } from '@data/model/product.model';
 import { test } from '@fixtures/fixtures';
 import { CartPage } from '@pages/cart.page';
-import { expect, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { TestAutomationLogger } from '@utils/logger.utils';
 
 export class CartSteps {
@@ -34,16 +34,6 @@ export class CartSteps {
     }
 
     // Validations
-    async validateCartTitle(logger: TestAutomationLogger, page: Page): Promise<void> {
-        logger.debug('Validating Cart page title.');
-        await test.step('Validate that Cart page have the expected title', async () => {
-            await expect.soft(
-                page,
-                'Cart page should have the expected title'
-            ).toHaveTitle('Automation Exercise - Checkout');
-        });
-    }
-
     async validateCartItems(logger: TestAutomationLogger, cartItems: ProductType[], addedItems: ProductType[]) {
         logger.debug('Validating all products in cart.');
         await test.step('Validate all products', async () => {

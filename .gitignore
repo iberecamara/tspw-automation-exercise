@@ -9,3 +9,5 @@ node_modules/
 /artifacts/
 # Environment settings
 .env
+# Development playground test
+src/tests/**/dev.spec.ts

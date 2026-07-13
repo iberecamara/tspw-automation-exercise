@@ -1,15 +1,16 @@
-import { HeaderActions } from '@actions/header.actions';
+import { HeaderComponents } from '@components/header.components';
 import { Environment } from '@configs/environment.config';
-import { DOWN } from '@data/constants/constants';
+import { DOWN, EMPTY, PAGES_TITLES } from '@data/constants/constants';
 import { ProductType } from '@data/model/product.model';
 import { UserType } from '@data/model/user.model';
+import { SitePages } from '@data/types/site-pages.type';
 import { test } from '@fixtures/fixtures';
 import { BasePage } from '@pages/base.page';
 import { CartPage } from '@pages/cart.page';
 import { HomePage } from '@pages/home.page';
 import { ProductPage } from '@pages/product.page';
 import { ProductsPage } from '@pages/products.page';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { TestAutomationLogger } from '@utils/logger.utils';
 
 export class SharedSteps {
@@ -23,68 +24,68 @@ export class SharedSteps {
         logger.debug('Navigated to home page.');
     };
 
-    async clickHome(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Home" button in header');
-        await test.step('Click "Home" button in header', async () => {
-            await actions.clickHome();
+    async clickHome(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Home' button in header`);
+        await test.step(`Click 'Home' button in header`, async () => {
+            await header.clickHome();
         });
-        logger.debug('Clicked "Home" button in header');
+        logger.debug(`Clicked 'Home' button in header`);
     }
 
-    async clickSignupLogin(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Signup / Login" button in header');
-        await test.step('Click "Signup / Login" button in header', async () => {
-            await actions.clickSignupLogin();
+    async clickSignupLogin(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Signup / Login' button in header`);
+        await test.step(`Click 'Signup / Login' button in header`, async () => {
+            await header.clickSignupLogin();
         });
-        logger.debug('Clicked "Signup / Login" button in header');
+        logger.debug(`Clicked 'Signup / Login' button in header`);
     }
 
-    async clickDeleteAccount(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Delete Account" in header');
-        await test.step('Click "Delete Account" in header', async () => {
-            await actions.clickDeleteAccount();
+    async clickDeleteAccount(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Delete Account' in header`);
+        await test.step(`Click 'Delete Account' in header`, async () => {
+            await header.clickDeleteAccount();
         });
-        logger.debug('Clicked "Delete Account" in header');
+        logger.debug(`Clicked 'Delete Account' in header`);
     }
 
-    async clickLogout(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Logout" in header');
-        await test.step('Click "Logout" in header', async () => {
-            await actions.clickLogout();
+    async clickLogout(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Logout' in header`);
+        await test.step(`Click 'Logout' in header`, async () => {
+            await header.clickLogout();
         });
-        logger.debug('Clicked "Logout" in header');
+        logger.debug(`Clicked 'Logout' in header`);
     }
 
-    async clickContactUs(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Contact us" in header');
-        await test.step('Click "Contact us" in header', async () => {
-            await actions.clickContactUs();
+    async clickContactUs(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Contact us' in header`);
+        await test.step(`Click 'Contact us' in header`, async () => {
+            await header.clickContactUs();
         });
-        logger.debug('Clicked "Contact us" in header');
+        logger.debug(`Clicked 'Contact us' in header`);
     }
 
-    async clickTestCases(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Test Cases" in header');
-        await test.step('Click "Test Cases" in header', async () => {
-            await actions.clickTestCases();
+    async clickTestCases(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Test Cases' in header`);
+        await test.step(`Click 'Test Cases' in header`, async () => {
+            await header.clickTestCases();
         });
-        logger.debug('Clicked "Test Cases" in header');
+        logger.debug(`Clicked 'Test Cases' in header`);
     }
 
-    async clickProducts(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Products" in header');
-        await test.step('Click "Products" in header', async () => {
-            await actions.clickProducts();
+    async clickProducts(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Cicking 'Products' in header`);
+        await test.step(`Click 'Products' in header`, async () => {
+            await header.clickProducts();
         });
-        logger.debug('Clicked "Products" in header');
+        logger.debug(`Clicked 'Products' in header`);
     }
 
-    async clickCart(logger: TestAutomationLogger, actions: HeaderActions): Promise<void> {
-        logger.debug('Clicking "Cart" in header');
-        await test.step('Click "Cart" in header', async () => {
-            await actions.clickCart();
+    async clickCart(logger: TestAutomationLogger, header: HeaderComponents): Promise<void> {
+        logger.debug(`Clicking 'Cart' in header`);
+        await test.step(`Click 'Cart' in header`, async () => {
+            await header.clickCart();
         });
-        logger.debug('Clicked "Cart" in header');
+        logger.debug(`Clicked 'Cart' in header`);
     }
 
     async scrolling<T extends BasePage>(logger: TestAutomationLogger, pageObject: T, direction: string): Promise<void> {
@@ -108,7 +109,7 @@ export class SharedSteps {
     async continueShopping(logger: TestAutomationLogger, pageObject: HomePage | ProductsPage | ProductPage): Promise<void> {
         logger.debug('Clicking Continue Shopping.');
         await test.step('Click Continue Shopping', async () => {
-            await pageObject.clickContinueShopping();
+            await pageObject.continueShoppingViewCart.clickContinueShopping();
         });
         logger.debug('Clicked Continue Shopping.');
     }
@@ -116,7 +117,7 @@ export class SharedSteps {
     async hoverProduct(logger: TestAutomationLogger, pageObject: HomePage | ProductsPage, productName: string): Promise<void> {
         logger.debug(`Hovering over product '${productName}'.`);
         await test.step(`Hover over product '${productName}'.`, async () => {
-            await pageObject.hoverProduct(productName);
+            await pageObject.product.hoverProduct(productName);
         });
         logger.debug(`Hovered over product '${productName}'.`);
     }
@@ -124,7 +125,7 @@ export class SharedSteps {
     async addProductToCartFromHover(logger: TestAutomationLogger, pageObject: HomePage | ProductsPage, productName: string): Promise<void> {
         logger.debug(`Adding product '${productName}' to cart from hover overlay.`);
         await test.step(`Add product '${productName}' to cart from hover overlay.`, async () => {
-            await pageObject.clickAddToCartFromHover(productName);
+            await pageObject.product.clickAddToCartFromHover(productName);
         });
         logger.debug(`Added product '${productName}' to cart from hover overlay.`);
     }
@@ -138,6 +139,52 @@ export class SharedSteps {
         }
     }
 
+    async viewProduct(logger: TestAutomationLogger, pageObject: HomePage | ProductsPage, productIndex: number): Promise<void> {
+        logger.debug(`Clicking 'View Product' in home page`);
+        await test.step(`Click 'View Product' in home page`, async () => {
+            await pageObject.product.clickProductView(productIndex);
+        });
+        logger.debug(`Clicked 'View Product' in home page`);
+    }
+
+    async navigateToProductView(logger: TestAutomationLogger, pageObject: ProductsPage | HomePage, productIndex: number): Promise<void> {
+        logger.debug(`Navigating to product #${productIndex}`);
+        await test.step('Navigating to product view', async () => {
+            await pageObject.product.clickProductView(productIndex);
+        });
+        logger.debug(`Navigated to product #${productIndex}`);
+    }
+
+    async getProducts(logger: TestAutomationLogger, pageObject: ProductsPage | HomePage): Promise<ProductType[]> {
+        logger.debug('Retrieveing all products details');
+        const products: ProductType[] = [];
+        await test.step('Retrieve all products', async () => {
+            products.push(...await pageObject.product.getProducts());
+        });
+        logger.debug('Retrieved all products details');
+        return products;
+    }
+
+    async getProductDetails(logger: TestAutomationLogger, pageObject: ProductsPage | HomePage | ProductPage, productName: string): Promise<ProductType> {
+        logger.debug(`Retrieving products details for '${productName}'.`);
+        let product: ProductType = { name: EMPTY, price: 0 };
+        await test.step(`Retrieve product details for '${productName}'`, async () => {
+            product = await pageObject.product.getProductDetails({ productName: productName });
+        });
+        logger.debug(`Retried products details for '${productName}'.`);
+        return product;
+    }
+
+    async getProductsCount(logger: TestAutomationLogger, pageObject: ProductsPage | HomePage): Promise<number> {
+        logger.debug('Getting the number of Products displayed');
+        let count: number;
+        await test.step('Getting the number of Products displayed', async () => {
+            count = await pageObject.product.getProductsCount();
+        });
+        logger.debug(`Found ${count!} Products in page`);
+        return count!;
+    }
+
     // Validations
     async validateSubscriptionHeading(logger: TestAutomationLogger, pageObject: HomePage | CartPage): Promise<void> {
         logger.debug('Validating that page have the Subscription heading');
@@ -149,6 +196,16 @@ export class SharedSteps {
         });
     };
 
+    async validateProductsCount(logger: TestAutomationLogger, count: number, expectedCount: number): Promise<void> {
+        logger.debug('Validating count of Products in page.');
+        await test.step('Validate that Products page have the expected amout of products', async () => {
+            expect.soft(
+                count,
+                'Products page should have the expected amout of products'
+            ).toBe(expectedCount);
+        });
+    }
+
     async validateSubscriptionMessage(logger: TestAutomationLogger, pageObject: HomePage | CartPage): Promise<void> {
         logger.debug('Validating that the Subscription message is displayed');
         await test.step('Validate that the Subscription message is displayed', async () => {
@@ -159,14 +216,25 @@ export class SharedSteps {
         });
     };
 
-    async validateUserLoggedText(logger: TestAutomationLogger, actions: HeaderActions, user: UserType): Promise<void> {
-        logger.debug('Validating that "Logged in as <username>" text is displayed');
-        await test.step('Validate that "Logged in as <username>" text is displayed', async () => {
+    async validateUserLoggedText(logger: TestAutomationLogger, header: HeaderComponents, user: UserType): Promise<void> {
+        logger.debug(`Validating that 'Logged in as < username > ' text is displayed`);
+        await test.step(`Validate that 'Logged in as < username > ' text is displayed`, async () => {
             await expect.soft(
-                actions.locators.loggedInText(user.name),
-                `"Logged in as ${user.name}" text should be visible`
+                header.locators.loggedInText(user.name),
+                `'Logged in as ${user.name}' text should be visible`
             ).toBeVisible();
         });
     }
+
+    // Validations
+    async validateTitle(logger: TestAutomationLogger, page: Page, sitePage: SitePages): Promise<void> {
+        logger.debug(`Validating that application ${sitePage} page have the expected title`);
+        await test.step(`Validate that application ${sitePage} page have the expected title`, async () => {
+            await expect.soft(
+                page,
+                `${sitePage} page should have the expected title: ${Environment.APPLICATION} `
+            ).toHaveTitle(PAGES_TITLES[sitePage]);
+        });
+    };
 
 }

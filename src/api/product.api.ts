@@ -1,10 +1,7 @@
-import { APIRequestContext, APIResponse } from '@playwright/test';
 import { Environment } from '@configs/environment.config';
-import { UserType } from '@data/model/user.model';
-import { ResponseType } from '@data/types/response.type';
-import { ProductType } from '@data/model/product.model';
-import { StringUtils } from '@utils/string.utils';
 import { EMPTY } from '@data/constants/string.constants';
+import { ProductType } from '@data/model/product.model';
+import { APIRequestContext, APIResponse } from '@playwright/test';
 
 export class ProductApi {
 

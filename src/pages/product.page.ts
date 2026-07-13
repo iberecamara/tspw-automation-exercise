@@ -1,17 +1,23 @@
-import { ProductLocators } from '@locators/product.locators';
+import { ContinueShoppingViewCartComponents } from '@components/continueshopping-viewcart.components';
+import { ProductComponents } from '@components/product.components';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
+import { ProductLocators } from '@locators/product.locators';
 import { BasePage } from '@pages/base.page';
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 export class ProductPage extends BasePage {
 
     readonly locators: ProductLocators;
+    readonly product: ProductComponents;
+    readonly continueShoppingViewCart: ContinueShoppingViewCartComponents;
 
     constructor(page: Page) {
         super(page);
         this.locators = new ProductLocators(page);
+        this.product = new ProductComponents(page);
+        this.continueShoppingViewCart = new ContinueShoppingViewCartComponents(page);
     }
 
     async getProductDetails(): Promise<ProductType> {
@@ -47,16 +53,6 @@ export class ProductPage extends BasePage {
 
     async clickAddToCart(): Promise<void> {
         await this.click(this.locators.addToCartButton);
-    }
-
-    async clickContinueShopping(): Promise<void> {
-        await expect(this.locators.continueShoppingButton).toBeVisible();
-        await this.click(this.locators.continueShoppingButton);
-    }
-
-    async clickViewCart(): Promise<void> {
-        await expect(this.locators.viewCartLink).toBeVisible();
-        await this.click(this.locators.viewCartLink);
     }
 
 }

@@ -18,13 +18,13 @@ test.describe('Orders', {
         }) => {
 
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             const products = await apiSteps.getAllProducts(logger, productApi);
             const quantity = faker.number.int({ min: 1, max: 3 });
             const selectedProducts = ArraysUtils.getRandomElements(products, { quantity: quantity, indexLimit: 10 });
             await sharedSteps.addProductsToCart(logger, homePage, selectedProducts);
             await sharedSteps.clickCart(logger, homePage.header);
-            await cartSteps.validateCartTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Cart');
             await cartSteps.proceedToCheckout(logger, cartPage);
             await cartSteps.registerUserFromCheckout(logger, cartPage);
             const user: UserType = GenerateRandomUser();

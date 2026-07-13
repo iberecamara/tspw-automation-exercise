@@ -1,8 +1,8 @@
+import { VALID_TITLES } from '@data/constants/constants';
+import { SignupLocators } from '@locators/signup.locators';
+import { BasePage } from '@pages/base.page';
 import { Locator, Page } from '@playwright/test';
 import { TestAutomationException } from '../exceptions/test-automation.exception';
-import { BasePage } from '@pages/base.page';
-import { SignupLocators } from '@locators/signup.locators';
-import { VALID_TITLES } from '@data/constants/constants';
 
 export class SignupPage extends BasePage {
 

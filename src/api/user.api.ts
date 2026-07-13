@@ -1,9 +1,8 @@
 import { Environment } from '@configs/environment.config';
+import { MINUTE_IN_MILISSECONDS } from '@data/constants/common.constants';
 import { UserType } from '@data/model/user.model';
 import { ResponseType } from '@data/types/response.type';
-import { MINUTE_IN_MILISSECONDS } from '@data/constants/common.constants';
 import { APIRequestContext, APIResponse } from 'playwright-core';
-import { StringUtils } from '@utils/string.utils';
 
 export class UserApi {
 

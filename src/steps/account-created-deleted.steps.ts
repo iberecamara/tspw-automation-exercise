@@ -1,10 +1,9 @@
-import { expect, Locator } from '@playwright/test';
-import { test } from '@fixtures/fixtures';
-import { TestAutomationLogger } from '@utils/logger.utils';
-import { AccountCreatedDeletedPage } from '@pages/account-created-deleted.page';
-import { StringUtils } from '@utils/string.utils';
 import { CREATED, MINUTE_IN_MILISSECONDS } from '@data/constants/common.constants';
-import { Environment } from '@configs/environment.config';
+import { test } from '@fixtures/fixtures';
+import { AccountCreatedDeletedPage } from '@pages/account-created-deleted.page';
+import { expect, Locator } from '@playwright/test';
+import { TestAutomationLogger } from '@utils/logger.utils';
+import { StringUtils } from '@utils/string.utils';
 
 export class AccountCreatedDeletedSteps {
 
@@ -20,12 +19,12 @@ export class AccountCreatedDeletedSteps {
 
     // Validations
     async validateAccountActionText(logger: TestAutomationLogger, accountCreatedDeletedPage: AccountCreatedDeletedPage, action: string): Promise<void> {
-        logger.debug(`Validating that "Account ${StringUtils.capitalize(action)}!" text is displayed`);
+        logger.debug(`Validating that 'Account ${StringUtils.capitalize(action)}!' text is displayed`);
         const locator: Locator = action === CREATED ? accountCreatedDeletedPage.locators.accountCreatedText : accountCreatedDeletedPage.locators.accountDeletedText
-        await test.step(`Validate that "Account ${StringUtils.capitalize(action)}!" text is displayed`, async () => {
+        await test.step(`Validate that 'Account ${StringUtils.capitalize(action)}!' text is displayed`, async () => {
             await expect.soft(
                 locator,
-                `"Account ${StringUtils.capitalize(action)}!" text should be visible`
+                `'Account ${StringUtils.capitalize(action)}!' text should be visible`
             ).toBeVisible();
         });
     };

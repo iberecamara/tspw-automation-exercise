@@ -1,17 +1,17 @@
 
-import { test as base } from "@playwright/test";
-import { AccountCreatedDeletedSteps } from "@steps/account-created-deleted.steps";
-import { ApiSteps } from "@steps/api.steps";
-import { CartSteps } from "@steps/cart.steps";
-import { SharedSteps } from "@steps/shared.steps";
-import { ContactUsSteps } from "@steps/contact-us.steps";
-import { HomeSteps } from "@steps/home.steps";
-import { ProductSteps } from "@steps/product.steps";
-import { ProductsSteps } from "@steps/products.steps";
-import { SignupLoginSteps } from "@steps/signup-login.steps";
-import { SignupSteps } from "@steps/signup.steps";
-import { TestCasesSteps } from "@steps/test-cases.steps";
-import { CheckoutSteps } from "@steps/checkout.steps";
+import { test as base } from '@playwright/test';
+import { AccountCreatedDeletedSteps } from '@steps/account-created-deleted.steps';
+import { ApiSteps } from '@steps/api.steps';
+import { CartSteps } from '@steps/cart.steps';
+import { SharedSteps } from '@steps/shared.steps';
+import { ContactUsSteps } from '@steps/contact-us.steps';
+import { HomeSteps } from '@steps/home.steps';
+import { ProductSteps } from '@steps/product.steps';
+import { ProductsSteps } from '@steps/products.steps';
+import { SignupLoginSteps } from '@steps/signup-login.steps';
+import { SignupSteps } from '@steps/signup.steps';
+import { TestCasesSteps } from '@steps/test-cases.steps';
+import { CheckoutSteps } from '@steps/checkout.steps';
 
 type StepsConstructor<T> = new () => T;
 

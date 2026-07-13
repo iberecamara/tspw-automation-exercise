@@ -16,13 +16,13 @@ test.describe('User logout', async () => {
             homePage, signupLoginPage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateLoginToAccountText(logger, signupLoginPage);
             await signupLoginSteps.enterLoginData(logger, signupLoginPage, user);
             await sharedSteps.validateUserLoggedText(logger, homePage.header, user);
             await sharedSteps.clickLogout(logger, homePage.header);
-            await signupLoginSteps.validateSignupLoginTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Signup / Login');
             await apiSteps.deleteAccount(logger, userApi, user);
         });
 

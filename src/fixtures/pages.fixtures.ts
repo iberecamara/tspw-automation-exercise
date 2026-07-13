@@ -1,15 +1,15 @@
 
-import { AccountCreatedDeletedPage } from "@pages/account-created-deleted.page";
-import { CartPage } from "@pages/cart.page";
-import { CheckoutPage } from "@pages/checkout.page";
-import { ContactUsPage } from "@pages/contact-us.page";
-import { HomePage } from "@pages/home.page";
-import { ProductPage } from "@pages/product.page";
-import { ProductsPage } from "@pages/products.page";
-import { SignupLoginPage } from "@pages/signup-login.page";
-import { SignupPage } from "@pages/signup.page";
-import { TestCasesPage } from "@pages/test-cases.page";
-import { test as base, Page } from "@playwright/test";
+import { AccountCreatedDeletedPage } from '@pages/account-created-deleted.page';
+import { CartPage } from '@pages/cart.page';
+import { CheckoutPage } from '@pages/checkout.page';
+import { ContactUsPage } from '@pages/contact-us.page';
+import { HomePage } from '@pages/home.page';
+import { ProductPage } from '@pages/product.page';
+import { ProductsPage } from '@pages/products.page';
+import { SignupLoginPage } from '@pages/signup-login.page';
+import { SignupPage } from '@pages/signup.page';
+import { TestCasesPage } from '@pages/test-cases.page';
+import { test as base, Page } from '@playwright/test';
 
 type PageConstructor<T> = new (page: Page) => T;
 
@@ -37,8 +37,8 @@ type PageFixtures = {
 export const test = base.extend<PageFixtures>({
     adblocker: [
         async ({ page }, use) => {
-            await page.route("**/*", route => {
-                route.request().url().startsWith("https://googleads.") ?
+            await page.route('**/*', route => {
+                route.request().url().startsWith('https://googleads.') ?
                     route.abort() : route.continue();
                 return;
             });

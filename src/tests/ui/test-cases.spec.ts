@@ -8,9 +8,9 @@ test.describe('Test Cases page', async () => {
             logger, page, homeSteps, homePage, testCaseSteps, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickTestCases(logger, homePage.header);
-            await testCaseSteps.validateTestCasesTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Test Cases');
         });
 
 });

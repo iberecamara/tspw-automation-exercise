@@ -10,14 +10,14 @@ test.describe('Cart validations', async () => {
             logger, page, homeSteps, homePage, productsSteps, productsPage, sharedSteps, cartPage, cartSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickProducts(logger, homePage.header);
-            await productsSteps.validateProductsTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Products');
 
             const quantity = 1;
 
             const firstProductName = 'Blue Top';
-            const firstProductData: ProductType = await productsSteps.getProductDetails(logger, productsPage, firstProductName);
+            const firstProductData: ProductType = await sharedSteps.getProductDetails(logger, productsPage, firstProductName);
             firstProductData.index = 1;
             firstProductData.quantity = quantity;
             firstProductData.category = {
@@ -27,7 +27,7 @@ test.describe('Cart validations', async () => {
             firstProductData.totalPrice = firstProductData.quantity * firstProductData.price;
 
             const secondProductName = 'Men Tshirt';
-            const secondProductData: ProductType = await productsSteps.getProductDetails(logger, productsPage, secondProductName);
+            const secondProductData: ProductType = await sharedSteps.getProductDetails(logger, productsPage, secondProductName);
             secondProductData.index = 2;
             secondProductData.quantity = quantity;
             secondProductData.category = {
@@ -53,10 +53,10 @@ test.describe('Cart validations', async () => {
             logger, page, homeSteps, homePage, productSteps, productPage, sharedSteps, cartPage, cartSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             const randomIndex = NumberUtils.getRandomNumber({ min: 1, max: 34 });
-            await homeSteps.viewProduct(logger, homePage, randomIndex);
-            await productSteps.validateProductDetailsTitle(logger, page);
+            await sharedSteps.viewProduct(logger, homePage, randomIndex);
+            await sharedSteps.validateTitle(logger, page, 'Product');
             const quantity = 4;
             await productSteps.setProductQuantity(logger, productPage, quantity);
             await productSteps.addToCart(logger, productPage);

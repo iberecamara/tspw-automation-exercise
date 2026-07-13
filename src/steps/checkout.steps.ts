@@ -1,5 +1,5 @@
-import { EMPTY, NEWLINE, SPACE } from '@data/constants/string.constants';
-import { AddressType, ResumedAddressType } from '@data/model/address.model';
+import { NEWLINE, SPACE } from '@data/constants/string.constants';
+import { ResumedAddressType } from '@data/model/address.model';
 import { ProductType } from '@data/model/product.model';
 import { UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
@@ -50,8 +50,8 @@ export class CheckoutSteps {
     // Validations
     async validateCheckoutAddress(logger: TestAutomationLogger, user: UserType, address: ResumedAddressType, addressType: 'delivery' | 'billing'): Promise<void> {
         logger.debug(`Validating ${StringUtils.capitalize(addressType)} Address for user.`);
-        logger.debug(`User to validate: ${StringUtils.prettyJson(user, { newline: true })}`);
-        logger.debug(`${StringUtils.capitalize(addressType)} Address to validate: ${StringUtils.prettyJson(address, { newline: true })}`);
+        logger.debug(`User to validate: ${StringUtils.prettyJson(user, { sameline: true })}`);
+        logger.debug(`${StringUtils.capitalize(addressType)} Address to validate: ${StringUtils.prettyJson(address, { sameline: true })}`);
         await test.step('Place order', async () => {
             // Title in Signup and Checkout differ for 'Ms.' and 'Mrs.'
             const parsedTitle = user.address.title === 'Mr.' ? 'Mr.' : 'Mrs.';

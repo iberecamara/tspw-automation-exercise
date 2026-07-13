@@ -40,7 +40,7 @@ export class BasePage {
 
     async scroll(direction: string) {
         const scroller = (async (direction: string) => {
-            const DOWN = "down"; // Redeclaring the constant here due to hoisting
+            const DOWN = 'down'; // Redeclaring the constant here due to hoisting
             const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
             const scrollHeight = () => document.body.scrollHeight;
             const start = direction === DOWN ? 0 : scrollHeight();

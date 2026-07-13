@@ -17,7 +17,7 @@ test.describe('User login', async () => {
             homePage, signupLoginPage, accountCreatedDeletedPage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateLoginToAccountText(logger, signupLoginPage);
             await signupLoginSteps.enterLoginData(logger, signupLoginPage, user);
@@ -32,7 +32,7 @@ test.describe('User login', async () => {
             logger, page, homeSteps, signupLoginSteps, apiSteps, userApi, homePage, signupLoginPage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateLoginToAccountText(logger, signupLoginPage);
             const email = user.email;
@@ -49,7 +49,7 @@ test.describe('User login', async () => {
             logger, page, homeSteps, signupLoginSteps, userApi, apiSteps, homePage, signupLoginPage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(logger, homePage);
-            await homeSteps.validateHomeTitle(logger, page);
+            await sharedSteps.validateTitle(logger, page, 'Home');
             await sharedSteps.clickSignupLogin(logger, homePage.header);
             await signupLoginSteps.validateLoginToAccountText(logger, signupLoginPage);
             const password = user.password;

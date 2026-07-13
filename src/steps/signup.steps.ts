@@ -1,13 +1,14 @@
-import { expect } from '@playwright/test';
-import { test } from '@fixtures/fixtures';
-import { TestAutomationLogger } from '@utils/logger.utils';
-import { UserType } from '@data/model/user.model';
-import { SignupPage } from '@pages/signup.page';
 import { NEWLINE } from '@data/constants/string.constants';
+import { UserType } from '@data/model/user.model';
+import { test } from '@fixtures/fixtures';
+import { SignupPage } from '@pages/signup.page';
+import { expect } from '@playwright/test';
+import { TestAutomationLogger } from '@utils/logger.utils';
 import { StringUtils } from '@utils/string.utils';
 
 export class SignupSteps {
 
+    // Actions
     async enterSignupData(logger: TestAutomationLogger, signupPage: SignupPage, user: UserType): Promise<void> {
         logger.debug(`Using signup data: ${NEWLINE}${StringUtils.prettyJson(user)}`)
         await test.step('Enter user data for Signup', async () => {
@@ -38,12 +39,13 @@ export class SignupSteps {
         });
     }
 
+    // Validations
     async validateEnterAccountInformationText(logger: TestAutomationLogger, signupPage: SignupPage): Promise<void> {
         logger.debug('Validating Signup page data entry heading text.');
         await test.step('Validate that Signup page have the expected text', async () => {
             await expect.soft(
                 signupPage.locators.enterAccountInformationHeader,
-                'Signup page "Enter Account Information" should be visible'
+                `Signup page 'Enter Account Information' should be visible`
             ).toBeVisible();
         });
     }
