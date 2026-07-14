@@ -4,7 +4,7 @@ import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
 import { CartLocators } from '@locators/cart.locators';
 import { BasePage } from '@pages/base.page';
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class CartPage extends BasePage {
 
@@ -45,6 +45,12 @@ export class CartPage extends BasePage {
             });
         }
         return cartItems;
+    }
+
+    async removeProduct(index: number): Promise<void> {
+        const locator = this.locators.removeProductFromCartButton(index);
+        await this.click(locator);
+        await expect(locator).not.toBeAttached();
     }
 
 }

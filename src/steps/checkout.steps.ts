@@ -20,7 +20,7 @@ export class CheckoutSteps {
 
     // Actions
     async getCartProducts(): Promise<ProductType[]> {
-        this.logger.debug('Retrieveing all products details');
+        this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
             products.push(...await this.checkoutPage.getCartItems());
@@ -30,7 +30,7 @@ export class CheckoutSteps {
     }
 
     async getAddress(addressType: 'delivery' | 'billing'): Promise<ResumedAddressType> {
-        this.logger.debug(`Retrieveing ${addressType} address.`);
+        this.logger.debug(`Retrieving ${addressType} address.`);
         let address: ResumedAddressType;
         await test.step(`Retrieve ${addressType} address`, async () => {
             address = await this.checkoutPage.getAddress(addressType);

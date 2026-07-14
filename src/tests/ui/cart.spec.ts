@@ -64,4 +64,21 @@ test.describe('Cart validations', async () => {
             await cartSteps.validateProductQuantity(quantity);
         });
 
+    test('Remove Products from Cart',
+        { tag: ['@SAMPLE-0018', '@TC17', '@products', '@cart'] },
+        async ({
+            page, homePage, apiSteps, sharedSteps, cartSteps
+        }) => {
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            const products = await apiSteps.getAllProducts();
+            const selectedProducts = await sharedSteps.selectRandomProducts(products);
+            await sharedSteps.addProductsToCart(homePage, selectedProducts);
+            await sharedSteps.clickCart(homePage.header);
+            await sharedSteps.validateTitle(page, 'Cart');
+            await cartSteps.removeProducts(selectedProducts);
+            const cartProducts = await cartSteps.getCartProducts();
+            await cartSteps.validateCartItems(cartProducts, []);
+        });
+
 });

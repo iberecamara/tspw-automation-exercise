@@ -3,6 +3,7 @@ import { test } from '@fixtures/fixtures';
 import { CartPage } from '@pages/cart.page';
 import { expect } from '@playwright/test';
 import { TestAutomationLogger } from '@utils/logger.utils';
+import { StringUtils } from '@utils/string.utils';
 
 export class CartSteps {
 
@@ -16,13 +17,24 @@ export class CartSteps {
 
     // Actions
     async getCartProducts(): Promise<ProductType[]> {
-        this.logger.debug('Retrieveing all products details');
+        this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
             products.push(...await this.cartPage.getCartItems());
         });
         this.logger.debug('Retrieved all products details');
         return products;
+    }
+
+    async removeProducts(products: ProductType[]): Promise<void> {
+        this.logger.debug('Removing products from cart');
+        await test.step('Remove products from cart', async () => {
+            for (const product of products) {
+                this.logger.debug(`Removing product: ${StringUtils.prettyJson(product)}`);
+                await this.cartPage.removeProduct(product.id!);
+            }
+        });
+        this.logger.debug('Removed products from cart');
     }
 
     async proceedToCheckout() {
@@ -43,7 +55,7 @@ export class CartSteps {
 
     // Validations
     async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
-        this.logger.debug('Validating all products in cart.');
+        this.logger.debug(`Validating all (${cartItems.length}) products in cart match all (${addedItems.length}) expected products.`);
         await test.step('Validate all products', async () => {
             expect.soft(
                 cartItems,

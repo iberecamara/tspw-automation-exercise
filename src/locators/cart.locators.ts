@@ -5,6 +5,7 @@ export class CartLocators {
     readonly cartItemsTable: Locator;
     readonly proceedToCheckoutButton: Locator;
     readonly registerFromCheckoutLink: Locator;
+    readonly removeProductFromCartButton: Function;
 
     readonly deliveryAddressContainer: Locator;
     readonly deliveryAddressHeading: Locator;
@@ -31,6 +32,7 @@ export class CartLocators {
         this.cartItemsTable = page.locator('#cart_info_table');
         this.proceedToCheckoutButton = page.getByText('Proceed To Checkout');
         this.registerFromCheckoutLink = page.getByRole('link', { name: 'Register / Login' });
+        this.removeProductFromCartButton = (index: number): Locator => { return page.locator('.cart_quantity_delete').and(page.locator(`[data-product-id="${index}"]`)) };
 
         this.deliveryAddressContainer = page.locator('#address_delivery');
         this.deliveryAddressHeading = this.deliveryAddressContainer.getByRole('heading');

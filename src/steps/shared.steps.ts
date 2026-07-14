@@ -184,7 +184,7 @@ export class SharedSteps {
     }
 
     async getProducts(pageObject: ProductsPage | HomePage): Promise<ProductType[]> {
-        this.logger.debug('Retrieveing all products details');
+        this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
             products.push(...await pageObject.product.getProducts());
