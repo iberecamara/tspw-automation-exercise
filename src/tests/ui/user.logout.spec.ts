@@ -18,7 +18,7 @@ test.describe('User logout', async () => {
             await sharedSteps.validateTitle(page, 'Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
-            await signupLoginSteps.enterLoginData(user);
+            await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
             await sharedSteps.clickLogout(homePage.header);
             await sharedSteps.validateTitle(page, 'Signup / Login');

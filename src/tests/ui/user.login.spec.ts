@@ -19,7 +19,7 @@ test.describe('User login', async () => {
             await sharedSteps.validateTitle(page, 'Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
-            await signupLoginSteps.enterLoginData(user);
+            await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
             await sharedSteps.clickDeleteAccount(homePage.header);
             await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
@@ -36,7 +36,7 @@ test.describe('User login', async () => {
             await signupLoginSteps.validateLoginToAccountText();
             const email = user.email;
             user.email = `invalid_${user.email}`;
-            await signupLoginSteps.enterLoginData(user);
+            await signupLoginSteps.login(user);
             await signupLoginSteps.validateInvalidCredentialsMessage();
             user.email = email;
             await apiSteps.deleteAccount(user);
@@ -53,7 +53,7 @@ test.describe('User login', async () => {
             await signupLoginSteps.validateLoginToAccountText();
             const password = user.password;
             user.password = `invalid_${user.password}`;
-            await signupLoginSteps.enterLoginData(user);
+            await signupLoginSteps.login(user);
             await signupLoginSteps.validateInvalidCredentialsMessage();
             user.password = password;
             await apiSteps.deleteAccount(user);

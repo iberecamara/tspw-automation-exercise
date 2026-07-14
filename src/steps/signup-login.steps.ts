@@ -15,8 +15,8 @@ export class SignupLoginSteps {
     }
 
     // Actions
-    async enterLoginData(user: UserType): Promise<void> {
-        this.logger.debug('Entering login data:');
+    async login(user: UserType): Promise<void> {
+        this.logger.debug('Entering login data.');
         this.logger.debug(`Using email: ${user.email}`);
         this.logger.debug(`Using password: ${user.password}`);
         await test.step('Enter login data', async () => {
@@ -24,6 +24,7 @@ export class SignupLoginSteps {
             await this.signupLoginPage.enterLoginPassword(user.password);
             await this.signupLoginPage.clickLogin();
         });
+        this.logger.debug('Entered login data.');
     };
 
     async enterSignupData(user: UserType): Promise<void> {
@@ -34,6 +35,7 @@ export class SignupLoginSteps {
             await this.signupLoginPage.enterSignupLogin(user.name);
             await this.signupLoginPage.enterSignupEmail(user.email);
         });
+        this.logger.debug('Entered Signup data:');
     }
 
     async clickSignup(): Promise<void> {

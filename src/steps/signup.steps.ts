@@ -44,6 +44,7 @@ export class SignupSteps {
         await test.step('Click Create Account in Signup page', async () => {
             await this.signupPage.clickCreateAccount();
         });
+        this.logger.debug('Clicked Signup page Create Account link.');
     }
 
     // Validations
