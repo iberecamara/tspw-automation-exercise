@@ -27,7 +27,7 @@ export class AllureUtils {
                 try {
                     const fileContent = fs.readFileSync(filePath, 'utf8');
                     const testResult = JSON.parse(fileContent);
-                    if (Environment.ALLURE_REPORT_REMOVE_STATUS.includes(testResult.status)) {
+                    if (Environment.ALLURE_REPORT_REMOVE_STATUS && Environment.ALLURE_REPORT_REMOVE_STATUS.includes(testResult.status)) {
                         fs.unlinkSync(filePath);
                         if (testResult.attachments) {
                             testResult.attachments.forEach((attachment: any) => {
