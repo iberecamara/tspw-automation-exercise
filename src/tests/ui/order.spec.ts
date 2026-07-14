@@ -20,8 +20,7 @@ test.describe('Orders', {
             await sharedSteps.navigateHome(logger, homePage);
             await sharedSteps.validateTitle(logger, page, 'Home');
             const products = await apiSteps.getAllProducts(logger, productApi);
-            const quantity = faker.number.int({ min: 1, max: 3 });
-            const selectedProducts = ArraysUtils.getRandomElements(products, { quantity: quantity, indexLimit: 10 });
+            const selectedProducts = await sharedSteps.selectRandomProducts(logger, products);
             await sharedSteps.addProductsToCart(logger, homePage, selectedProducts);
             await sharedSteps.clickCart(logger, homePage.header);
             await sharedSteps.validateTitle(logger, page, 'Cart');
@@ -38,22 +37,15 @@ test.describe('Orders', {
             await sharedSteps.clickCart(logger, homePage.header);
             await cartSteps.proceedToCheckout(logger, cartPage);
             const checkoutCartItems = await checkoutSteps.getCartProducts(logger, checkoutPage);
-            for (const product of selectedProducts) {
-                product.quantity = 1;
-                product.totalPrice = 1 * product.price;
-                delete product.brand;
-            }
             await checkoutSteps.validateCartItems(logger, selectedProducts, checkoutCartItems);
-            const deliveryAddress = await checkoutSteps.getAddress(logger, checkoutPage, 'delivery');
-            await checkoutSteps.validateCheckoutAddress(logger, user, deliveryAddress, 'delivery');
-            const billingAddress = await checkoutSteps.getAddress(logger, checkoutPage, 'billing');
-            await checkoutSteps.validateCheckoutAddress(logger, user, billingAddress, 'billing');
+            await checkoutSteps.validateCheckoutAddress(logger, checkoutPage, user, 'delivery');
+            await checkoutSteps.validateCheckoutAddress(logger, checkoutPage, user, 'billing');
             const checkoutComment = StringUtils.generateRandomText({ words: NumberUtils.getRandomNumber({ min: 3, max: 10 }) });
             await checkoutSteps.enterComment(logger, checkoutPage, checkoutComment);
             await checkoutSteps.placeOrder(logger, checkoutPage);
 
 
-            await page.waitForTimeout(10000)
+
         });
 
 });

@@ -48,60 +48,58 @@ export class CheckoutSteps {
     }
 
     // Validations
-    async validateCheckoutAddress(logger: TestAutomationLogger, user: UserType, address: ResumedAddressType, addressType: 'delivery' | 'billing'): Promise<void> {
+    async validateCheckoutAddress(logger: TestAutomationLogger, checkout: CheckoutPage, user: UserType, addressType: 'delivery' | 'billing'): Promise<void> {
         logger.debug(`Validating ${StringUtils.capitalize(addressType)} Address for user.`);
-        logger.debug(`User to validate: ${StringUtils.prettyJson(user, { sameline: true })}`);
-        logger.debug(`${StringUtils.capitalize(addressType)} Address to validate: ${StringUtils.prettyJson(address, { sameline: true })}`);
-        await test.step('Place order', async () => {
+        logger.debug(`User address to validate: ${StringUtils.prettyJson(user.address)}`);
+        await test.step(`Validate ${addressType} Address.`, async () => {
             // Title in Signup and Checkout differ for 'Ms.' and 'Mrs.'
             const parsedTitle = user.address.title === 'Mr.' ? 'Mr.' : 'Mrs.';
-            expect.soft(
-                address.name,
+            await expect.soft(
+                checkout.locators.addressName(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user title '${parsedTitle}'.`
-            ).toContain(parsedTitle);
-            expect.soft(
-                address.name,
+            ).toContainText(parsedTitle);
+            await expect.soft(
+                checkout.locators.addressName(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user first name '${user.address.firstname}'.`
-            ).toContain(user.address.firstname);
-            expect.soft(
-                address.name,
+            ).toContainText(user.address.firstname);
+            await expect.soft(
+                checkout.locators.addressName(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user last name '${user.address.lastname}'.`
-            ).toContain(user.address.lastname);
-
-            expect.soft(
-                address.addressOne,
+            ).toContainText(user.address.lastname);
+            await expect.soft(
+                checkout.locators.addressAddressOne(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user company name '${user.address.company}'.`
-            ).toContain(user.address.company);
+            ).toContainText(user.address.company);
             // Signup email uses newline characters and checkout uses spaces, we swap before checking
             const parsedAddressDetails = user.address.addressOne.replaceAll(NEWLINE, SPACE);
-            expect.soft(
-                address.addressTwo,
+            await expect.soft(
+                checkout.locators.addressAddressTwo(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address details '${parsedAddressDetails}'.`
-            ).toContain(parsedAddressDetails);
-            expect.soft(
-                address.addressThree,
+            ).toContainText(parsedAddressDetails);
+            await expect.soft(
+                checkout.locators.addressAddressThree(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address complement details '${user.address.addressTwo}'.`
-            ).toContain(user.address.addressTwo);
-            expect.soft(
-                address.cityStateZipcode,
+            ).toContainText(user.address.addressTwo);
+            await expect.soft(
+                checkout.locators.addressCityStateZipcode(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address city '${user.address.city}'.`
-            ).toContain(user.address.city);
-            expect.soft(
-                address.cityStateZipcode,
+            ).toContainText(user.address.city);
+            await expect.soft(
+                checkout.locators.addressCityStateZipcode(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address state '${user.address.state}'.`
-            ).toContain(user.address.state);
-            expect.soft(
-                address.cityStateZipcode,
+            ).toContainText(user.address.state);
+            await expect.soft(
+                checkout.locators.addressCityStateZipcode(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address zip code '${user.address.zipcode}'.`
-            ).toContain(user.address.zipcode);
-            expect.soft(
-                address.country,
+            ).toContainText(user.address.zipcode);
+            await expect.soft(
+                checkout.locators.addressCountry(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address country '${user.address.country}'.`
-            ).toContain(user.address.country);
-            expect.soft(
-                address.phone,
+            ).toContainText(user.address.country);
+            await expect.soft(
+                checkout.locators.addressPhone(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address associated phone number '${user.address.mobileNumber}'.`
-            ).toContain(user.address.mobileNumber);
+            ).toContainText(user.address.mobileNumber);
         });
     }
 

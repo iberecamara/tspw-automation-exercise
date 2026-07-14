@@ -4,6 +4,7 @@ import { DOWN, EMPTY, PAGES_TITLES } from '@data/constants/constants';
 import { ProductType } from '@data/model/product.model';
 import { UserType } from '@data/model/user.model';
 import { SitePages } from '@data/types/site-pages.type';
+import { faker } from '@faker-js/faker';
 import { test } from '@fixtures/fixtures';
 import { BasePage } from '@pages/base.page';
 import { CartPage } from '@pages/cart.page';
@@ -11,6 +12,7 @@ import { HomePage } from '@pages/home.page';
 import { ProductPage } from '@pages/product.page';
 import { ProductsPage } from '@pages/products.page';
 import { expect, Page } from '@playwright/test';
+import { ArraysUtils } from '@utils/arrays.utils';
 import { TestAutomationLogger } from '@utils/logger.utils';
 
 export class SharedSteps {
@@ -131,12 +133,32 @@ export class SharedSteps {
     }
 
     async addProductsToCart(logger: TestAutomationLogger, pageObject: HomePage, products: ProductType[]): Promise<void> {
-        logger.debug(`Adding ${products.length} products to cart...`);
+        logger.debug(`Adding ${products.length} products to cart.`);
         for (const product of products) {
             await this.hoverProduct(logger, pageObject, product.name);
             await this.addProductToCartFromHover(logger, pageObject, product.name);
             await this.continueShopping(logger, pageObject);
         }
+    }
+
+    async selectRandomProducts(logger: TestAutomationLogger, products: ProductType[]): Promise<ProductType[]> {
+        const quantity = faker.number.int({ min: 1, max: 3 });
+        const selectedProducts: ProductType[] = [];
+        logger.debug(`Selecting ${quantity} products from the list.`);
+        await test.step(`Select ${quantity} products from the list`, async () => {
+            const count = 1;
+            selectedProducts.push(...ArraysUtils.getRandomElements(products, { quantity: quantity, indexLimit: 10 }));
+            logger.debug(`Adding ${count} to each product quantity.`);
+            logger.debug(`Adding ${count} times product price to each product total price.`);
+            logger.debug(`Removing unecessary 'brand' field from each product to match validations.`);
+            for (const product of selectedProducts) {
+                product.quantity = 1;
+                product.totalPrice = 1 * product.price;
+                delete product.brand;
+            }
+        });
+        logger.debug(`Selected ${quantity} products from the list.`);
+        return selectedProducts;
     }
 
     async viewProduct(logger: TestAutomationLogger, pageObject: HomePage | ProductsPage, productIndex: number): Promise<void> {
