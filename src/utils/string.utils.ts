@@ -1,10 +1,17 @@
-import { NEWLINE } from '@data/constants/string.constants';
+import { EMPTY, NEWLINE } from '@data/constants/string.constants';
 import { faker } from '@faker-js/faker';
 
 export class StringUtils {
 
     static capitalize(text: string): string {
         return text.replace(/^\w/, (c) => c.toUpperCase());
+    }
+
+    static capitalizeAll(text: string): string {
+        return text
+            .split(/(\s+)/)
+            .map((word) => StringUtils.capitalize(word))
+            .join(EMPTY);
     }
 
     static prettyJson<T>(target: T, options?: { sameline?: boolean }): string {
@@ -17,6 +24,10 @@ export class StringUtils {
         }
 
         return stringfied
+    }
+
+    static generateRandomName(): string {
+        return faker.person.fullName();
     }
 
     static generateRandomEmail(): string {

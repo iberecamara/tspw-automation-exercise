@@ -12,6 +12,7 @@ import { SignupLoginSteps } from '@steps/signup-login.steps';
 import { SignupSteps } from '@steps/signup.steps';
 import { TestCasesSteps } from '@steps/test-cases.steps';
 import { CheckoutSteps } from '@steps/checkout.steps';
+import { PaymentSteps } from '@steps/payment.steps';
 
 type StepsConstructor<T> = new () => T;
 
@@ -35,6 +36,7 @@ type StepsFixtures = {
     sharedSteps: SharedSteps,
     cartSteps: CartSteps,
     checkoutSteps: CheckoutSteps,
+    paymentSteps: PaymentSteps,
 };
 
 export const test = base.extend<StepsFixtures>({
@@ -50,4 +52,5 @@ export const test = base.extend<StepsFixtures>({
     sharedSteps: createStepFixture(SharedSteps),
     cartSteps: createStepFixture(CartSteps),
     checkoutSteps: createStepFixture(CheckoutSteps),
+    paymentSteps: createStepFixture(PaymentSteps),
 });

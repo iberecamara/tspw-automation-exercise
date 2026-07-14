@@ -1,4 +1,5 @@
-import { CREATED } from '@data/constants/common.constants';
+import { CREATED, DELETED } from '@data/constants/common.constants';
+import { CreditCardDetailsType, GenerateRandomCard } from '@data/model/credit-card-details.model';
 import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { faker } from '@faker-js/faker';
 import { test } from '@fixtures/fixtures';
@@ -13,8 +14,9 @@ test.describe('Orders', {
     test('Place Order: Register while Checkout',
         { tag: ['@SAMPLE-0015', '@TC14', '@user-register-checkout'] },
         async ({
-            page, logger, homeSteps, cartSteps, cartPage, signupLoginSteps, apiSteps, homePage, signupLoginPage, sharedSteps,
-            accountCreatedDeletedSteps, accountCreatedDeletedPage, signupSteps, signupPage, productApi, checkoutSteps, checkoutPage
+            page, logger, paymentSteps, cartSteps, cartPage, signupLoginSteps, apiSteps, homePage, signupLoginPage, sharedSteps,
+            accountCreatedDeletedSteps, accountCreatedDeletedPage, signupSteps, signupPage, productApi, checkoutSteps, checkoutPage,
+            paymentPage
         }) => {
 
             await sharedSteps.navigateHome(logger, homePage);
@@ -43,9 +45,13 @@ test.describe('Orders', {
             const checkoutComment = StringUtils.generateRandomText({ words: NumberUtils.getRandomNumber({ min: 3, max: 10 }) });
             await checkoutSteps.enterComment(logger, checkoutPage, checkoutComment);
             await checkoutSteps.placeOrder(logger, checkoutPage);
-
-
-
+            const cardDetails: CreditCardDetailsType = GenerateRandomCard({ name: user.name });
+            await paymentSteps.enterCardDetails(logger, paymentPage, cardDetails);
+            await paymentSteps.payAndConfirmOrder(logger, paymentPage);
+            await paymentSteps.validateOrderPlaced(logger, paymentPage);
+            await sharedSteps.clickDeleteAccount(logger, homePage.header);
+            await accountCreatedDeletedSteps.validateAccountActionText(logger, accountCreatedDeletedPage, DELETED);
+            await accountCreatedDeletedSteps.clickContinue(logger, accountCreatedDeletedPage, StringUtils.capitalize(DELETED));
         });
 
 });

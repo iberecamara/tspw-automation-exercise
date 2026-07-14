@@ -4,6 +4,7 @@ import { CartPage } from '@pages/cart.page';
 import { CheckoutPage } from '@pages/checkout.page';
 import { ContactUsPage } from '@pages/contact-us.page';
 import { HomePage } from '@pages/home.page';
+import { PaymentPage } from '@pages/payment.page';
 import { ProductPage } from '@pages/product.page';
 import { ProductsPage } from '@pages/products.page';
 import { SignupLoginPage } from '@pages/signup-login.page';
@@ -32,6 +33,7 @@ type PageFixtures = {
     productPage: ProductPage,
     cartPage: CartPage,
     checkoutPage: CheckoutPage,
+    paymentPage: PaymentPage,
 };
 
 export const test = base.extend<PageFixtures>({
@@ -57,4 +59,5 @@ export const test = base.extend<PageFixtures>({
     productPage: createPageFixture(ProductPage),
     cartPage: createPageFixture(CartPage),
     checkoutPage: createPageFixture(CheckoutPage),
+    paymentPage: createPageFixture(PaymentPage),
 });
