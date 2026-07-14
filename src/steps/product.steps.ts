@@ -1,4 +1,3 @@
-import { NEWLINE } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { test } from '@fixtures/fixtures';
 import { ProductPage } from '@pages/product.page';
@@ -8,37 +7,55 @@ import { StringUtils } from '@utils/string.utils';
 
 export class ProductSteps {
 
+    readonly logger: TestAutomationLogger;
+    readonly productPage: ProductPage;
+
+    constructor(logger: TestAutomationLogger, productPage: ProductPage) {
+        this.logger = logger;
+        this.productPage = productPage;
+    }
+
     // Actions
-    async setProductQuantity(logger: TestAutomationLogger, productPage: ProductPage, quantity: number): Promise<void> {
-        logger.debug(`Setting product quantity to ${quantity}`);
+    async setProductQuantity(quantity: number): Promise<void> {
+        this.logger.debug(`Setting product quantity to ${quantity}`);
         await test.step('Set product quantity', async () => {
-            await productPage.setQuantity(quantity);
+            await this.productPage.setQuantity(quantity);
         });
-        logger.debug(`Set product quantity to ${quantity}`);
+        this.logger.debug(`Set product quantity to ${quantity}`);
     }
 
-    async addToCart(logger: TestAutomationLogger, productPage: ProductPage): Promise<void> {
-        logger.debug('Adding product to cart');
+    async addToCart(): Promise<void> {
+        this.logger.debug('Adding product to cart');
         await test.step('Add product to cart', async () => {
-            await productPage.clickAddToCart();
+            await this.productPage.clickAddToCart();
         });
-        logger.debug('Added product to cart');
+        this.logger.debug('Added product to cart');
     }
 
-    async viewCart(logger: TestAutomationLogger, productPage: ProductPage): Promise<void> {
-        logger.debug('Clicking View Cart');
+    async viewCart(): Promise<void> {
+        this.logger.debug('Clicking View Cart');
         await test.step('Navigating to cart from modal', async () => {
-            await productPage.continueShoppingViewCart.clickViewCart();
+            await this.productPage.continueShoppingViewCart.clickViewCart();
         });
-        logger.debug('Clicked View Cart');
+        this.logger.debug('Clicked View Cart');
+    }
+
+    async productDetails(): Promise<ProductType> {
+        this.logger.debug('Retrieving product details');
+        let product;
+        await test.step('Retrieve product details', async () => {
+            product = await this.productPage.getProductDetails();
+        });
+        this.logger.debug('Retrieved product details');
+        return product!;
     }
 
 
     // Validations
-    async validateProductDetails(logger: TestAutomationLogger, firstProduct: ProductType, productDetails: ProductType): Promise<void> {
-        logger.debug('Validating that retrieved product matches the first product.');
-        logger.debug(`First product: ${NEWLINE}${StringUtils.prettyJson(firstProduct)}`);
-        logger.debug(`Retrieved product: ${NEWLINE}${StringUtils.prettyJson(productDetails)}`);
+    async validateProductDetails(firstProduct: ProductType, productDetails: ProductType): Promise<void> {
+        this.logger.debug('Validating that retrieved product matches the first product.');
+        this.logger.debug(`First product: ${StringUtils.prettyJson(firstProduct)}`);
+        this.logger.debug(`Retrieved product: ${StringUtils.prettyJson(productDetails)}`);
         await test.step('Validate that retrieved product matches the first product', async () => {
             expect.soft(
                 productDetails,

@@ -8,27 +8,27 @@ test.describe('Subscription validations', async () => {
     test('Verify Subscription in home page',
         { tag: ['@SAMPLE-0005', '@TC10', '@home', '@subscription'] },
         async ({
-            logger, page, homeSteps, homePage, sharedSteps
+            page, homePage, sharedSteps
         }) => {
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.scrolling(logger, homePage, DOWN);
-            await sharedSteps.validateSubscriptionHeading(logger, homePage);
-            await sharedSteps.subscribeEmail(logger, homePage, StringUtils.generateRandomEmail());
-            await sharedSteps.validateSubscriptionMessage(logger, homePage);
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.scrolling(homePage, DOWN);
+            await sharedSteps.validateSubscriptionHeading(homePage);
+            await sharedSteps.subscribeEmail(homePage, StringUtils.generateRandomEmail());
+            await sharedSteps.validateSubscriptionMessage(homePage);
         });
 
     test('Verify Subscription in Cart page',
         { tag: ['@SAMPLE-0006', '@TC11', '@cart', '@subscription'] },
         async ({
-            logger, page, homeSteps, homePage, sharedSteps
+            page, homePage, sharedSteps
         }) => {
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.clickCart(logger, homePage.header);
-            await sharedSteps.scrolling(logger, homePage, DOWN);
-            await sharedSteps.validateSubscriptionHeading(logger, homePage);
-            await sharedSteps.subscribeEmail(logger, homePage, StringUtils.generateRandomEmail());
-            await sharedSteps.validateSubscriptionMessage(logger, homePage);
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.clickCart(homePage.header);
+            await sharedSteps.scrolling(homePage, DOWN);
+            await sharedSteps.validateSubscriptionHeading(homePage);
+            await sharedSteps.subscribeEmail(homePage, StringUtils.generateRandomEmail());
+            await sharedSteps.validateSubscriptionMessage(homePage);
         });
 });

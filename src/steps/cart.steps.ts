@@ -6,36 +6,44 @@ import { TestAutomationLogger } from '@utils/logger.utils';
 
 export class CartSteps {
 
+    readonly logger: TestAutomationLogger;
+    readonly cartPage: CartPage;
+
+    constructor(logger: TestAutomationLogger, cartPage: CartPage) {
+        this.logger = logger;
+        this.cartPage = cartPage;
+    }
+
     // Actions
-    async getCartProducts(logger: TestAutomationLogger, cartPage: CartPage): Promise<ProductType[]> {
-        logger.debug('Retrieveing all products details');
+    async getCartProducts(): Promise<ProductType[]> {
+        this.logger.debug('Retrieveing all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
-            products.push(...await cartPage.getCartItems());
+            products.push(...await this.cartPage.getCartItems());
         });
-        logger.debug('Retrieved all products details');
+        this.logger.debug('Retrieved all products details');
         return products;
     }
 
-    async proceedToCheckout(logger: TestAutomationLogger, cartPage: CartPage) {
-        logger.debug('Clicking Proceed to Checkout');
+    async proceedToCheckout() {
+        this.logger.debug('Clicking Proceed to Checkout');
         await test.step('Click Proceed to Checkout', async () => {
-            await cartPage.click(cartPage.locators.proceedToCheckoutButton);
+            await this.cartPage.click(this.cartPage.locators.proceedToCheckoutButton);
         });
-        logger.debug('Clicked Proceed to Checkout');
+        this.logger.debug('Clicked Proceed to Checkout');
     }
 
-    async registerUserFromCheckout(logger: TestAutomationLogger, cartPage: CartPage) {
-        logger.debug('Clicking Register / Login');
+    async registerUserFromCheckout() {
+        this.logger.debug('Clicking Register / Login');
         await test.step('Click Register / Login', async () => {
-            await cartPage.click(cartPage.locators.registerFromCheckoutLink);
+            await this.cartPage.click(this.cartPage.locators.registerFromCheckoutLink);
         });
-        logger.debug('Clicked Register / Login');
+        this.logger.debug('Clicked Register / Login');
     }
 
     // Validations
-    async validateCartItems(logger: TestAutomationLogger, cartItems: ProductType[], addedItems: ProductType[]) {
-        logger.debug('Validating all products in cart.');
+    async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
+        this.logger.debug('Validating all products in cart.');
         await test.step('Validate all products', async () => {
             expect.soft(
                 cartItems,
@@ -46,10 +54,10 @@ export class CartSteps {
         });
     }
 
-    async validateProductQuantity(logger: TestAutomationLogger, cartPage: CartPage, quantity: number): Promise<void> {
-        logger.debug(`Validating product quantity in cart to be ${quantity}.`);
+    async validateProductQuantity(quantity: number): Promise<void> {
+        this.logger.debug(`Validating product quantity in cart to be ${quantity}.`);
         await test.step('Validate product quantity in cart', async () => {
-            const product = (await cartPage.getCartItems()).at(0);
+            const product = (await this.cartPage.getCartItems()).at(0);
             expect.soft(
                 product?.quantity,
                 `Product quantity in cart should be ${quantity}.`

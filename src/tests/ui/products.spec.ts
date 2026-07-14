@@ -6,15 +6,15 @@ test.describe('Products page', async () => {
     test('Verify All Products and product detail page',
         { tag: ['@SAMPLE-0007', '@TC8', '@products'] },
         async ({
-            logger, page, homeSteps, homePage, productsSteps, productsPage, productSteps, productPage, sharedSteps
+            page, homePage, productsSteps, productsPage, productSteps, sharedSteps
         }) => {
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.clickProducts(logger, homePage.header);
-            await sharedSteps.validateTitle(logger, page, 'Products');
-            const count = await productsSteps.getProductsCount(logger, productsPage);
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.clickProducts(homePage.header);
+            await sharedSteps.validateTitle(page, 'Products');
+            const count = await productsSteps.getProductsCount();
             const expectedCount = 34;
-            await sharedSteps.validateProductsCount(logger, count, expectedCount);
+            await sharedSteps.validateProductsCount(count, expectedCount);
             const firstProduct: ProductType = {
                 index: 1,
                 name: 'Blue Top',
@@ -27,24 +27,24 @@ test.describe('Products page', async () => {
                 condition: 'New',
                 brand: 'Polo'
             };
-            await sharedSteps.navigateToProductView(logger, productsPage, firstProduct.index!);
-            const productDetails: ProductType = await productPage.getProductDetails();
-            await productSteps.validateProductDetails(logger, firstProduct, productDetails);
+            await sharedSteps.navigateToProductView(productsPage, firstProduct.index!);
+            const productDetails: ProductType = await productSteps.productDetails();
+            await productSteps.validateProductDetails(firstProduct, productDetails);
         });
 
     test('Search Product',
         { tag: ['@SAMPLE-0008', '@TC9', '@products', '@search-products'] },
         async ({
-            logger, page, homeSteps, homePage, productsSteps, productsPage, sharedSteps
+            page, homePage, productsSteps, productsPage, sharedSteps
         }) => {
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.clickProducts(logger, homePage.header);
-            await sharedSteps.validateTitle(logger, page, 'Products');
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.clickProducts(homePage.header);
+            await sharedSteps.validateTitle(page, 'Products');
             const searchTerm: string = 'blue';
-            await productsSteps.searchProducts(logger, productsPage, searchTerm);
-            const products: ProductType[] = await sharedSteps.getProducts(logger, productsPage);
-            productsSteps.validateDisplayedProductsHaveSearchTerm(logger, products, searchTerm);
+            await productsSteps.searchProducts(searchTerm);
+            const products: ProductType[] = await sharedSteps.getProducts(productsPage);
+            productsSteps.validateDisplayedProductsHaveSearchTerm(products, searchTerm);
         });
 
 });

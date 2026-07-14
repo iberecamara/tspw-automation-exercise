@@ -10,45 +10,44 @@ test.describe('User registration', {
     test('Register user',
         { tag: ['@SAMPLE-0013', '@TC1'] },
         async ({
-            page, logger, homeSteps, signupLoginSteps, signupSteps, accountCreatedDeletedSteps,
-            homePage, signupLoginPage, signupPage, accountCreatedDeletedPage, sharedSteps
+            page, signupLoginSteps, signupSteps, accountCreatedDeletedSteps, homePage, sharedSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.clickSignupLogin(logger, homePage.header);
-            await signupLoginSteps.validateNewUserSignupText(logger, signupLoginPage);
-            await signupLoginSteps.enterSignupData(logger, signupLoginPage, user);
-            await signupLoginSteps.clickSignup(logger, signupLoginPage);
-            await signupSteps.validateEnterAccountInformationText(logger, signupPage);
-            await signupSteps.enterSignupData(logger, signupPage, user);
-            await signupSteps.clickCreateAccount(logger, signupPage);
-            await accountCreatedDeletedSteps.validateAccountActionText(logger, accountCreatedDeletedPage, CREATED);
-            await accountCreatedDeletedSteps.clickContinue(logger, accountCreatedDeletedPage, StringUtils.capitalize(CREATED));
-            await sharedSteps.validateUserLoggedText(logger, homePage.header, user);
-            await sharedSteps.clickDeleteAccount(logger, homePage.header);
-            await accountCreatedDeletedSteps.validateAccountActionText(logger, accountCreatedDeletedPage, DELETED);
-            await accountCreatedDeletedSteps.clickContinue(logger, accountCreatedDeletedPage, StringUtils.capitalize(DELETED));
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.clickSignupLogin(homePage.header);
+            await signupLoginSteps.validateNewUserSignupText();
+            await signupLoginSteps.enterSignupData(user);
+            await signupLoginSteps.clickSignup();
+            await signupSteps.validateEnterAccountInformationText();
+            await signupSteps.enterSignupData(user);
+            await signupSteps.clickCreateAccount();
+            await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
+            await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
+            await sharedSteps.validateUserLoggedText(homePage.header, user);
+            await sharedSteps.clickDeleteAccount(homePage.header);
+            await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
+            await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(DELETED));
 
         });
 
     test('Register User with existing email',
         { tag: ['@SAMPLE-0014', '@TC5', '@user-register-error'] },
         async ({
-            page, logger, homeSteps, signupLoginSteps, apiSteps, userApi, homePage, signupLoginPage, sharedSteps
+            page, signupLoginSteps, apiSteps, homePage, sharedSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
-            await apiSteps.createAccount(logger, userApi, user);
-            await sharedSteps.navigateHome(logger, homePage);
-            await sharedSteps.validateTitle(logger, page, 'Home');
-            await sharedSteps.clickSignupLogin(logger, homePage.header);
-            await signupLoginSteps.validateNewUserSignupText(logger, signupLoginPage);
-            await signupLoginSteps.enterSignupData(logger, signupLoginPage, user);
-            await signupLoginSteps.clickSignup(logger, signupLoginPage);
-            await signupLoginSteps.validateEmailAlreadyExistsMessage(logger, signupLoginPage);
-            await apiSteps.deleteAccount(logger, userApi, user);
+            await apiSteps.createAccount(user);
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.clickSignupLogin(homePage.header);
+            await signupLoginSteps.validateNewUserSignupText();
+            await signupLoginSteps.enterSignupData(user);
+            await signupLoginSteps.clickSignup();
+            await signupLoginSteps.validateEmailAlreadyExistsMessage();
+            await apiSteps.deleteAccount(user);
         });
 
 });
