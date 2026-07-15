@@ -12,16 +12,16 @@ test.describe('User logout', async () => {
     test('Logout User',
         { tag: ['@SAMPLE-0012', '@TC4', '@user-logout'] },
         async ({
-            page, signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, apiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
             await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
             await sharedSteps.clickLogout(homePage.header);
-            await sharedSteps.validateTitle(page, 'Signup / Login');
+            await sharedSteps.validateTitle('Signup / Login');
             await apiSteps.deleteAccount(user);
         });
 

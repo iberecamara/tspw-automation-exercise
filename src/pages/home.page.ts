@@ -1,3 +1,4 @@
+import { CategoryComponents } from '@components/category.components';
 import { ContinueShoppingViewCartComponents } from '@components/continueshopping-viewcart.components';
 import { HeaderComponents } from '@components/header.components';
 import { ProductComponents } from '@components/product.components';
@@ -13,6 +14,7 @@ export class HomePage extends BasePage {
     readonly subscription: SubscriptionComponents;
     readonly product: ProductComponents;
     readonly continueShoppingViewCart: ContinueShoppingViewCartComponents;
+    readonly category: CategoryComponents;
 
     constructor(page: Page) {
         super(page);
@@ -21,6 +23,7 @@ export class HomePage extends BasePage {
         this.subscription = new SubscriptionComponents(page);
         this.product = new ProductComponents(page);
         this.continueShoppingViewCart = new ContinueShoppingViewCartComponents(page);
+        this.category = new CategoryComponents(page);
     }
 
 }

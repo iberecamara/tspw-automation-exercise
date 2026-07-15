@@ -8,10 +8,10 @@ test.describe('Subscription validations', async () => {
     test('Verify Subscription in home page',
         { tag: ['@SAMPLE-0005', '@TC10', '@home', '@subscription'] },
         async ({
-            page, homePage, sharedSteps
+            homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.scrolling(homePage, DOWN);
             await sharedSteps.validateSubscriptionHeading(homePage);
             await sharedSteps.subscribeEmail(homePage, StringUtils.generateRandomEmail());
@@ -21,10 +21,10 @@ test.describe('Subscription validations', async () => {
     test('Verify Subscription in Cart page',
         { tag: ['@SAMPLE-0006', '@TC11', '@cart', '@subscription'] },
         async ({
-            page, homePage, sharedSteps
+            homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickCart(homePage.header);
             await sharedSteps.scrolling(homePage, DOWN);
             await sharedSteps.validateSubscriptionHeading(homePage);

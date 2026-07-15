@@ -6,12 +6,12 @@ test.describe('Products page', async () => {
     test('Verify All Products and product detail page',
         { tag: ['@SAMPLE-0007', '@TC8', '@products'] },
         async ({
-            page, homePage, productsSteps, productsPage, productSteps, sharedSteps
+            homePage, productsSteps, productsPage, productSteps, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
-            await sharedSteps.validateTitle(page, 'Products');
+            await sharedSteps.validateTitle('Products');
             const count = await productsSteps.getProductsCount();
             const expectedCount = 34;
             await sharedSteps.validateProductsCount(count, expectedCount);
@@ -35,12 +35,12 @@ test.describe('Products page', async () => {
     test('Search Product',
         { tag: ['@SAMPLE-0008', '@TC9', '@products', '@search-products'] },
         async ({
-            page, homePage, productsSteps, productsPage, sharedSteps
+            homePage, productsSteps, productsPage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
-            await sharedSteps.validateTitle(page, 'Products');
+            await sharedSteps.validateTitle('Products');
             const searchTerm: string = 'blue';
             await productsSteps.searchProducts(searchTerm);
             const products: ProductType[] = await sharedSteps.getProducts(productsPage);

@@ -10,12 +10,12 @@ test.describe('User registration', {
     test('Register user',
         { tag: ['@SAMPLE-0013', '@TC1'] },
         async ({
-            page, signupLoginSteps, signupSteps, accountCreatedDeletedSteps, homePage, sharedSteps
+            signupLoginSteps, signupSteps, accountCreatedDeletedSteps, homePage, sharedSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateNewUserSignupText();
             await signupLoginSteps.enterSignupData(user);
@@ -35,13 +35,13 @@ test.describe('User registration', {
     test('Register User with existing email',
         { tag: ['@SAMPLE-0014', '@TC5', '@user-register-error'] },
         async ({
-            page, signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, apiSteps, homePage, sharedSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
             await apiSteps.createAccount(user);
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateNewUserSignupText();
             await signupLoginSteps.enterSignupData(user);

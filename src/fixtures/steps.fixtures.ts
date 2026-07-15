@@ -15,6 +15,7 @@ import { SharedSteps } from '@steps/shared.steps';
 import { SignupLoginSteps } from '@steps/signup-login.steps';
 import { SignupSteps } from '@steps/signup.steps';
 import { TestCasesSteps } from '@steps/test-cases.steps';
+import { CategorySteps } from '@steps/category.steps';
 
 type StepsFixtures = {
     apiSteps: ApiSteps,
@@ -30,6 +31,7 @@ type StepsFixtures = {
     cartSteps: CartSteps,
     checkoutSteps: CheckoutSteps,
     paymentSteps: PaymentSteps,
+    categorySteps: CategorySteps,
 };
 
 const merged = mergeTests(apis, pages, logging);
@@ -71,8 +73,8 @@ export const test = merged.extend<StepsFixtures>({
         const stepInstance = new ProductSteps(logger, productPage);
         await use(stepInstance);
     },
-    sharedSteps: async ({ logger }, use) => {
-        const stepInstance = new SharedSteps(logger);
+    sharedSteps: async ({ logger, page }, use) => {
+        const stepInstance = new SharedSteps(logger, page);
         await use(stepInstance);
     },
     cartSteps: async ({ logger, cartPage }, use) => {
@@ -86,5 +88,9 @@ export const test = merged.extend<StepsFixtures>({
     paymentSteps: async ({ logger, paymentPage }, use) => {
         const stepInstance = new PaymentSteps(logger, paymentPage);
         await use(stepInstance);
-    }
+    },
+    categorySteps: async ({ logger, categoryPage }, use) => {
+        const stepInstance = new CategorySteps(logger, categoryPage);
+        await use(stepInstance);
+    },
 });

@@ -2,17 +2,19 @@ import { ProductType } from '@data/model/product.model';
 import { test } from '@fixtures/fixtures';
 import { NumberUtils } from '@utils/number.utils';
 
-test.describe('Cart validations', async () => {
+test.describe('Cart validations', {
+    tag: ['@products', '@cart']
+}, async () => {
 
     test('Add Products in Cart',
-        { tag: ['@SAMPLE-0010', '@TC12', '@products', '@cart'] },
+        { tag: ['@SAMPLE-0010', '@TC12'] },
         async ({
-            page, homePage, productsPage, sharedSteps, cartSteps
+            homePage, productsPage, sharedSteps, cartSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
-            await sharedSteps.validateTitle(page, 'Products');
+            await sharedSteps.validateTitle('Products');
 
             const quantity = 1;
 
@@ -48,15 +50,15 @@ test.describe('Cart validations', async () => {
         });
 
     test('Verify Product quantity in Cart',
-        { tag: ['@SAMPLE-0011', '@TC13', '@products', '@cart'] },
+        { tag: ['@SAMPLE-0011', '@TC13'] },
         async ({
-            page, homePage, productSteps, sharedSteps, cartSteps
+            homePage, productSteps, sharedSteps, cartSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             const randomIndex = NumberUtils.getRandomNumber({ min: 1, max: 34 });
             await sharedSteps.viewProduct(homePage, randomIndex);
-            await sharedSteps.validateTitle(page, 'Product');
+            await sharedSteps.validateTitle('Product');
             const quantity = 4;
             await productSteps.setProductQuantity(quantity);
             await productSteps.addToCart();
@@ -65,17 +67,17 @@ test.describe('Cart validations', async () => {
         });
 
     test('Remove Products from Cart',
-        { tag: ['@SAMPLE-0018', '@TC17', '@products', '@cart'] },
+        { tag: ['@SAMPLE-0018', '@TC17'] },
         async ({
-            page, homePage, apiSteps, sharedSteps, cartSteps
+            homePage, apiSteps, sharedSteps, cartSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             const products = await apiSteps.getAllProducts();
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
-            await sharedSteps.validateTitle(page, 'Cart');
+            await sharedSteps.validateTitle('Cart');
             await cartSteps.removeProducts(selectedProducts);
             const cartProducts = await cartSteps.getCartProducts();
             await cartSteps.validateCartItems(cartProducts, []);

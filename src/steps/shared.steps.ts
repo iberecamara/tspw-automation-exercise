@@ -8,6 +8,7 @@ import { faker } from '@faker-js/faker';
 import { test } from '@fixtures/fixtures';
 import { BasePage } from '@pages/base.page';
 import { CartPage } from '@pages/cart.page';
+import { CategoryPage } from '@pages/category.page';
 import { HomePage } from '@pages/home.page';
 import { ProductPage } from '@pages/product.page';
 import { ProductsPage } from '@pages/products.page';
@@ -18,9 +19,11 @@ import { TestAutomationLogger } from '@utils/logger.utils';
 export class SharedSteps {
 
     readonly logger: TestAutomationLogger;
+    readonly page: Page;
 
-    constructor(logger: TestAutomationLogger,) {
+    constructor(logger: TestAutomationLogger, page: Page) {
         this.logger = logger;
+        this.page = page;
     }
 
     // Actions
@@ -140,11 +143,14 @@ export class SharedSteps {
 
     async addProductsToCart(pageObject: HomePage, products: ProductType[]): Promise<void> {
         this.logger.debug(`Adding ${products.length} products to cart.`);
-        for (const product of products) {
-            await this.hoverProduct(pageObject, product.name);
-            await this.addProductToCartFromHover(pageObject, product.name);
-            await this.continueShopping(pageObject);
-        }
+        await test.step(`Add ${products.length} products to cart`, async () => {
+            for (const product of products) {
+                await this.hoverProduct(pageObject, product.name);
+                await this.addProductToCartFromHover(pageObject, product.name);
+                await this.continueShopping(pageObject);
+            }
+        });
+        this.logger.debug(`Added ${products.length} products to cart.`);
     }
 
     async selectRandomProducts(products: ProductType[]): Promise<ProductType[]> {
@@ -245,8 +251,8 @@ export class SharedSteps {
     };
 
     async validateUserLoggedText(header: HeaderComponents, user: UserType): Promise<void> {
-        this.logger.debug(`Validating that 'Logged in as < username > ' text is displayed`);
-        await test.step(`Validate that 'Logged in as < username > ' text is displayed`, async () => {
+        this.logger.debug(`Validating that 'Logged in as <username> ' text is displayed`);
+        await test.step(`Validate that 'Logged in as <username> ' text is displayed`, async () => {
             await expect.soft(
                 header.locators.loggedInText(user.name),
                 `'Logged in as ${user.name}' text should be visible`
@@ -254,15 +260,61 @@ export class SharedSteps {
         });
     }
 
+    async expandCategory(pageObject: HomePage | CategoryPage, category: string): Promise<void> {
+        this.logger.debug(`Expanding Category ${category}`);
+        await test.step(`Expand Category ${category}`, async () => {
+            await pageObject.category.expandCategory(category);
+        });
+        this.logger.debug(`Expanded Category ${category}`);
+
+    }
+
+    async getSubCategories(pageObject: HomePage | CategoryPage, category: string): Promise<string[]> {
+        this.logger.debug(`Retrieving Category ${category} subcategories`);
+        const subcategories: string[] = [];
+        await test.step(`Retrieve Category ${category} subcategories`, async () => {
+            subcategories.push(...await pageObject.category.getSubCategories(category));
+        });
+        this.logger.debug(`Retrieved Category ${category} subcategories`);
+        return subcategories;
+    }
+
+    async selectSubCategory(pageObject: HomePage | CategoryPage, subCategory: string): Promise<void> {
+        this.logger.debug(`Selecting Sub Category ${subCategory}`);
+        await test.step(`Selecting Sub Category ${subCategory}`, async () => {
+            await pageObject.category.selectSubCategory(subCategory);
+        });
+        this.logger.debug(`Selected Sub Category ${subCategory}`);
+    }
+
     // Validations
-    async validateTitle(page: Page, sitePage: SitePages): Promise<void> {
+    async validateTitle(sitePage: SitePages): Promise<void> {
         this.logger.debug(`Validating that application ${sitePage} page have the expected title`);
         await test.step(`Validate that application ${sitePage} page have the expected title`, async () => {
             await expect.soft(
-                page,
-                `${sitePage} page should have the expected title: ${Environment.APPLICATION} `
+                this.page,
+                `${sitePage} page should have the expected title: ${PAGES_TITLES[sitePage]} `
             ).toHaveTitle(PAGES_TITLES[sitePage]);
         });
     };
 
+    async validateTitleDirectly(pageName: string, title: string): Promise<void> {
+        this.logger.debug(`Validating that application ${pageName} page have the expected title`);
+        await test.step(`Validate that application ${pageName} page have the expected title`, async () => {
+            await expect.soft(
+                this.page,
+                `${pageName} page should have the expected title: ${title} `
+            ).toHaveTitle(title);
+        });
+    };
+
+    async validateCategorySection(pageObject: HomePage | CategoryPage): Promise<void> {
+        this.logger.debug(`Validating that Category Section have the expected heading`);
+        await test.step(`Validate that Category Section have the expected heading`, async () => {
+            expect.soft(
+                pageObject.category.locators.categoryHeading,
+                'Categories section should be displayed.'
+            ).toBeVisible();
+        });
+    }
 }

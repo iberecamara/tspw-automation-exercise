@@ -13,10 +13,10 @@ test.describe('User login', async () => {
     test('Login User with correct email and password',
         { tag: ['@SAMPLE-0001', '@TC2', '@user-login', '@valid-user'] },
         async ({
-            page, signupLoginSteps, accountCreatedDeletedSteps, homePage, sharedSteps
+            signupLoginSteps, accountCreatedDeletedSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
             await signupLoginSteps.login(user);
@@ -28,10 +28,10 @@ test.describe('User login', async () => {
     test('Login User with incorrect email',
         { tag: ['@SAMPLE-0002', '@TC3', '@TC3.1', '@user-login', '@login-error', '@invalid-user'] },
         async ({
-            page, signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, apiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
             const email = user.email;
@@ -45,10 +45,10 @@ test.describe('User login', async () => {
     test('Login User with incorrect password',
         { tag: ['@SAMPLE-0003', '@TC3', '@TC3.2', '@user-login', '@invalid-password'] },
         async ({
-            page, signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, apiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
-            await sharedSteps.validateTitle(page, 'Home');
+            await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.validateLoginToAccountText();
             const password = user.password;
