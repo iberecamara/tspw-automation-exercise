@@ -13,10 +13,10 @@ import { SignupPage } from '@pages/signup.page';
 import { TestCasesPage } from '@pages/test-cases.page';
 import { test as base, Page } from '@playwright/test';
 
-type PageConstructor<T> = new (page: Page) => T;
+type PageConstructor<PageClass> = new (page: Page) => PageClass;
 
-function createPageFixture<T>(pageConstructor: PageConstructor<T>) {
-    return async ({ page }: { page: Page }, use: (value: T) => Promise<void>) => {
+function createPageFixture<PageClass>(pageConstructor: PageConstructor<PageClass>) {
+    return async ({ page }: { page: Page }, use: (value: PageClass) => Promise<void>) => {
         const pageInstance = new pageConstructor(page);
         await use(pageInstance);
     };

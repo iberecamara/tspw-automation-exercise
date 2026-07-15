@@ -3,10 +3,10 @@ import { APIRequestContext, test as base } from '@playwright/test';
 import { UserApi } from '@api/user.api';
 import { ProductApi } from '@api/product.api';
 
-type ApiConstructor<T> = new (request: APIRequestContext) => T;
+type ApiConstructor<ApiClass> = new (request: APIRequestContext) => ApiClass;
 
-function createApiFixture<T>(apiConstructor: ApiConstructor<T>) {
-    return async ({ request }: { request: APIRequestContext }, use: (value: T) => Promise<void>) => {
+function createApiFixture<ApiClass>(apiConstructor: ApiConstructor<ApiClass>) {
+    return async ({ request }: { request: APIRequestContext }, use: (value: ApiClass) => Promise<void>) => {
         const apiInstance = new apiConstructor(request);
         await use(apiInstance);
     };

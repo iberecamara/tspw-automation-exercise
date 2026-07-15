@@ -19,15 +19,15 @@ import { TestCasesSteps } from '@steps/ui/test-cases.steps';
 import { TestAutomationLogger } from '@utils/logger.utils';
 import { mergeTests } from 'playwright/test';
 
-type StepConstructor<T, D> = new (logger: TestAutomationLogger, dependency: D) => T;
+type StepConstructor<StepClass, PageClass> = new (logger: TestAutomationLogger, dependency: PageClass) => StepClass;
 
-async function createStepFixture<T, D>(
-    stepConstructor: StepConstructor<T, D>,
+async function createStepFixture<StepClass, PageClass>(
+    stepConstructor: StepConstructor<StepClass, PageClass>,
     logger: TestAutomationLogger,
-    dependency: D,
-    use: (value: T) => Promise<void>
+    pageClass: PageClass,
+    use: (stepClass: StepClass) => Promise<void>
 ) {
-    const stepInstance = new stepConstructor(logger, dependency);
+    const stepInstance = new stepConstructor(logger, pageClass);
     await use(stepInstance);
 }
 
