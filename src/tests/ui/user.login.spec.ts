@@ -5,9 +5,9 @@ import { test } from '@fixtures/fixtures';
 test.describe('User login', async () => {
 
     let user: UserType;
-    test.beforeEach('Create valid user via API', async ({ apiSteps }) => {
+    test.beforeEach('Create valid user via API', async ({ userApiSteps }) => {
         user = GenerateRandomUser();
-        await apiSteps.createAccount(user);
+        await userApiSteps.createAccount(user);
     });
 
     test('Login User with correct email and password',
@@ -28,7 +28,7 @@ test.describe('User login', async () => {
     test('Login User with incorrect email',
         { tag: ['@SAMPLE-0002', '@TC3', '@TC3.1', '@user-login', '@login-error', '@invalid-user'] },
         async ({
-            signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
@@ -39,13 +39,13 @@ test.describe('User login', async () => {
             await signupLoginSteps.login(user);
             await signupLoginSteps.validateInvalidCredentialsMessage();
             user.email = email;
-            await apiSteps.deleteAccount(user);
+            await userApiSteps.deleteAccount(user);
         });
 
     test('Login User with incorrect password',
         { tag: ['@SAMPLE-0003', '@TC3', '@TC3.2', '@user-login', '@invalid-password'] },
         async ({
-            signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
@@ -56,7 +56,7 @@ test.describe('User login', async () => {
             await signupLoginSteps.login(user);
             await signupLoginSteps.validateInvalidCredentialsMessage();
             user.password = password;
-            await apiSteps.deleteAccount(user);
+            await userApiSteps.deleteAccount(user);
         });
 
 });

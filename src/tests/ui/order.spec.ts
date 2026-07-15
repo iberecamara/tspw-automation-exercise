@@ -12,13 +12,13 @@ test.describe('Orders', {
     test('Place Order: Register while Checkout',
         { tag: ['@SAMPLE-0015', '@TC14', '@user-register-checkout'] },
         async ({
-            apiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
+            productApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
         }) => {
 
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await apiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts();
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -54,7 +54,7 @@ test.describe('Orders', {
     test('Place Order: Register before Checkout',
         { tag: ['@SAMPLE-0016', '@TC15'] },
         async ({
-            apiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
+            productApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
         }) => {
 
@@ -71,7 +71,7 @@ test.describe('Orders', {
             await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
             await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await apiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts();
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -96,18 +96,18 @@ test.describe('Orders', {
     test('Place Order: Login before Checkout',
         { tag: ['@SAMPLE-0017', '@TC16'] },
         async ({
-            apiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
+            productApiSteps, userApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, checkoutSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
-            await apiSteps.createAccount(user);
+            await userApiSteps.createAccount(user);
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await apiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts();
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);

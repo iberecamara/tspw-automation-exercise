@@ -35,11 +35,11 @@ test.describe('User registration', {
     test('Register User with existing email',
         { tag: ['@SAMPLE-0014', '@TC5', '@user-register-error'] },
         async ({
-            signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
-            await apiSteps.createAccount(user);
+            await userApiSteps.createAccount(user);
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickSignupLogin(homePage.header);
@@ -47,7 +47,7 @@ test.describe('User registration', {
             await signupLoginSteps.enterSignupData(user);
             await signupLoginSteps.clickSignup();
             await signupLoginSteps.validateEmailAlreadyExistsMessage();
-            await apiSteps.deleteAccount(user);
+            await userApiSteps.deleteAccount(user);
         });
 
 });

@@ -1,9 +1,11 @@
-import { test as pages } from '@fixtures/pages.fixtures';
 import { test as apis } from '@fixtures/api.fixtures';
 import { test as logging } from '@fixtures/logging.fixtures';
-import { mergeTests } from 'playwright/test';
+import { test as pages } from '@fixtures/pages.fixtures';
+import { ProductApiSteps } from '@steps/api/product.steps';
+import { UserApiSteps } from '@steps/api/user.steps';
 import { AccountCreatedDeletedSteps } from '@steps/ui/account-created-deleted.steps';
 import { CartSteps } from '@steps/ui/cart.steps';
+import { CategorySteps } from '@steps/ui/category.steps';
 import { CheckoutSteps } from '@steps/ui/checkout.steps';
 import { ContactUsSteps } from '@steps/ui/contact-us.steps';
 import { HomeSteps } from '@steps/ui/home.steps';
@@ -14,15 +16,27 @@ import { SharedSteps } from '@steps/ui/shared.steps';
 import { SignupLoginSteps } from '@steps/ui/signup-login.steps';
 import { SignupSteps } from '@steps/ui/signup.steps';
 import { TestCasesSteps } from '@steps/ui/test-cases.steps';
-import { CategorySteps } from '@steps/ui/category.steps';
-import { ProductApiSteps } from '@steps/api/product.steps';
-import { UserApiSteps } from '@steps/api/user.steps';
+import { TestAutomationLogger } from '@utils/logger.utils';
+import { mergeTests } from 'playwright/test';
+
+type StepConstructor<T, D> = new (logger: TestAutomationLogger, dependency: D) => T;
+
+async function createStepFixture<T, D>(
+    stepConstructor: StepConstructor<T, D>,
+    logger: TestAutomationLogger,
+    dependency: D,
+    use: (value: T) => Promise<void>
+) {
+    const stepInstance = new stepConstructor(logger, dependency);
+    await use(stepInstance);
+}
 
 type StepsFixtures = {
+    // API
     userApiSteps: UserApiSteps,
     productApiSteps: ProductApiSteps,
 
-
+    // UI
     homeSteps: HomeSteps,
     signupLoginSteps: SignupLoginSteps,
     signupSteps: SignupSteps,
@@ -42,65 +56,21 @@ const merged = mergeTests(apis, pages, logging);
 
 export const test = merged.extend<StepsFixtures>({
     // API
-    userApiSteps: async ({ logger, userApi }, use) => {
-        const stepInstance = new UserApiSteps(logger, userApi);
-        await use(stepInstance);
-    },
-    productApiSteps: async ({ logger, productApi }, use) => {
-        const stepInstance = new ProductApiSteps(logger, productApi);
-        await use(stepInstance);
-    },
+    userApiSteps: async ({ logger, userApi }, use) => createStepFixture(UserApiSteps, logger, userApi, use),
+    productApiSteps: async ({ logger, productApi }, use) => createStepFixture(ProductApiSteps, logger, productApi, use),
+
     // UI
-    homeSteps: async ({ logger, homePage }, use) => {
-        const stepInstance = new HomeSteps(logger, homePage);
-        await use(stepInstance);
-    },
-    signupLoginSteps: async ({ logger, signupLoginPage }, use) => {
-        const stepInstance = new SignupLoginSteps(logger, signupLoginPage);
-        await use(stepInstance);
-    },
-    signupSteps: async ({ logger, signupPage }, use) => {
-        const stepInstance = new SignupSteps(logger, signupPage);
-        await use(stepInstance);
-    },
-    accountCreatedDeletedSteps: async ({ logger, accountCreatedDeletedPage }, use) => {
-        const stepInstance = new AccountCreatedDeletedSteps(logger, accountCreatedDeletedPage);
-        await use(stepInstance);
-    },
-    contactUsSteps: async ({ logger, contactUsPage }, use) => {
-        const stepInstance = new ContactUsSteps(logger, contactUsPage);
-        await use(stepInstance);
-    },
-    testCaseSteps: async ({ logger, testCasesPage }, use) => {
-        const stepInstance = new TestCasesSteps(logger, testCasesPage);
-        await use(stepInstance);
-    },
-    productsSteps: async ({ logger, productsPage }, use) => {
-        const stepInstance = new ProductsSteps(logger, productsPage);
-        await use(stepInstance);
-    },
-    productSteps: async ({ logger, productPage }, use) => {
-        const stepInstance = new ProductSteps(logger, productPage);
-        await use(stepInstance);
-    },
-    sharedSteps: async ({ logger, page }, use) => {
-        const stepInstance = new SharedSteps(logger, page);
-        await use(stepInstance);
-    },
-    cartSteps: async ({ logger, cartPage }, use) => {
-        const stepInstance = new CartSteps(logger, cartPage);
-        await use(stepInstance);
-    },
-    checkoutSteps: async ({ logger, checkoutPage }, use) => {
-        const stepInstance = new CheckoutSteps(logger, checkoutPage);
-        await use(stepInstance);
-    },
-    paymentSteps: async ({ logger, paymentPage }, use) => {
-        const stepInstance = new PaymentSteps(logger, paymentPage);
-        await use(stepInstance);
-    },
-    categorySteps: async ({ logger, categoryPage }, use) => {
-        const stepInstance = new CategorySteps(logger, categoryPage);
-        await use(stepInstance);
-    },
+    homeSteps: async ({ logger, homePage }, use) => createStepFixture(HomeSteps, logger, homePage, use),
+    signupLoginSteps: async ({ logger, signupLoginPage }, use) => createStepFixture(SignupLoginSteps, logger, signupLoginPage, use),
+    signupSteps: async ({ logger, signupPage }, use) => createStepFixture(SignupSteps, logger, signupPage, use),
+    accountCreatedDeletedSteps: async ({ logger, accountCreatedDeletedPage }, use) => createStepFixture(AccountCreatedDeletedSteps, logger, accountCreatedDeletedPage, use),
+    contactUsSteps: async ({ logger, contactUsPage }, use) => createStepFixture(ContactUsSteps, logger, contactUsPage, use),
+    testCaseSteps: async ({ logger, testCasesPage }, use) => createStepFixture(TestCasesSteps, logger, testCasesPage, use),
+    productsSteps: async ({ logger, productsPage }, use) => createStepFixture(ProductsSteps, logger, productsPage, use),
+    productSteps: async ({ logger, productPage }, use) => createStepFixture(ProductSteps, logger, productPage, use),
+    sharedSteps: async ({ logger, page }, use) => createStepFixture(SharedSteps, logger, page, use),
+    cartSteps: async ({ logger, cartPage }, use) => createStepFixture(CartSteps, logger, cartPage, use),
+    checkoutSteps: async ({ logger, checkoutPage }, use) => createStepFixture(CheckoutSteps, logger, checkoutPage, use),
+    paymentSteps: async ({ logger, paymentPage }, use) => createStepFixture(PaymentSteps, logger, paymentPage, use),
+    categorySteps: async ({ logger, categoryPage }, use) => createStepFixture(CategorySteps, logger, categoryPage, use),
 });

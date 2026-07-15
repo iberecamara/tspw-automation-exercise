@@ -4,15 +4,15 @@ import { test } from '@fixtures/fixtures';
 test.describe('User logout', async () => {
 
     let user: UserType;
-    test.beforeEach('Create valid user via API', async ({ apiSteps }) => {
+    test.beforeEach('Create valid user via API', async ({ userApiSteps }) => {
         user = GenerateRandomUser();
-        await apiSteps.createAccount(user);
+        await userApiSteps.createAccount(user);
     });
 
     test('Logout User',
         { tag: ['@SAMPLE-0012', '@TC4', '@user-logout'] },
         async ({
-            signupLoginSteps, apiSteps, homePage, sharedSteps
+            signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
@@ -22,7 +22,7 @@ test.describe('User logout', async () => {
             await sharedSteps.validateUserLoggedText(homePage.header, user);
             await sharedSteps.clickLogout(homePage.header);
             await sharedSteps.validateTitle('Signup / Login');
-            await apiSteps.deleteAccount(user);
+            await userApiSteps.deleteAccount(user);
         });
 
 });

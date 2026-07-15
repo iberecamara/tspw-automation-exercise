@@ -69,11 +69,11 @@ test.describe('Cart validations', {
     test('Remove Products from Cart',
         { tag: ['@SAMPLE-0018', '@TC17'] },
         async ({
-            homePage, apiSteps, sharedSteps, cartSteps
+            homePage, productApiSteps, sharedSteps, cartSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await apiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts();
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);

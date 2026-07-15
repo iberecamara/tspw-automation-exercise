@@ -11,26 +11,29 @@ export interface UserType {
 }
 
 export function GenerateRandomUser(): UserType {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
     const dob: Date = faker.date.birthdate();
+
     return {
-        name: faker.internet.displayName(),
-        email: faker.internet.email(),
+        name: faker.internet.displayName({ firstName: firstName, lastName: lastName }),
+        email: faker.internet.email({ firstName: firstName, lastName: lastName }),
         password: faker.internet.password(),
         address: {
             title: ArraysUtils.getRandomElement(VALID_TITLES),
             birthDate: dob.getUTCDate().toString(),
             birthMonth: dob.getUTCMonth().toString(),
             birthYear: dob.getUTCFullYear().toString(),
-            firstname: faker.person.firstName(),
-            lastname: faker.person.lastName(),
+            firstname: firstName,
+            lastname: lastName,
             company: faker.company.name(),
-            addressOne: faker.location.postalAddress(),
+            addressOne: faker.location.streetAddress(),
             addressTwo: faker.location.secondaryAddress(),
             country: ArraysUtils.getRandomElement(VALID_COUNTRIES),
             state: faker.location.state(),
             city: faker.location.city(),
             zipcode: faker.location.zipCode(),
-            mobileNumber: faker.phone.number()
+            mobileNumber: faker.phone.number({ style: 'mobile' })
         }
     }
 }
