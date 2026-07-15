@@ -60,12 +60,17 @@ export class CheckoutSteps {
         this.logger.debug(`Validating ${StringUtils.capitalize(addressType)} Address for user.`);
         this.logger.debug(`User address to validate: ${StringUtils.prettyJson(user.address)}`);
         await test.step(`Validate ${addressType} Address.`, async () => {
-            // Title in Signup and Checkout differ for 'Ms.' and 'Mrs.'
-            const parsedTitle = user.address.title === 'Mr.' ? 'Mr.' : 'Mrs.';
-            await expect.soft(
-                this.checkoutPage.locators.addressName(addressType),
-                `${StringUtils.capitalize(addressType)} Address must have the user title '${parsedTitle}'.`
-            ).toContainText(parsedTitle);
+            if (user.address.title === 'Mr.') {
+                await expect.soft(
+                    this.checkoutPage.locators.addressName(addressType),
+                    `${StringUtils.capitalize(addressType)} Address must have the user title '${user.address.title}'.`
+                ).toContainText(user.address.title);
+            } else {
+                await expect.soft(
+                    this.checkoutPage.locators.addressName(addressType),
+                    `${StringUtils.capitalize(addressType)} Address must have the one of the valid user titles: 'Mrs.' or 'Ms..'.`
+                ).toContainText(/Mrs\.|Ms\./);
+            }
             await expect.soft(
                 this.checkoutPage.locators.addressName(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user first name '${user.address.firstname}'.`

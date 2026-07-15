@@ -97,7 +97,7 @@ test.describe('Orders', {
         { tag: ['@SAMPLE-0017', '@TC16'] },
         async ({
             apiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
-            accountCreatedDeletedSteps, signupSteps, checkoutSteps
+            accountCreatedDeletedSteps, checkoutSteps
         }) => {
 
             const user: UserType = GenerateRandomUser();
