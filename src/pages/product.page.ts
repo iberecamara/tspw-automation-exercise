@@ -55,4 +55,20 @@ export class ProductPage extends BasePage {
         await this.click(this.locators.addToCartButton);
     }
 
+    async enterReviewName(name: string): Promise<void> {
+        await this.fill(this.locators.writeReviewName, name);
+    }
+
+    async enterReviewEmail(email: string): Promise<void> {
+        await this.fill(this.locators.writeReviewEmail, email);
+    }
+
+    async enterReviewText(text: string): Promise<void> {
+        await this.fill(this.locators.writeReviewText, text);
+    }
+
+    async submitReview(): Promise<void> {
+        await this.click(this.locators.submitReviewButton);
+    }
+
 }

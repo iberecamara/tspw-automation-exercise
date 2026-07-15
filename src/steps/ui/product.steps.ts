@@ -50,6 +50,38 @@ export class ProductSteps {
         return product!;
     }
 
+    async enterReviewName(name: string): Promise<void> {
+        this.logger.debug(`Adding '${name}' name to review.`);
+        await test.step(`Add '${name}' name to review.`, async () => {
+            await this.productPage.enterReviewName(name);
+        });
+        this.logger.debug(`Added '${name}' name to review.`);
+    }
+
+    async enterReviewEmail(email: string): Promise<void> {
+        this.logger.debug(`Adding '${email}' email to review.`);
+        await test.step(`Add '${email}' email to review.`, async () => {
+            await this.productPage.enterReviewEmail(email);
+        });
+        this.logger.debug(`Added '${email}' email to review.`);
+    }
+
+    async enterReviewText(text: string): Promise<void> {
+        this.logger.debug(`Adding '${text}' text to review.`);
+        await test.step(`Add '${text}' text to review.`, async () => {
+            await this.productPage.enterReviewText(text);
+        });
+        this.logger.debug(`Added '${text}' text to review.`);
+    }
+
+    async submitReview(): Promise<void> {
+        this.logger.debug('Clicking Submit in review');
+        await test.step('Click Submit in review', async () => {
+            await this.productPage.submitReview();
+        });
+        this.logger.debug('Clicked Submit in review');
+    }
+
 
     // Validations
     async validateProductDetails(firstProduct: ProductType, productDetails: ProductType): Promise<void> {
@@ -61,6 +93,16 @@ export class ProductSteps {
                 productDetails,
                 'Retrieved product should match the first product'
             ).toStrictEqual(firstProduct);
+        });
+    }
+
+    async validateReviewSuccessMessage(): Promise<void> {
+        this.logger.debug('Validating that review success message is displayed.');
+        await test.step('Validat that review success message is displayed', async () => {
+            await expect.soft(
+                this.productPage.locators.reviewSuccessMessage,
+                'Review success message should be displayed'
+            ).toBeVisible();
         });
     }
 
