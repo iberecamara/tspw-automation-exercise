@@ -2,23 +2,27 @@ import { test as pages } from '@fixtures/pages.fixtures';
 import { test as apis } from '@fixtures/api.fixtures';
 import { test as logging } from '@fixtures/logging.fixtures';
 import { mergeTests } from 'playwright/test';
-import { AccountCreatedDeletedSteps } from '@steps/account-created-deleted.steps';
-import { ApiSteps } from '@steps/api.steps';
-import { CartSteps } from '@steps/cart.steps';
-import { CheckoutSteps } from '@steps/checkout.steps';
-import { ContactUsSteps } from '@steps/contact-us.steps';
-import { HomeSteps } from '@steps/home.steps';
-import { PaymentSteps } from '@steps/payment.steps';
-import { ProductSteps } from '@steps/product.steps';
-import { ProductsSteps } from '@steps/products.steps';
-import { SharedSteps } from '@steps/shared.steps';
-import { SignupLoginSteps } from '@steps/signup-login.steps';
-import { SignupSteps } from '@steps/signup.steps';
-import { TestCasesSteps } from '@steps/test-cases.steps';
-import { CategorySteps } from '@steps/category.steps';
+import { AccountCreatedDeletedSteps } from '@steps/ui/account-created-deleted.steps';
+import { CartSteps } from '@steps/ui/cart.steps';
+import { CheckoutSteps } from '@steps/ui/checkout.steps';
+import { ContactUsSteps } from '@steps/ui/contact-us.steps';
+import { HomeSteps } from '@steps/ui/home.steps';
+import { PaymentSteps } from '@steps/ui/payment.steps';
+import { ProductSteps } from '@steps/ui/product.steps';
+import { ProductsSteps } from '@steps/ui/products.steps';
+import { SharedSteps } from '@steps/ui/shared.steps';
+import { SignupLoginSteps } from '@steps/ui/signup-login.steps';
+import { SignupSteps } from '@steps/ui/signup.steps';
+import { TestCasesSteps } from '@steps/ui/test-cases.steps';
+import { CategorySteps } from '@steps/ui/category.steps';
+import { ProductApiSteps } from '@steps/api/product.steps';
+import { UserApiSteps } from '@steps/api/user.steps';
 
 type StepsFixtures = {
-    apiSteps: ApiSteps,
+    userApiSteps: UserApiSteps,
+    productApiSteps: ProductApiSteps,
+
+
     homeSteps: HomeSteps,
     signupLoginSteps: SignupLoginSteps,
     signupSteps: SignupSteps,
@@ -37,10 +41,16 @@ type StepsFixtures = {
 const merged = mergeTests(apis, pages, logging);
 
 export const test = merged.extend<StepsFixtures>({
-    apiSteps: async ({ logger, productApi, userApi }, use) => {
-        const stepInstance = new ApiSteps(logger, productApi, userApi);
+    // API
+    userApiSteps: async ({ logger, userApi }, use) => {
+        const stepInstance = new UserApiSteps(logger, userApi);
         await use(stepInstance);
     },
+    productApiSteps: async ({ logger, productApi }, use) => {
+        const stepInstance = new ProductApiSteps(logger, productApi);
+        await use(stepInstance);
+    },
+    // UI
     homeSteps: async ({ logger, homePage }, use) => {
         const stepInstance = new HomeSteps(logger, homePage);
         await use(stepInstance);

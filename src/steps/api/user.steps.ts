@@ -1,7 +1,4 @@
-import { ProductApi } from '@api/product.api';
 import { UserApi } from '@api/user.api';
-import { EMPTY } from '@data/constants/string.constants';
-import { ProductType } from '@data/model/product.model';
 import { UserType } from '@data/model/user.model';
 import { ResponseType } from '@data/types/response.type';
 import { test } from '@fixtures/fixtures';
@@ -9,15 +6,13 @@ import { expect } from '@playwright/test';
 import { TestAutomationLogger } from '@utils/logger.utils';
 import { StringUtils } from '@utils/string.utils';
 
-export class ApiSteps {
+export class UserApiSteps {
 
     readonly logger: TestAutomationLogger;
-    readonly productApi: ProductApi;
     readonly userApi: UserApi;
 
-    constructor(logger: TestAutomationLogger, productApi: ProductApi, userApi: UserApi) {
+    constructor(logger: TestAutomationLogger, userApi: UserApi) {
         this.logger = logger;
-        this.productApi = productApi;
         this.userApi = userApi;
     }
 
@@ -40,17 +35,5 @@ export class ApiSteps {
         });
         this.logger.debug('User deleted.');
     };
-
-    async getAllProducts(): Promise<ProductType[]> {
-        this.logger.debug('Retrieving all products from API.');
-        const products: ProductType[] = [];
-        await test.step('Retrieve all products from API.', async () => {
-            products.push(...await this.productApi.all());
-        });
-        this.logger.debug(`Retrieved ${products.length} product${products.length > 1 ? 's' : EMPTY} from API.`);
-        return products;
-    }
-
-
 
 }
