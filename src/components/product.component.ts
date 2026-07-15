@@ -1,17 +1,17 @@
 import { EMPTY } from '@data/constants/constants';
 import { ProductType } from '@data/model/product.model';
-import { ProductComponentsLocators } from '@locators/product.component.locators';
+import { ProductComponentLocators } from '@locators/component/product.locators';
 import { BasePage } from '@pages/base.page';
 import { Locator, Page } from 'playwright-core';
 import { TestAutomationException } from '../exceptions/test-automation.exception';
 
-export class ProductComponents extends BasePage {
+export class ProductComponent extends BasePage {
 
-    readonly locators: ProductComponentsLocators;
+    readonly locators: ProductComponentLocators;
 
     constructor(page: Page) {
         super(page);
-        this.locators = new ProductComponentsLocators(page);
+        this.locators = new ProductComponentLocators(page);
     }
 
     async getProductsCount(): Promise<number> {

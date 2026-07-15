@@ -1,5 +1,6 @@
 
 import { AccountCreatedDeletedPage } from '@pages/account-created-deleted.page';
+import { BrandPage } from '@pages/brand.page';
 import { CartPage } from '@pages/cart.page';
 import { CategoryPage } from '@pages/category.page';
 import { CheckoutPage } from '@pages/checkout.page';
@@ -36,6 +37,7 @@ type PageFixtures = {
     checkoutPage: CheckoutPage,
     paymentPage: PaymentPage,
     categoryPage: CategoryPage,
+    brandPage: BrandPage,
 };
 
 export const test = base.extend<PageFixtures>({
@@ -63,4 +65,5 @@ export const test = base.extend<PageFixtures>({
     checkoutPage: createPageFixture(CheckoutPage),
     paymentPage: createPageFixture(PaymentPage),
     categoryPage: createPageFixture(CategoryPage),
+    brandPage: createPageFixture(BrandPage),
 });

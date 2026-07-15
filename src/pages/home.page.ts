@@ -1,29 +1,33 @@
-import { CategoryComponents } from '@components/category.components';
-import { ContinueShoppingViewCartComponents } from '@components/continueshopping-viewcart.components';
-import { HeaderComponents } from '@components/header.components';
-import { ProductComponents } from '@components/product.components';
-import { SubscriptionComponents } from '@components/subscription.components';
-import { HomeLocators } from '@locators/home.locators';
+import { BrandsComponent } from '@components/brands.component';
+import { CategoriesComponent } from '@components/categories.component';
+import { ContinueShoppingViewCartComponent } from '@components/continueshopping-viewcart.component';
+import { HeaderComponent } from '@components/header.component';
+import { ProductComponent } from '@components/product.component';
+import { SubscriptionComponent } from '@components/subscription.component';
+import { HomeLocators } from '@locators/page/home.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 
 export class HomePage extends BasePage {
 
     readonly locators: HomeLocators;
-    readonly header: HeaderComponents;
-    readonly subscription: SubscriptionComponents;
-    readonly product: ProductComponents;
-    readonly continueShoppingViewCart: ContinueShoppingViewCartComponents;
-    readonly category: CategoryComponents;
+    readonly header: HeaderComponent;
+    readonly subscription: SubscriptionComponent;
+    readonly products: ProductComponent;
+    readonly continueShoppingViewCart: ContinueShoppingViewCartComponent;
+    readonly categories: CategoriesComponent;
+    readonly brands: BrandsComponent;
+
 
     constructor(page: Page) {
         super(page);
         this.locators = new HomeLocators(page);
-        this.header = new HeaderComponents(page);
-        this.subscription = new SubscriptionComponents(page);
-        this.product = new ProductComponents(page);
-        this.continueShoppingViewCart = new ContinueShoppingViewCartComponents(page);
-        this.category = new CategoryComponents(page);
+        this.header = new HeaderComponent(page);
+        this.subscription = new SubscriptionComponent(page);
+        this.products = new ProductComponent(page);
+        this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
+        this.categories = new CategoriesComponent(page);
+        this.brands = new BrandsComponent(page);
     }
 
 }

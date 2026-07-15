@@ -1,7 +1,7 @@
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
-import { CheckoutLocators } from '@locators/checkout.locators';
+import { CheckoutLocators } from '@locators/page/checkout.locators';
 import { BasePage } from '@pages/base.page';
 import { Locator, Page } from '@playwright/test';
 import { ResumedAddressType } from '../data/model/address.model';

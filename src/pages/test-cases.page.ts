@@ -1,4 +1,4 @@
-import { TestCasesLocators } from '@locators/test-cases.locators';
+import { TestCasesLocators } from '@locators/page/test-cases.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 

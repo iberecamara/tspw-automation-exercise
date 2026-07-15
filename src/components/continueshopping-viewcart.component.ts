@@ -1,14 +1,14 @@
-import { ContinueShoppingViewCartLocators } from '@locators/continueshopping-viewcart.component.locators';
+import { ContinueShoppingViewCartComponentLocators } from '@locators/component/continueshopping-viewcart.locators';
 import { BasePage } from '@pages/base.page';
 import { expect, Page } from '@playwright/test';
 
-export class ContinueShoppingViewCartComponents extends BasePage {
+export class ContinueShoppingViewCartComponent extends BasePage {
 
-    readonly locators: ContinueShoppingViewCartLocators;
+    readonly locators: ContinueShoppingViewCartComponentLocators;
 
     constructor(page: Page) {
         super(page);
-        this.locators = new ContinueShoppingViewCartLocators(page);
+        this.locators = new ContinueShoppingViewCartComponentLocators(page);
     }
 
     async clickContinueShopping(): Promise<void> {

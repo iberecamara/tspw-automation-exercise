@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-export class HeaderLocators {
+export class HeaderComponentLocators {
 
     readonly homeButton: Locator;
     readonly signupLoginButton: Locator;

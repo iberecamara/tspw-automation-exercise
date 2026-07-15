@@ -1,5 +1,5 @@
 import { Locator, Page } from '@playwright/test';
-import { TestAutomationException } from '../exceptions/test-automation.exception';
+import { TestAutomationException } from '../../exceptions/test-automation.exception';
 
 export class SignupLocators {
 

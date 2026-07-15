@@ -1,6 +1,6 @@
 import { Locator, Page } from 'playwright-core';
 
-export class ProductComponentsLocators {
+export class ProductComponentLocators {
 
     readonly productsContainer: Locator;
     readonly productViewLink: Function;

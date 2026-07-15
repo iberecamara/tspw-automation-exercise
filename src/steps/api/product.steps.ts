@@ -14,11 +14,11 @@ export class ProductApiSteps {
         this.productApi = productApi;
     }
 
-    async getAllProducts(): Promise<ProductType[]> {
+    async getAllProducts(options?: { brand?: string }): Promise<ProductType[]> {
         this.logger.debug('Retrieving all products from API.');
         const products: ProductType[] = [];
         await test.step('Retrieve all products from API.', async () => {
-            products.push(...await this.productApi.all());
+            products.push(...await this.productApi.all(options));
         });
         this.logger.debug(`Retrieved ${products.length} product${products.length > 1 ? 's' : EMPTY} from API.`);
         return products;

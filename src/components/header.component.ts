@@ -1,14 +1,14 @@
-import { HeaderLocators } from '@locators/header.locators';
+import { HeaderComponentLocators } from '@locators/component/header.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 
-export class HeaderComponents extends BasePage {
+export class HeaderComponent extends BasePage {
 
-    readonly locators: HeaderLocators;
+    readonly locators: HeaderComponentLocators;
 
     constructor(page: Page) {
         super(page);
-        this.locators = new HeaderLocators(page);
+        this.locators = new HeaderComponentLocators(page);
     }
 
     async clickHome(): Promise<void> {

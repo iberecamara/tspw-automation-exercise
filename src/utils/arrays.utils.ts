@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 export class ArraysUtils {
 
-    public static getRandomElements<T>(array: T[], options?: { quantity?: number, indexLimit?: number }): T[] {
+    public static getRandomElements<T>(array: T[], options?: { quantity?: number, indexLimit?: number, exclude?: T[] }): T[] {
         const amount = options?.quantity ?? 1;
 
         if (array.length === 0) {
@@ -25,12 +25,19 @@ export class ArraysUtils {
             array = array.slice(0, options.indexLimit);
         }
 
+        if (options?.exclude) {
+            const available = array.filter(element => !options?.exclude?.includes(element));
+            if (amount > available.length) {
+                throw new Error('Requested amount exceeds available non-excluded elements');
+            }
+        }
+
         const elements: T[] = [];
         const usedIndices = new Set<number>();
 
         while (elements.length < amount) {
             const randomIndex = faker.number.int({ min: 0, max: array.length - 1 });
-            if (!usedIndices.has(randomIndex)) {
+            if (!usedIndices.has(randomIndex) && !options?.exclude?.includes(array[randomIndex])) {
                 usedIndices.add(randomIndex);
                 elements.push(array[randomIndex]);
             }
@@ -39,8 +46,8 @@ export class ArraysUtils {
         return elements;
     }
 
-    public static getRandomElement<T>(array: T[]): T {
-        return ArraysUtils.getRandomElements(array)[0];
+    public static getRandomElement<T>(array: T[], options?: { exclude?: T[] }): T {
+        return ArraysUtils.getRandomElements(array, { exclude: options?.exclude })[0];
     }
 
 }

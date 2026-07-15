@@ -11,30 +11,33 @@ export class ProductApi {
         this.request = request;
     }
 
-    async all(): Promise<ProductType[]> {
+    async all(options?: { brand?: string }): Promise<ProductType[]> {
         const products: ProductType[] = [];
         const response: APIResponse = await this.request.get(Environment.PRODUCT_LIST_API_URL);
         if (response.ok()) {
             const body = await response.json();
             if (body.products) {
-                for (const product of body.products) {
-                    products.push({
-                        id: product.id,
-                        name: product.name,
-                        price: +product.price.replace('Rs. ', EMPTY),
-                        brand: product.brand,
+                for (const responseProduct of body.products) {
+                    const product = {
+                        id: responseProduct.id,
+                        name: responseProduct.name,
+                        price: +responseProduct.price.replace('Rs. ', EMPTY),
+                        brand: responseProduct.brand,
                         category: {
                             usertype: {
-                                usertype: product.category.usertype.usertype
+                                usertype: responseProduct.category.usertype.usertype
                             },
-                            category: product.category.category
+                            category: responseProduct.category.category
                         }
-                    });
+                    };
+
+                    if (!options?.brand || product.brand === options.brand) {
+                        products.push(product);
+                    }
                 }
             }
         }
         return products;
     }
-
 
 }

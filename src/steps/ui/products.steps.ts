@@ -19,7 +19,7 @@ export class ProductsSteps {
         this.logger.debug('Getting the number of Products displayed');
         let count: number = 0;
         await test.step('Getting the number of Products displayed', async () => {
-            count = await this.productsPage.product.getProductsCount();
+            count = await this.productsPage.products.getProductsCount();
         });
         this.logger.debug(`Found ${count} Products in page`);
         return count;

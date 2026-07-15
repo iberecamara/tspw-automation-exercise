@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-export class ContinueShoppingViewCartLocators {
+export class ContinueShoppingViewCartComponentLocators {
 
     readonly continueShoppingButton: Locator;
     readonly viewCartLink: Locator;

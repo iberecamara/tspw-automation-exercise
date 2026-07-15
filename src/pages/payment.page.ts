@@ -1,4 +1,4 @@
-import { PaymentLocators } from '@locators/payment.locators';
+import { PaymentLocators } from '@locators/page/payment.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 

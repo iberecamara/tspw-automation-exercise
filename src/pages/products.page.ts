@@ -1,23 +1,26 @@
-import { ContinueShoppingViewCartComponents } from '@components/continueshopping-viewcart.components';
-import { HeaderComponents } from '@components/header.components';
-import { ProductComponents } from '@components/product.components';
-import { ProductsLocators } from '@locators/products.locators';
+import { BrandsComponent } from '@components/brands.component';
+import { ContinueShoppingViewCartComponent } from '@components/continueshopping-viewcart.component';
+import { HeaderComponent } from '@components/header.component';
+import { ProductComponent } from '@components/product.component';
+import { ProductsLocators } from '@locators/page/products.locators';
 import { BasePage } from '@pages/base.page';
 import { expect, Page } from '@playwright/test';
 
 export class ProductsPage extends BasePage {
 
     readonly locators: ProductsLocators;
-    readonly header: HeaderComponents;
-    readonly product: ProductComponents;
-    readonly continueShoppingViewCart: ContinueShoppingViewCartComponents;
+    readonly header: HeaderComponent;
+    readonly products: ProductComponent;
+    readonly continueShoppingViewCart: ContinueShoppingViewCartComponent;
+    readonly brands: BrandsComponent;
 
     constructor(page: Page) {
         super(page);
         this.locators = new ProductsLocators(page);
-        this.header = new HeaderComponents(page);
-        this.product = new ProductComponents(page);
-        this.continueShoppingViewCart = new ContinueShoppingViewCartComponents(page);
+        this.header = new HeaderComponent(page);
+        this.products = new ProductComponent(page);
+        this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
+        this.brands = new BrandsComponent(page);
     }
 
     async searchProducts(terms: string): Promise<void> {

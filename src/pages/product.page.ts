@@ -1,23 +1,23 @@
-import { ContinueShoppingViewCartComponents } from '@components/continueshopping-viewcart.components';
-import { ProductComponents } from '@components/product.components';
+import { ContinueShoppingViewCartComponent } from '@components/continueshopping-viewcart.component';
+import { ProductComponent } from '@components/product.component';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
-import { ProductLocators } from '@locators/product.locators';
+import { ProductLocators } from '@locators/page/product.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 
 export class ProductPage extends BasePage {
 
     readonly locators: ProductLocators;
-    readonly product: ProductComponents;
-    readonly continueShoppingViewCart: ContinueShoppingViewCartComponents;
+    readonly products: ProductComponent;
+    readonly continueShoppingViewCart: ContinueShoppingViewCartComponent;
 
     constructor(page: Page) {
         super(page);
         this.locators = new ProductLocators(page);
-        this.product = new ProductComponents(page);
-        this.continueShoppingViewCart = new ContinueShoppingViewCartComponents(page);
+        this.products = new ProductComponent(page);
+        this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
     }
 
     async getProductDetails(): Promise<ProductType> {

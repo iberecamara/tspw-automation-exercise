@@ -1,5 +1,5 @@
 import { VALID_TITLES } from '@data/constants/constants';
-import { SignupLocators } from '@locators/signup.locators';
+import { SignupLocators } from '@locators/page/signup.locators';
 import { BasePage } from '@pages/base.page';
 import { Locator, Page } from '@playwright/test';
 import { TestAutomationException } from '../exceptions/test-automation.exception';

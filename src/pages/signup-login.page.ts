@@ -1,4 +1,4 @@
-import { SignupLoginLocators } from '@locators/signup-login.locators';
+import { SignupLoginLocators } from '@locators/page/signup-login.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 

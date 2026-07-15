@@ -1,20 +1,20 @@
-import { SubscriptionComponents } from '@components/subscription.components';
+import { SubscriptionComponent } from '@components/subscription.component';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
-import { CartLocators } from '@locators/cart.locators';
+import { CartLocators } from '@locators/page/cart.locators';
 import { BasePage } from '@pages/base.page';
 import { expect, Locator, Page } from '@playwright/test';
 
 export class CartPage extends BasePage {
 
     readonly locators: CartLocators;
-    readonly subscription: SubscriptionComponents;
+    readonly subscription: SubscriptionComponent;
 
     constructor(page: Page) {
         super(page);
         this.locators = new CartLocators(page);
-        this.subscription = new SubscriptionComponents(page);
+        this.subscription = new SubscriptionComponent(page);
     }
 
     async getCartItems(): Promise<ProductType[]> {

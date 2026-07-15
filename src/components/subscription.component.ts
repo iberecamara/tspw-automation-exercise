@@ -1,8 +1,8 @@
-import { SubscriptionLocators } from '@locators/subscription.locators';
+import { SubscriptionLocators } from '@locators/page/subscription.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 
-export class SubscriptionComponents extends BasePage {
+export class SubscriptionComponent extends BasePage {
 
     readonly locators: SubscriptionLocators;
 

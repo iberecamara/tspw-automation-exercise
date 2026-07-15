@@ -1,4 +1,4 @@
-import { AccountCreatedDeletedLocators } from '@locators/account-created-deleted.locators';
+import { AccountCreatedDeletedLocators } from '@locators/page/account-created-deleted.locators';
 import { BasePage } from '@pages/base.page';
 import { Page } from '@playwright/test';
 

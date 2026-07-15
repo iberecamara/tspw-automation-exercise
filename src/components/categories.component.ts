@@ -1,20 +1,20 @@
 import { EMPTY } from '@data/constants/string.constants';
-import { CategoryComponentLocators } from '@locators/category.component.locators';
+import { CategoriesComponentLocators } from '@locators/component/categories.locators';
 import { BasePage } from '@pages/base.page';
 import { Locator, Page } from '@playwright/test';
 
-export class CategoryComponents extends BasePage {
+export class CategoriesComponent extends BasePage {
 
-    readonly locators: CategoryComponentLocators;
+    readonly locators: CategoriesComponentLocators;
 
     constructor(page: Page) {
         super(page);
-        this.locators = new CategoryComponentLocators(page);
+        this.locators = new CategoriesComponentLocators(page);
     }
 
     async getCategories(): Promise<string[]> {
         const categories: string[] = [];
-        const categoryLocators = await this.locators.categoryAccordian.locator('span').all();
+        const categoryLocators = await this.locators.categoriesAccordian.locator('span').all();
         for (const locator of categoryLocators) {
             const text = await locator.textContent() ?? EMPTY;
             if (text) {
