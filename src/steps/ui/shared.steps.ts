@@ -142,7 +142,7 @@ export class SharedSteps {
         this.logger.debug(`Added product '${productName}' to cart from hover overlay.`);
     }
 
-    async addProductsToCart(pageObject: HomePage, products: ProductType[]): Promise<void> {
+    async addProductsToCart(pageObject: HomePage | ProductsPage, products: ProductType[]): Promise<void> {
         this.logger.debug(`Adding ${products.length} products to cart.`);
         await test.step(`Add ${products.length} products to cart`, async () => {
             for (const product of products) {

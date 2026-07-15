@@ -1,3 +1,4 @@
+import { HeaderComponent } from '@components/header.component';
 import { SubscriptionComponent } from '@components/subscription.component';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
@@ -9,11 +10,13 @@ import { expect, Locator, Page } from '@playwright/test';
 export class CartPage extends BasePage {
 
     readonly locators: CartLocators;
+    readonly header: HeaderComponent;
     readonly subscription: SubscriptionComponent;
 
     constructor(page: Page) {
         super(page);
         this.locators = new CartLocators(page);
+        this.header = new HeaderComponent(page);
         this.subscription = new SubscriptionComponent(page);
     }
 
