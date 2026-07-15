@@ -25,9 +25,6 @@
             "@fixtures/*": [
                 "./src/fixtures/*"
             ],
-            "@interfaces/*": [
-                "./src/interfaces/*"
-            ],
             "@locators/*": [
                 "./src/locators/*"
             ],
