@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npx playwright test --config=src/configs/playwright.config.ts --grep-invert @dev",
     "test:dev": "npx playwright test --config=src/configs/playwright.config.ts --grep @dev",
-    "test:retry-failed": "npm test -- --last-failed --last-failed-file=\"artifacts/reports/playwright/test-results/.last-run.json\"",
+    "test:retry-failed": "npm test -- --last-failed --last-failed-file=artifacts/reports/playwright/test-results/.last-run.json",
     "test:pwui": "npm test -- --ui",
     "test:ui": "npm test -- --grep @ui",
     "test:pwui:ui": "npm test -- --ui --grep @ui",

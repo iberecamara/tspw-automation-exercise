@@ -6,6 +6,10 @@ import * as os from 'node:os';
 import path from 'node:path';
 import { PATHS } from './paths';
 
+const globalLaunchOptions = {
+  headless: Environment.HEADLESS,
+  slowMo: Environment.SLOWMO
+}
 
 export default defineConfig({
   testDir: '../tests/',
@@ -14,7 +18,7 @@ export default defineConfig({
     timeout: 5 * MINUTE_IN_MILISSECONDS,
   },
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
+  retries: Environment.RETRIES,
   workers: Environment.WORKERS,
   globalTeardown: require.resolve(PATHS.GLOBAL_TEARDOWN_PATH),
   reporter: [
@@ -49,15 +53,12 @@ export default defineConfig({
   outputDir: PATHS.PLAYWRIGHT_REPORTS_DIR,
   use: {
     testIdAttribute: 'data-qa',
-    headless: Environment.HEADLESS,
     ignoreHTTPSErrors: true,
     actionTimeout: 5 * MINUTE_IN_MILISSECONDS,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
-    launchOptions: {
-      slowMo: Environment.SLOWMO
-    }
+    launchOptions: globalLaunchOptions
   },
   projects: [
     {
@@ -67,6 +68,7 @@ export default defineConfig({
         viewport: Environment.VIEWPORT,
         deviceScaleFactor: undefined,
         launchOptions: {
+          ...globalLaunchOptions,
           args: ['--start-maximized'],
         },
       },

@@ -19,14 +19,15 @@ const VALID_ALLURE_STATUSES = ['passed', 'failed', 'broken', 'skipped', 'unknown
 const variables = {
     // Playwright variables
     WORKERS: Joi.number().integer().positive().empty('').default(1),
+    RETRIES: Joi.number().integer().positive().empty('').default(0),
     HEADLESS: Joi.boolean().empty('').default(true),
-    SLOWMO: Joi.number().integer().min(0).empty('').default(0),
-    VIEWPORT_HEIGHT: Joi.number().integer().positive().allow(''),
-    VIEWPORT_WIDTH: Joi.number().integer().positive().allow(''),
+    SLOWMO: Joi.number().integer().positive().empty('').default(0),
+    VIEWPORT_HEIGHT: Joi.number().integer().positive().empty('').default(null),
+    VIEWPORT_WIDTH: Joi.number().integer().positive().empty('').default(null),
 
     // Application variables
     APPLICATION: Joi.string().required(),
-    APPLICATION_ENVIRONMENT: Joi.string().allow('').valid('local', 'dev', 'qa', 'stg', 'uat', 'prd'),
+    APPLICATION_ENVIRONMENT: Joi.string().empty('').valid('local', 'dev', 'qa', 'stg', 'uat', 'prd'),
 
     // Logger variables
     LOG_CONSOLE: Joi.boolean().empty('').default(false),
@@ -73,6 +74,7 @@ type Viewport = {
 export class Environment {
 
     static readonly WORKERS: number = parsed.value.WORKERS;
+    static readonly RETRIES: number = parsed.value.RETRIES;
     static readonly HEADLESS: boolean = parsed.value.HEADLESS;
     static readonly SLOWMO: number = parsed.value.SLOWMO ?? 0;
     static readonly VIEWPORT: Viewport | null = parsed.value.VIEWPORT_HEIGHT && parsed.value.VIEWPORT_WIDTH

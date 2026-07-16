@@ -19,6 +19,7 @@ concurrency:
 env:
   APPLICATION: Automation Exercise
   WORKERS: 4
+  RETRIES: 2
   LOG_LINE_LENGTH: 100
   LOG_CONSOLE: true
   LOG_LEVEL: debug
