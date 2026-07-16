@@ -12,6 +12,8 @@ export class PaymentLocators {
     readonly paymentPayButton: Locator;
     readonly orderPlacedMessage: Locator;
     readonly orderConfirmedMessage: Locator;
+    readonly downloadInvoiceButton: Locator;
+    readonly continueButton: Locator;
 
 
     constructor(page: Page) {
@@ -25,6 +27,8 @@ export class PaymentLocators {
         this.paymentPayButton = page.getByTestId('pay-button');
         this.orderPlacedMessage = page.getByTestId('order-placed');
         this.orderConfirmedMessage = page.getByText('Congratulations! Your order has been confirmed!');
+        this.downloadInvoiceButton = page.getByRole('link', { name: 'Download Invoice' });
+        this.continueButton = page.getByTestId('continue-button');
     }
 
 }

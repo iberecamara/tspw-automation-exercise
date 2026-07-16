@@ -2,7 +2,7 @@ import { VALID_TITLES } from '@data/constants/constants';
 import { TestAutomationException } from '@exceptions/test-automation.exception';
 import { SignupLocators } from '@locators/page/signup.locators';
 import { BasePage } from '@pages.base/base.page';
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class SignupPage extends BasePage {
 
@@ -38,14 +38,17 @@ export class SignupPage extends BasePage {
     }
 
     async selectDobDay(day: string): Promise<void> {
+        expect(this.locators.dobDaysSelector).toBeVisible();
         await this.selectOption(this.locators.dobDaysSelector, day);
     }
 
     async selectDobMonth(month: string): Promise<void> {
+        expect(this.locators.dobMonthsSelector).toBeVisible();
         await this.selectOption(this.locators.dobMonthsSelector, month);
     }
 
     async selectDobYear(year: string): Promise<void> {
+        expect(this.locators.dobYearsSelector).toBeVisible();
         await this.selectOption(this.locators.dobYearsSelector, year);
     }
 

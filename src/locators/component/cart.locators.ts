@@ -12,8 +12,8 @@ export class CartLocators {
     readonly removeProductFromCartButton: Function;
 
     constructor(page: Page) {
-        this.cartItemsTable = page.locator('#cart_info_table');
-        this.cartItemsTableProducts = this.cartItemsTable.locator('tbody').locator('tr').and(page.locator('[id*="product-"]'));;
+        this.cartItemsTable = page.locator('#cart_info_table').or(page.locator('#cart_info'));
+        this.cartItemsTableProducts = this.cartItemsTable.locator('tbody').locator('tr').and(page.locator('[id*="product-"]'));
         this.productName = (locator: Locator) => { return locator.locator('.cart_description').getByRole('link') };
         this.productCategory = (locator: Locator) => { return locator.locator('.cart_description').locator('p') };
         this.productPrice = (locator: Locator) => { return locator.locator('.cart_price').locator('p') };

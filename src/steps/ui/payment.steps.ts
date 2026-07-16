@@ -1,4 +1,6 @@
+import { EMPTY } from '@data/constants/string.constants';
 import { CreditCardDetailsType } from '@data/model/credit-card-details.model';
+import { UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { PaymentPage } from '@pages/payment.page';
 import { expect } from '@playwright/test';
@@ -29,28 +31,65 @@ export class PaymentSteps {
     }
 
     async payAndConfirmOrder(): Promise<void> {
-        this.logger.debug(`Clicking Pay and Confirm Order page`);
-        await test.step(`Click Pay and Confirm Order page`, async () => {
+        this.logger.debug(`Clicking Pay and Confirm Order`);
+        await test.step(`Click Pay and Confirm Order`, async () => {
             await this.paymentPage.clickPayAndConfirmOrder();
         });
-        this.logger.debug(`Clicked Pay and Confirm Order page`);
+        this.logger.debug(`Clicked Pay and Confirm Order`);
+    }
+
+    async downloadInvoice(): Promise<string> {
+        this.logger.debug(`Clicking Download Invoice`);
+        let filepath: string = EMPTY;
+        await test.step(`Click Download Invoice`, async () => {
+            filepath = await this.paymentPage.downloadInvoice();
+        });
+        this.logger.debug(`Clicked Download Invoice`);
+        return filepath;
+    }
+
+    async continue(): Promise<void> {
+        this.logger.debug(`Clicking Continue`);
+        await test.step(`Click Continue`, async () => {
+            await this.paymentPage.clickContinue();
+        });
+        this.logger.debug(`Clicked Continue`);
     }
 
     // Validations
     async validateOrderPlaced(): Promise<void> {
         this.logger.debug('Validating Payment page Order Placed message.');
-        await test.step('Validating Payment page Order Placed message', async () => {
+        await test.step('Validate Payment page Order Placed message', async () => {
             await expect.soft(
                 this.paymentPage.locators.orderPlacedMessage,
                 `Payment page message 'Order Placed!' should be visible`
             ).toHaveText('Order Placed!');
         });
         this.logger.debug('Validating Payment page Order Confirmed message.');
-        await test.step('Validating Payment page Order Confirmed message', async () => {
+        await test.step('Validate Payment page Order Confirmed message', async () => {
             await expect.soft(
                 this.paymentPage.locators.orderConfirmedMessage,
                 `Payment page message 'Congratulations! Your order has been confirmed!' should be visible`
             ).toBeVisible();
         });
     }
+
+    async validateInvoiceFileContents(fileContents: string[], user: UserType, totalPrice: number): Promise<void> {
+        this.logger.debug('Validating Invoice File details.');
+        await test.step('Validate Invoice File details', async () => {
+            expect.soft(
+                fileContents[0],
+                `Invoice file details should have the user first name on it.`
+            ).toContain(user.address.firstname);
+            expect.soft(
+                fileContents[0],
+                `Invoice file details should have the user last name on it.`
+            ).toContain(user.address.lastname);
+            expect.soft(
+                fileContents[0],
+                `Invoice file details should have the total price on it.`
+            ).toContain(totalPrice.toString());
+        });
+    }
+
 }

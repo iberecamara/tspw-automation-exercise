@@ -1,3 +1,4 @@
+import { DOWNLOAD_FILEPATH } from '@files/download/download.filepath';
 import { PaymentLocators } from '@locators/page/payment.locators';
 import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
@@ -33,6 +34,19 @@ export class PaymentPage extends BasePage {
 
     async clickPayAndConfirmOrder(): Promise<void> {
         await this.click(this.locators.paymentPayButton);
+    }
+
+    async downloadInvoice(): Promise<string> {
+        const downloadPromise = this.page.waitForEvent('download');
+        await this.click(this.locators.downloadInvoiceButton);
+        const download = await downloadPromise;
+        const filepath = `${DOWNLOAD_FILEPATH}/${download.suggestedFilename()}`;
+        await download.saveAs(filepath);
+        return filepath;
+    }
+
+    async clickContinue(): Promise<void> {
+        await this.click(this.locators.continueButton);
     }
 
 }

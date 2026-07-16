@@ -118,6 +118,8 @@ export class CheckoutSteps {
 
     async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
         this.logger.debug('Validating all products in cart.');
+        this.logger.debug(`Cart Items: ${StringUtils.prettyJson(cartItems)}`);
+        this.logger.debug(`Added Items: ${StringUtils.prettyJson(addedItems)}`);
         await test.step('Validate all products', async () => {
             expect.soft(
                 cartItems,

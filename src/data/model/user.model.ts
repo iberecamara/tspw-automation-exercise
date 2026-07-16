@@ -17,7 +17,7 @@ export function GenerateRandomUser(): UserType {
 
     return {
         name: faker.internet.displayName({ firstName: firstName, lastName: lastName }),
-        email: faker.internet.email({ firstName: firstName, lastName: lastName }),
+        email: faker.internet.email({ firstName: firstName, lastName: lastName }).toLocaleLowerCase(),
         password: faker.internet.password(),
         address: {
             title: ArraysUtils.getRandomElement(VALID_TITLES),
