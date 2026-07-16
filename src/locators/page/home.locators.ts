@@ -6,7 +6,8 @@ export class HomeLocators {
     readonly productViewLink: Function;
     readonly productLocator: Function;
     readonly indexOffset = 1;
-
+    readonly recommendedItemsHeading: Locator;
+    readonly recommendedItemsContainer: Locator;
 
     constructor(page: Page) {
         this.productsContainer = page.locator('.features_items');
@@ -16,6 +17,8 @@ export class HomeLocators {
         this.productViewLink = (index: number): Locator => {
             return page.getByRole('link', { name: ' View Product' }).nth(index - this.indexOffset);
         };
+        this.recommendedItemsHeading = page.getByRole('heading', { name: 'recommended items' });
+        this.recommendedItemsContainer = page.locator('#recommended-item-carousel');
     }
 
 }

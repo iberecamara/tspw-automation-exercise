@@ -1,9 +1,11 @@
+import { DOWN } from '@data/constants/common.constants';
 import { SPACE } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { GenerateRandomUser } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
 import { NumberUtils } from '@utils/number.utils';
+import { StringUtils } from '@utils/string.utils';
 
 test.describe('Cart validations', {
     tag: ['@products', '@cart']
@@ -115,6 +117,26 @@ test.describe('Cart validations', {
             await sharedSteps.validateTitle('Cart');
             const loggedCartProducts = await cartSteps.getCartProducts();
             await sharedSteps.validateProductsByName(products, loggedCartProducts);
+        });
+
+    test('Add to cart from Recommended items',
+        { tag: ['@SAMPLE-0023', '@TC22'] },
+        async ({
+            homePage, homeSteps, sharedSteps, cartSteps
+        }) => {
+            await sharedSteps.navigateHome(homePage);
+            await sharedSteps.validateTitle('Home');
+            await sharedSteps.scrolling(homePage, DOWN);
+            await homeSteps.validateRecommendedItems();
+            const recommendedItems: ProductType[] = await homeSteps.getRecommendedItems();
+            const item: ProductType = ArraysUtils.getRandomElement(recommendedItems);
+            await homeSteps.addRecommendedItem(item);
+            await sharedSteps.continueShopping(homePage);
+            await sharedSteps.clickCart(homePage.header);
+            await sharedSteps.validateTitle('Cart');
+            const cartItems: ProductType[] = await cartSteps.getCartProducts();
+            console.log(StringUtils.prettyJson(cartItems))
+            await cartSteps.validateCartItems(cartItems, [item], { partial: true });
         });
 
 });

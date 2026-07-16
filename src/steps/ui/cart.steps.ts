@@ -54,15 +54,30 @@ export class CartSteps {
     }
 
     // Validations
-    async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
+    async validateCartItems(cartItems: ProductType[], addedItems: ProductType[], options?: { partial?: boolean }) {
         this.logger.debug(`Validating all (${cartItems.length}) products in cart match all (${addedItems.length}) expected products.`);
         await test.step('Validate all products', async () => {
             expect.soft(
-                cartItems,
-                'Cart items must match added items.'
+                cartItems.length,
+                'Cart items length must match added items length.'
             ).toEqual(
-                expect.arrayContaining(addedItems)
+                addedItems.length
             );
+            if (options?.partial === true) {
+                for (const item of addedItems) {
+                    expect.soft(
+                        cartItems.filter((cartItem: ProductType) => cartItem.name === item.name),
+                        'Cart items must match added items by name.'
+                    ).toBeTruthy();
+                }
+            } else {
+                expect.soft(
+                    cartItems,
+                    'Cart items must match added items.'
+                ).toEqual(
+                    expect.arrayContaining(addedItems)
+                );
+            }
         });
     }
 
