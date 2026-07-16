@@ -1,10 +1,10 @@
 import { ContinueShoppingViewCartComponent } from '@components/continueshopping-viewcart.component';
 import { ProductComponent } from '@components/product.component';
-import { EMPTY } from '@data/constants/string.constants';
+import { AVAILABILITY_PREFIX, BRAND_PREFIX, CATEGORY_DELIMITER, CATEGORY_PREFIX, CONDITION_PREFIX, EMPTY, RUPEES } from '@data/constants/constants';
 import { ProductCategoryType } from '@data/model/product-category.model';
 import { ProductType } from '@data/model/product.model';
 import { ProductLocators } from '@locators/page/product.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 export class ProductPage extends BasePage {
@@ -21,29 +21,28 @@ export class ProductPage extends BasePage {
     }
 
     async getProductDetails(): Promise<ProductType> {
-        const index = await this.locators.productDetailContainer.locator('#product_id').first().getAttribute('value') ?? EMPTY;
-        const name = await this.locators.productDetailContainer.locator('h2').first().textContent() ?? EMPTY;
-        let rawCategory = await this.locators.productDetailContainer.locator('p').first().textContent() ?? EMPTY;
-        rawCategory = rawCategory.replace('Category: ', EMPTY);
-        const price = await this.locators.productDetailContainer.locator('span').first().locator('span').first().textContent() ?? EMPTY;
-        const availability = await this.locators.productDetailContainer.locator('p').nth(1).textContent() ?? EMPTY;
-        const condition = await this.locators.productDetailContainer.locator('p').nth(2).textContent() ?? EMPTY;
-        const brand = await this.locators.productDetailContainer.locator('p').nth(3).textContent() ?? EMPTY;
-        const categoryDelimiter = ' > ';
+        const id = await this.locators.productId.getAttribute('value') ?? EMPTY;
+        const name = await this.locators.productName.textContent() ?? EMPTY;
+        let rawCategory = await this.locators.productCategory.textContent() ?? EMPTY;
+        rawCategory = rawCategory.replace(CATEGORY_PREFIX, EMPTY);
         const category: ProductCategoryType = {
             usertype: {
-                usertype: rawCategory.slice(0, rawCategory.indexOf(categoryDelimiter))
+                usertype: rawCategory.slice(0, rawCategory.indexOf(CATEGORY_DELIMITER))
             },
-            category: rawCategory.slice(rawCategory.indexOf(categoryDelimiter) + categoryDelimiter.length)
+            category: rawCategory.slice(rawCategory.indexOf(CATEGORY_DELIMITER) + CATEGORY_DELIMITER.length)
         };
+        const price = await this.locators.productPrice.textContent() ?? EMPTY;
+        const availability = await this.locators.productAvailability.textContent() ?? EMPTY;
+        const condition = await this.locators.productCondition.textContent() ?? EMPTY;
+        const brand = await this.locators.productBrand.textContent() ?? EMPTY;
         return {
-            index: +index,
+            id: +id,
             name: name,
             category: category,
-            price: +price.replace('Rs. ', EMPTY),
-            availability: availability.replace('Availability: ', EMPTY),
-            condition: condition.replace('Condition: ', EMPTY),
-            brand: brand.replace('Brand: ', EMPTY)
+            price: +price.replace(RUPEES, EMPTY),
+            availability: availability.replace(AVAILABILITY_PREFIX, EMPTY),
+            condition: condition.replace(CONDITION_PREFIX, EMPTY),
+            brand: brand.replace(BRAND_PREFIX, EMPTY)
         }
     }
 

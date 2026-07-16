@@ -1,5 +1,5 @@
 import { ContinueShoppingViewCartComponentLocators } from '@locators/component/continueshopping-viewcart.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { expect, Page } from '@playwright/test';
 
 export class ContinueShoppingViewCartComponent extends BasePage {

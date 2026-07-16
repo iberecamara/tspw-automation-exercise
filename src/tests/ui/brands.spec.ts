@@ -1,7 +1,5 @@
 import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
-import { StringUtils } from '@utils/string.utils';
-import { expect } from 'playwright/test';
 
 test.describe('Brands validations', {
     tag: ['@brands']

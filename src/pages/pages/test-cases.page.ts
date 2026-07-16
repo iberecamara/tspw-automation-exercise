@@ -1,5 +1,5 @@
 import { TestCasesLocators } from '@locators/page/test-cases.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 
@@ -11,6 +11,5 @@ export class TestCasesPage extends BasePage {
         super(page);
         this.locators = new TestCasesLocators(page);
     }
-
 
 }

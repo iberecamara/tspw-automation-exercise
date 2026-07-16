@@ -1,6 +1,6 @@
 import { EMPTY } from '@data/constants/string.constants';
 import { BrandsComponentLocators } from '@locators/component/brands.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 export class BrandsComponent extends BasePage {
@@ -14,7 +14,7 @@ export class BrandsComponent extends BasePage {
 
     async getBrands(): Promise<string[]> {
         const brands: string[] = [];
-        const brandsLocators = await this.locators.brandsContainer.getByRole('link').all();
+        const brandsLocators = await this.locators.brands.all();
         for (const locator of brandsLocators) {
             const text = await locator.textContent() ?? EMPTY;
             if (text) {
@@ -25,6 +25,6 @@ export class BrandsComponent extends BasePage {
     }
 
     async selectBrand(brand: string): Promise<void> {
-        await this.click(this.locators.brandLocatorByName(brand));
+        await this.click(this.locators.brandByName(brand));
     }
 }

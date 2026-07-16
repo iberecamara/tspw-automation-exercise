@@ -2,12 +2,10 @@ import { Locator, Page } from '@playwright/test';
 
 export class CheckoutLocators {
 
-
     readonly deliveryAddressContainer: Locator;
     readonly deliveryAddressHeading: Locator;
     readonly billingAddressContainer: Locator;
     readonly billingAddressHeading: Locator;
-
     readonly addressName: Function;
     readonly addressAddressOne: Function;
     readonly addressAddressTwo: Function;
@@ -15,22 +13,17 @@ export class CheckoutLocators {
     readonly addressCityStateZipcode: Function;
     readonly addressCountry: Function;
     readonly addressPhone: Function;
-
-    readonly checkoutItemsTable: Locator;
     readonly messageTextArea: Locator;
     readonly placeOrderButton: Locator;
 
 
     constructor(page: Page) {
-        this.checkoutItemsTable = page.locator('#cart_info');
-
         this.deliveryAddressContainer = page.locator('#address_delivery');
         this.deliveryAddressHeading = this.deliveryAddressContainer.getByRole('heading');
         this.billingAddressContainer = page.locator('#address_invoice');
         this.billingAddressHeading = page.getByRole('heading', { name: 'Your billing address' });
-
         this.addressName = (addressType: 'delivery' | 'billing'): Locator => {
-            return this.resolveBaseAddressLocator(addressType).getByRole('listitem').nth(1);//('.address_firstname address_lastname');
+            return this.resolveBaseAddressLocator(addressType).getByRole('listitem').nth(1);
         };
         this.addressAddressOne = (addressType: 'delivery' | 'billing'): Locator => {
             return this.resolveBaseAddressLocator(addressType).getByRole('listitem').nth(2);
@@ -50,7 +43,6 @@ export class CheckoutLocators {
         this.addressPhone = (addressType: 'delivery' | 'billing'): Locator => {
             return this.resolveBaseAddressLocator(addressType).getByRole('listitem').nth(7);
         };
-
         this.messageTextArea = page.locator('textarea[name="message"]');
         this.placeOrderButton = page.getByRole('link', { name: 'Place Order' });
     }

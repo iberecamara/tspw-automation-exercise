@@ -21,7 +21,7 @@ test.describe('Products page', {
             const expectedCount = 34;
             await sharedSteps.validateProductsCount(count, expectedCount);
             const firstProduct: ProductType = {
-                index: 1,
+                id: 1,
                 name: 'Blue Top',
                 category: {
                     usertype: { usertype: 'Women' },
@@ -32,7 +32,7 @@ test.describe('Products page', {
                 condition: 'New',
                 brand: 'Polo'
             };
-            await sharedSteps.navigateToProductView(productsPage, firstProduct.index!);
+            await sharedSteps.navigateToProductView(productsPage, firstProduct.id!);
             const productDetails: ProductType = await productSteps.productDetails();
             await productSteps.validateProductDetails(firstProduct, productDetails);
         });

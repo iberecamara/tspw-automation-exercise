@@ -25,7 +25,7 @@ test.describe('Cart validations', {
 
             const firstProductName = 'Blue Top';
             const firstProductData: ProductType = await sharedSteps.getProductDetails(productsPage, firstProductName);
-            firstProductData.index = 1;
+            firstProductData.id = 1;
             firstProductData.quantity = quantity;
             firstProductData.category = {
                 usertype: { usertype: 'Women' },
@@ -35,7 +35,7 @@ test.describe('Cart validations', {
 
             const secondProductName = 'Men Tshirt';
             const secondProductData: ProductType = await sharedSteps.getProductDetails(productsPage, secondProductName);
-            secondProductData.index = 2;
+            secondProductData.id = 2;
             secondProductData.quantity = quantity;
             secondProductData.category = {
                 usertype: { usertype: 'Men' },

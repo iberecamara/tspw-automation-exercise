@@ -4,12 +4,14 @@ export class BrandsComponentLocators {
 
     readonly brandsHeading: Locator;
     readonly brandsContainer: Locator;
-    readonly brandLocatorByName: Function;
+    readonly brands: Locator;
+    readonly brandByName: Function;
 
     constructor(page: Page) {
         this.brandsHeading = page.getByText('Brands');
         this.brandsContainer = page.locator('.brands-name');
-        this.brandLocatorByName = (brand: string) => { return page.getByRole('link', { name: brand }) };
+        this.brandByName = (brand: string) => { return page.getByRole('link', { name: brand }) };
+        this.brands = this.brandsContainer.getByRole('link');
     }
 
 }

@@ -1,7 +1,7 @@
 import { BrandsComponent } from '@components/brands.component';
 import { ProductComponent } from '@components/product.component';
 import { BrandLocators } from '@locators/page/brand.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 export class BrandPage extends BasePage {

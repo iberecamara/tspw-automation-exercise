@@ -1,5 +1,5 @@
 import { HeaderComponentLocators } from '@locators/component/header.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 export class HeaderComponent extends BasePage {

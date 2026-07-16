@@ -6,7 +6,7 @@ import { UserType } from '@data/model/user.model';
 import { SitePages } from '@data/types/site-pages.type';
 import { faker } from '@faker-js/faker';
 import { test } from '@fixtures/fixtures';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { BrandPage } from '@pages/brand.page';
 import { CartPage } from '@pages/cart.page';
 import { CategoryPage } from '@pages/category.page';

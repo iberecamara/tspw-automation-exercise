@@ -8,6 +8,11 @@ export class HomeLocators {
     readonly indexOffset = 1;
     readonly recommendedItemsHeading: Locator;
     readonly recommendedItemsContainer: Locator;
+    readonly recommendedItemsProducts: Locator;
+    readonly recommendedProductsId: Function;
+    readonly recommendedProductsName: Function;
+    readonly recommendedProductsPrice: Function;
+    readonly addRecommendedItem: Function;
 
     constructor(page: Page) {
         this.productsContainer = page.locator('.features_items');
@@ -19,6 +24,11 @@ export class HomeLocators {
         };
         this.recommendedItemsHeading = page.getByRole('heading', { name: 'recommended items' });
         this.recommendedItemsContainer = page.locator('#recommended-item-carousel');
+        this.recommendedItemsProducts = this.recommendedItemsContainer.locator('.item.active .productinfo');
+        this.recommendedProductsId = (locator: Locator) => { return locator.locator('a') };
+        this.recommendedProductsName = (locator: Locator) => { return locator.locator('p') };
+        this.recommendedProductsPrice = (locator: Locator) => { return locator.locator('h2') };
+        this.addRecommendedItem = (id: number) => { return page.locator(`.item.active a[data-product-id="${id}"]`).filter({ visible: true }) }
     }
 
 }

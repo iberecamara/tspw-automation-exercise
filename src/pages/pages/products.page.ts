@@ -3,7 +3,7 @@ import { ContinueShoppingViewCartComponent } from '@components/continueshopping-
 import { HeaderComponent } from '@components/header.component';
 import { ProductComponent } from '@components/product.component';
 import { ProductsLocators } from '@locators/page/products.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { expect, Page } from '@playwright/test';
 
 export class ProductsPage extends BasePage {

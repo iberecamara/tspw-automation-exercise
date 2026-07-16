@@ -1,9 +1,9 @@
-import { EMPTY } from '@data/constants/constants';
+import { EMPTY, RUPEES } from '@data/constants/constants';
 import { ProductType } from '@data/model/product.model';
 import { ProductComponentLocators } from '@locators/component/product.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Locator, Page } from 'playwright-core';
-import { TestAutomationException } from '../exceptions/test-automation.exception';
+import { TestAutomationException } from '../../exceptions/test-automation.exception';
 
 export class ProductComponent extends BasePage {
 
@@ -15,12 +15,12 @@ export class ProductComponent extends BasePage {
     }
 
     async getProductsCount(): Promise<number> {
-        return await this.locators.productsContainer.locator('.single-products').count();
+        return await this.locators.products.count();
     }
 
     async getProducts(): Promise<ProductType[]> {
         const products: ProductType[] = [];
-        const locators: Locator[] = await this.locators.productsContainer.locator('.single-products').all();
+        const locators: Locator[] = await this.locators.products.all();
         for (const locator of locators) {
             products.push(await this.getProductDetails({ locator: locator }));
         }
@@ -31,14 +31,14 @@ export class ProductComponent extends BasePage {
         if (!options.locator && !options.productName) {
             throw new TestAutomationException('Please provide either a locator or a product name.');
         }
-        if (options.productName) {
-            options.locator = await this.locators.productLocator(options.productName);
-        }
-        const price = await options?.locator?.locator('h2').first().textContent() ?? EMPTY;
-        const name = await options?.locator?.locator('p').first().textContent() ?? EMPTY;
+        const product: Locator = options.productName ?
+            await this.locators.productLocator(options.productName) :
+            options.locator;
+        const price = await this.locators.productName(product).textContent() ?? EMPTY;
+        const name = await this.locators.productPrice(product).textContent() ?? EMPTY;
         return {
             name: name,
-            price: +price.replace('Rs. ', EMPTY),
+            price: +price.replace(RUPEES, EMPTY),
         }
     }
 

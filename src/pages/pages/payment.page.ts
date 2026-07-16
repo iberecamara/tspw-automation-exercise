@@ -1,5 +1,5 @@
 import { PaymentLocators } from '@locators/page/payment.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 
 export class PaymentPage extends BasePage {

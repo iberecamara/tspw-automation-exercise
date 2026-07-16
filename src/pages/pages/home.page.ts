@@ -4,10 +4,11 @@ import { ContinueShoppingViewCartComponent } from '@components/continueshopping-
 import { HeaderComponent } from '@components/header.component';
 import { ProductComponent } from '@components/product.component';
 import { SubscriptionComponent } from '@components/subscription.component';
+import { RUPEES } from '@data/constants/common.constants';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { HomeLocators } from '@locators/page/home.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Locator, Page } from '@playwright/test';
 
 export class HomePage extends BasePage {
@@ -34,23 +35,28 @@ export class HomePage extends BasePage {
 
     async getRecommendedItems(): Promise<ProductType[]> {
         const recommendedItems: ProductType[] = [];
-        const recommendedItemsLocators: Locator[] = await this.locators.recommendedItemsContainer.locator('.single-products').all();
+        const recommendedItemsLocators: Locator[] = await this.locators.recommendedItemsProducts.all();
+        console.log(recommendedItemsLocators.length)
         for (const locator of recommendedItemsLocators) {
-            const id = await locator.locator('a').getAttribute('data-product-id') ?? EMPTY;
-            const name = await locator.locator('p').textContent() ?? EMPTY;
-            const price = await locator.locator('h2').textContent() ?? EMPTY;
-            const product: ProductType = {
-                id: +id,
-                name: name,
-                price: +price.replaceAll('Rs. ', EMPTY)
-            }
+            const product: ProductType = await this.parseRecommendedItem(locator);
             recommendedItems.push(product);
         }
         return recommendedItems;
     }
 
+    private async parseRecommendedItem(locator: Locator): Promise<ProductType> {
+        const id = await this.locators.recommendedProductsId(locator).getAttribute('data-product-id') ?? EMPTY;
+        const name = await this.locators.recommendedProductsName(locator).textContent() ?? EMPTY;
+        const price = await this.locators.recommendedProductsPrice(locator).textContent() ?? EMPTY;
+        return {
+            id: +id,
+            name: name,
+            price: +price.replaceAll(RUPEES, EMPTY)
+        }
+    }
+
     async addRecommendedItem(item: ProductType): Promise<void> {
-        await this.click(this.locators.recommendedItemsContainer.locator(`[data-product-id="${item.id}"]`));
+        await this.click(this.locators.addRecommendedItem(item.id));
     }
 
 }

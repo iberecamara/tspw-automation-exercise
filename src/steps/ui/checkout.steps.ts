@@ -23,7 +23,7 @@ export class CheckoutSteps {
         this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
-            products.push(...await this.checkoutPage.getCartItems());
+            products.push(...await this.checkoutPage.cart.getCartItems());
         });
         this.logger.debug('Retrieved all products details');
         return products;

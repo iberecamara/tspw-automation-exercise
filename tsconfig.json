@@ -11,13 +11,16 @@
                 "./src/api/*"
             ],
             "@components/*": [
-                "./src/components/*"
+                "./src/pages/components/*"
             ],
             "@configs/*": [
                 "./src/configs/*"
             ],
             "@data/*": [
                 "./src/data/*"
+            ],
+            "@exceptions/*": [
+                "./src/exceptions/*"
             ],
             "@files/*": [
                 "./src/files/*"
@@ -29,6 +32,9 @@
                 "./src/locators/*"
             ],
             "@pages/*": [
+                "./src/pages/pages/*"
+            ],
+            "@pages.base/*": [
                 "./src/pages/*"
             ],
             "@steps/*": [

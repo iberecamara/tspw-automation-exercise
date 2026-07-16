@@ -2,11 +2,8 @@ import { Locator, Page } from '@playwright/test';
 
 export class CartLocators {
 
-    readonly cartItemsTable: Locator;
     readonly proceedToCheckoutButton: Locator;
     readonly registerFromCheckoutLink: Locator;
-    readonly removeProductFromCartButton: Function;
-
     readonly deliveryAddressContainer: Locator;
     readonly deliveryAddressHeading: Locator;
     readonly deliveryAddressName: Locator;
@@ -16,7 +13,6 @@ export class CartLocators {
     readonly deliverAddressCityStateZipcode: Locator;
     readonly deliverAddressCountry: Locator;
     readonly deliverAddressPhone: Locator;
-
     readonly billingAddressContainer: Locator;
     readonly billingAddressHeading: Locator;
     readonly billingAddressName: Locator;
@@ -27,13 +23,9 @@ export class CartLocators {
     readonly billingddressCountry: Locator;
     readonly billingddressPhone: Locator;
 
-
     constructor(page: Page) {
-        this.cartItemsTable = page.locator('#cart_info_table');
         this.proceedToCheckoutButton = page.getByText('Proceed To Checkout');
         this.registerFromCheckoutLink = page.getByRole('link', { name: 'Register / Login' });
-        this.removeProductFromCartButton = (index: number): Locator => { return page.locator('.cart_quantity_delete').and(page.locator(`[data-product-id="${index}"]`)) };
-
         this.deliveryAddressContainer = page.locator('#address_delivery');
         this.deliveryAddressHeading = this.deliveryAddressContainer.getByRole('heading');
         this.deliveryAddressName = this.deliveryAddressContainer.locator('.address_firstname address_lastname');
@@ -43,7 +35,6 @@ export class CartLocators {
         this.deliverAddressCityStateZipcode = this.deliveryAddressContainer.locator('.address_city address_state_name address_postcode');
         this.deliverAddressCountry = this.deliveryAddressContainer.locator('.address_country_name');
         this.deliverAddressPhone = this.deliveryAddressContainer.locator('.address_phone');
-
         this.billingAddressContainer = page.locator('#address_invoice');
         this.billingAddressHeading = page.getByRole('heading', { name: 'Your billing address' });
         this.billingAddressName = this.deliveryAddressContainer.locator('.address_firstname address_lastname');

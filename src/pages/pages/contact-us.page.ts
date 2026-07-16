@@ -1,6 +1,6 @@
 import { UPLOAD_FILEPATH } from '@data/constants/constants';
 import { ContactUsLocators } from '@locators/page/contact-us.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Page } from '@playwright/test';
 import path from 'path';
 

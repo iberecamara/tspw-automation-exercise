@@ -1,6 +1,6 @@
 import { EMPTY } from '@data/constants/string.constants';
 import { CategoriesComponentLocators } from '@locators/component/categories.locators';
-import { BasePage } from '@pages/base.page';
+import { BasePage } from '@pages.base/base.page';
 import { Locator, Page } from '@playwright/test';
 
 export class CategoriesComponent extends BasePage {
@@ -14,7 +14,7 @@ export class CategoriesComponent extends BasePage {
 
     async getCategories(): Promise<string[]> {
         const categories: string[] = [];
-        const categoryLocators = await this.locators.categoriesAccordian.locator('span').all();
+        const categoryLocators = await this.locators.categories.all();
         for (const locator of categoryLocators) {
             const text = await locator.textContent() ?? EMPTY;
             if (text) {
@@ -25,12 +25,12 @@ export class CategoriesComponent extends BasePage {
     }
 
     async expandCategory(category: string): Promise<void> {
-        await this.click(this.locators.categoryLocatorByName(category));
+        await this.click(this.locators.categoryByName(category));
     }
 
     async getSubCategories(category: string): Promise<string[]> {
         const subCategories: string[] = [];
-        const subCategoriesLocators: Locator[] = await this.locators.subCategoriesLocatorsBycategory(category).getByRole('listitem').all();
+        const subCategoriesLocators: Locator[] = await this.locators.subCategoriesBycategory(category).getByRole('listitem').all();
         for (const locator of subCategoriesLocators) {
             const text = await locator.textContent() ?? EMPTY;
             if (text) {
@@ -41,6 +41,6 @@ export class CategoriesComponent extends BasePage {
     }
 
     async selectSubCategory(subCategory: string): Promise<void> {
-        await this.click(this.locators.subCategoryLocator(subCategory));
+        await this.click(this.locators.subCategory(subCategory));
     }
 }

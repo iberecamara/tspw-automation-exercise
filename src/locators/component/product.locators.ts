@@ -7,6 +7,9 @@ export class ProductComponentLocators {
     readonly productLocator: Function;
     readonly productAddFromOverlay: Function;
     readonly indexOffset = 1;
+    readonly products: Locator;
+    readonly productName: Function;
+    readonly productPrice: Function;
 
     constructor(page: Page) {
         this.productsContainer = page.locator('.features_items');
@@ -19,6 +22,9 @@ export class ProductComponentLocators {
         this.productViewLink = (index: number): Locator => {
             return page.getByRole('link', { name: ' View Product' }).nth(index - this.indexOffset);
         };
+        this.products = this.productsContainer.locator('.single-products');
+        this.productName = (locator: Locator) => { return locator.locator('h2').first() };
+        this.productPrice = (locator: Locator) => { return locator.locator('p').first() };
     }
 
 }

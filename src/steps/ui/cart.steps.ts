@@ -20,7 +20,7 @@ export class CartSteps {
         this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
         await test.step('Retrieve all products', async () => {
-            products.push(...await this.cartPage.getCartItems());
+            products.push(...await this.cartPage.cart.getCartItems());
         });
         this.logger.debug('Retrieved all products details');
         return products;
@@ -31,7 +31,7 @@ export class CartSteps {
         await test.step('Remove products from cart', async () => {
             for (const product of products) {
                 this.logger.debug(`Removing product: ${StringUtils.prettyJson(product)}`);
-                await this.cartPage.removeProduct(product.id!);
+                await this.cartPage.cart.removeProduct(product.id!);
             }
         });
         this.logger.debug('Removed products from cart');
@@ -84,7 +84,7 @@ export class CartSteps {
     async validateProductQuantity(quantity: number): Promise<void> {
         this.logger.debug(`Validating product quantity in cart to be ${quantity}.`);
         await test.step('Validate product quantity in cart', async () => {
-            const product = (await this.cartPage.getCartItems()).at(0);
+            const product = (await this.cartPage.cart.getCartItems()).at(0);
             expect.soft(
                 product?.quantity,
                 `Product quantity in cart should be ${quantity}.`
