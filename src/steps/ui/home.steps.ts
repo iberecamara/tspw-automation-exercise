@@ -35,6 +35,15 @@ export class HomeSteps {
         this.logger.debug('Added Recommended Item to Cart');
     }
 
+    async scrollUp(): Promise<void> {
+        this.logger.debug('Clicking Scroll Up button');
+        this.logger.debug('Click Scroll Up button');
+        await test.step('Add Recommended Item to Cart', async () => {
+            await this.homePage.clickScrollUp();
+        });
+        this.logger.debug('Clicked Scroll Up button');
+    }
+
     // Validations
     async validateRecommendedItems(): Promise<void> {
         this.logger.debug('Validating that Recommended Items section is displayed');
@@ -43,6 +52,20 @@ export class HomeSteps {
                 this.homePage.locators.recommendedItemsHeading,
                 'Recommended Items should be displayed'
             ).toBeVisible();
+        });
+    }
+
+    async validateSubHeading(): Promise<void> {
+        this.logger.debug('Validating that sub heading is displayed');
+        await test.step('Validate that sub heading is displayed', async () => {
+            await expect.soft(
+                this.homePage.locators.subheading,
+                `Sub heading 'Full-Fledged practice website for Automation Engineers' is displayed`
+            ).toBeVisible();
+            await expect.soft(
+                this.homePage.locators.subheading,
+                `Sub heading 'Full-Fledged practice website for Automation Engineers' is in current viewport`
+            ).toBeInViewport();
         });
     }
 

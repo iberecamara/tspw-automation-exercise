@@ -13,6 +13,8 @@ export class HomeLocators {
     readonly recommendedProductsName: Function;
     readonly recommendedProductsPrice: Function;
     readonly addRecommendedItem: Function;
+    readonly subheading: Locator;
+    readonly scrollUpButton: Locator;
 
     constructor(page: Page) {
         this.productsContainer = page.locator('.features_items');
@@ -29,6 +31,8 @@ export class HomeLocators {
         this.recommendedProductsName = (locator: Locator) => { return locator.locator('p') };
         this.recommendedProductsPrice = (locator: Locator) => { return locator.locator('h2') };
         this.addRecommendedItem = (id: number) => { return page.locator(`.item.active a[data-product-id="${id}"]`).filter({ visible: true }) }
+        this.subheading = page.getByRole('heading', { name: 'Full-Fledged practice website' });
+        this.scrollUpButton = page.locator('#scrollUp');
     }
 
 }

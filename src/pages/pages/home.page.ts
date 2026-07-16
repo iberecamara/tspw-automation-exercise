@@ -9,7 +9,7 @@ import { EMPTY } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { HomeLocators } from '@locators/page/home.locators';
 import { BasePage } from '@pages.base/base.page';
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 
 export class HomePage extends BasePage {
 
@@ -57,6 +57,12 @@ export class HomePage extends BasePage {
 
     async addRecommendedItem(item: ProductType): Promise<void> {
         await this.click(this.locators.addRecommendedItem(item.id));
+    }
+
+    async clickScrollUp(): Promise<void> {
+        expect(this.locators.scrollUpButton).toBeVisible();
+        await this.click(this.locators.scrollUpButton);
+        expect(this.locators.subheading).toBeInViewport();
     }
 
 }
