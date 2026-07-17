@@ -35,31 +35,33 @@ A TypeScript, vanilla [Playwright](https://playwright.dev/) end-to-end and API t
 
 ```
 src/
-├── api/                # API clients (raw HTTP calls to automationexercise.com/api)
-├── components/         # Reusable partial-page objects (header, subscription box, brands, categories, etc.)
-├── configs/             # Playwright config, environment/.env parsing, path constants
+├── api/                   # API clients (raw HTTP calls to automationexercise.com/api)
+├── configs/               # Playwright config, environment/.env parsing, path constants
 ├── data/
-│   ├── constants/       # Magic strings/numbers
-│   ├── model/           # TypeScript models/interfaces (UserType, ProductType, AddressType, ...)
-│   └── types/           # API response and misc type shapes
-├── database/             # (reserved for DB-backed test data, if/when needed)
-├── exceptions/           # Custom error types
+│   ├── constants/           # Magic strings/numbers
+│   ├── model/                # TypeScript models/interfaces (UserType, ProductType, AddressType, ...)
+│   └── types/                 # API response and misc type shapes
+├── exceptions/             # Custom error types
 ├── files/
-│   ├── upload/            # Static files used for upload tests
-│   └── download/          # Filepath helpers used for download tests
-├── fixtures/              # Playwright fixture composition (pages, steps, api, logging)
-├── global/                # Global setup/teardown hooks
+│   ├── upload/               # Static files used for upload tests
+│   └── download/              # Filepath helpers used for download tests
+├── fixtures/                # Playwright fixture composition (pages, steps, api, logging)
+├── global/                  # Global setup/teardown hooks
 ├── locators/
-│   ├── page/               # Raw Locator definitions for full pages, one file per page
-│   └── component/          # Raw Locator definitions for shared UI fragments, one file per component
-├── pages/                 # Page Object classes — one per application page
-├── reporters/             # Custom Playwright reporters (e.g. Allure results cleanup)
+│   ├── page/                  # Raw Locator definitions for full pages, one file per page
+│   └── component/              # Raw Locator definitions for shared UI fragments, one file per component
+├── pages/
+│   ├── base.page.ts           # Base class every page/component extends
+│   ├── pages/                  # Page Object classes — one per application page
+│   └── components/             # Reusable partial-page objects (header, subscription box, brands, categories, etc.)
+├── reporters/               # Custom Playwright reporters (e.g. Allure results cleanup)
 ├── steps/
-│   ├── ui/                  # Business-readable UI "step" wrappers around page/component actions
-│   └── api/                 # Business-readable API "step" wrappers around API clients
+│   ├── ui/                    # Business-readable UI "step" wrappers around page/component actions
+│   └── api/                    # Business-readable API "step" wrappers around API clients
 ├── tests/
-│   └── ui/                  # Spec files — what actually runs under `npm test`
-└── utils/                  # Cross-cutting utilities (logger, datetime, allure, strings, arrays, numbers…)
+│   ├── ui/                    # UI spec files — what runs under `npm test` / `npm run test:ui`
+│   └── api/                    # API-only spec files — what runs under `npm run test:api`
+└── utils/                   # Cross-cutting utilities (logger, datetime, allure, files, strings, arrays, numbers…)
 ```
 
 ### Architecture Overview
@@ -112,7 +114,7 @@ export class HeaderComponentLocators {
 }
 ```
 
-#### 2. Components (`src/components/`)
+#### 2. Components (`src/pages/components/`)
 
 Components are **partial pages** — pieces of UI (like the site header/navbar, the newsletter subscription box, the categories/brands sidebar, or the product grid) that appear identically on *multiple* pages. A component:
 
@@ -121,7 +123,7 @@ Components are **partial pages** — pieces of UI (like the site header/navbar, 
 - Exposes actions scoped to that piece of UI only (e.g. `clickHome()`, `clickLogout()`, `clickCart()`)
 
 ```ts
-// src/components/header.component.ts
+// src/pages/components/header.component.ts
 export class HeaderComponent extends BasePage {
     readonly locators: HeaderComponentLocators;
 
@@ -140,7 +142,7 @@ export class HeaderComponent extends BasePage {
 Because the header appears on virtually every page of the site, **every page object that needs it simply instantiates `HeaderComponent` in its own constructor**, instead of duplicating header locators/actions in every page:
 
 ```ts
-// src/pages/home.page.ts
+// src/pages/pages/home.page.ts
 export class HomePage extends BasePage {
     readonly locators: HomeLocators;
     readonly header: HeaderComponent;
@@ -165,7 +167,7 @@ export class HomePage extends BasePage {
 
 A test then reaches into the composed component through the page object, e.g. `homePage.header.clickCart()` or `homePage.subscription.enterSubscriptionEmail(...)`. This is the key mechanism that avoids duplicating "shared UI" logic across every page class — add a component once, then compose it into every page that needs it.
 
-#### 3. Pages (`src/pages/`)
+#### 3. Pages (`src/pages/pages/`)
 
 One class per distinct application page/screen (`HomePage`, `ProductsPage`, `ProductPage`, `CartPage`, `CheckoutPage`, `SignupPage`, `BrandPage`, `CategoryPage`, …). A page object:
 
@@ -246,12 +248,11 @@ A `dev.spec.ts` file holds tests tagged `@dev`, used for scratch/debugging work 
 - **`data/`** — `constants/` (magic strings/numbers), `model/` (TS interfaces like `UserType`, `ProductType`, `ProductCategoryType`, `AddressType`, `ContactUsType`, `CreditCardDetailsType`), and `types/` (API response shapes, site-page/title mappings).
 - **`api/`** — Thin classes wrapping raw HTTP calls to `automationexercise.com/api` via Playwright's `APIRequestContext` (`UserApi`, `ProductApi`), used for fast test-data setup/teardown, e.g. creating/deleting a user without going through the UI.
 - **`configs/`** — `environment.config.ts` loads and validates `.env` values with Joi and exposes them as a static `Environment` class; `playwright.config.ts` is the actual Playwright configuration; `paths.ts` centralizes filesystem paths (artifacts/reports/allure directories) so they aren't hardcoded in multiple places.
-- **`utils/`** — `logger.utils.ts` (Winston-based `TestAutomationLogger`, singleton per worker), `allure.utils.ts` (`AllureUtils` class wrapping the `allure` CLI — generate/open/export/cleanup reports), plus small helpers (`datetime.utils.ts`, `string.utils.ts`, `number.utils.ts`, `arrays.utils.ts`).
+- **`utils/`** — `logger.utils.ts` (Winston-based `TestAutomationLogger`, singleton per worker), `allure.utils.ts` (`AllureUtils` class wrapping the `allure` CLI — generate/open/export/cleanup reports), `file.utils.ts` (small filesystem helpers, e.g. reading a file into a trimmed, non-empty array of lines), plus small helpers (`datetime.utils.ts`, `string.utils.ts`, `number.utils.ts`, `arrays.utils.ts`).
 - **`reporters/`** — Custom Playwright reporters, e.g. `allure-cleanup.reporter.ts`, which removes stale Allure result files matching `ALLURE_REPORT_REMOVE_STATUS` after a run.
 - **`global/`** — `global.teardown.ts`, run once after the whole suite finishes (currently finalizes/splits generated logs).
 - **`exceptions/`** — `TestAutomationException`, thrown by framework code when methods are misused.
-- **`files/`** — Static files (e.g. `sample_file.pdf` under `files/upload/`) plus filepath helpers (`files/upload/`, `files/download/`) for tests that exercise file upload/download.
-- **`database/`** — reserved for DB-backed test data, if/when needed; currently empty.
+- **`files/`** — Static files (e.g. `sample_file.pdf` under `files/upload/`, `invoice.txt` under `files/download/`) plus filepath helpers (`files/upload/`, `files/download/`) for tests that exercise file upload/download.
 
 ### Path Aliases
 
@@ -260,15 +261,19 @@ The project uses TypeScript path aliases (configured in `tsconfig.json`) instead
 | Alias | Resolves to |
 |---|---|
 | `@api/*` | `src/api/*` |
-| `@components/*` | `src/components/*` |
+| `@components/*` | `src/pages/components/*` |
 | `@configs/*` | `src/configs/*` |
 | `@data/*` | `src/data/*` |
+| `@exceptions/*` | `src/exceptions/*` |
 | `@files/*` | `src/files/*` |
 | `@fixtures/*` | `src/fixtures/*` |
 | `@locators/*` | `src/locators/*` |
-| `@pages/*` | `src/pages/*` |
+| `@pages/*` | `src/pages/pages/*` |
+| `@pages.base/*` | `src/pages/*` |
 | `@steps/*` | `src/steps/*` |
 | `@utils/*` | `src/utils/*` |
+
+`@pages/*` points at the page-object files (`src/pages/pages/`), while `@pages.base/*` points one level up at `src/pages/` and is used specifically to reach `base.page.ts` (e.g. `import { BasePage } from '@pages.base/base.page'`) without colliding with the `@pages/*` alias.
 
 When running via `ts-node` (e.g. the `report:*` npm scripts), these aliases are resolved at runtime through `tsconfig-paths/register`.
 
@@ -276,7 +281,7 @@ When running via `ts-node` (e.g. the `report:*` npm scripts), these aliases are 
 
 ## Prerequisites
 
-- **Node.js** (LTS recommended — the CI workflow uses `lts/*`)
+- **Node.js 24** (the CI workflow pins `node-version: 24`)
 - **npm** (bundled with Node.js)
 - **Git**
 
@@ -313,6 +318,8 @@ JIRA_BOARD=SAMPLE
 ```
 
 All variables are validated on startup via `Joi` in `src/configs/environment.config.ts` — an invalid or missing required variable (like `APPLICATION`) will throw immediately rather than fail silently later. `VIEWPORT_HEIGHT`/`VIEWPORT_WIDTH` are optional and, if omitted, Playwright uses its device default. `APPLICATION_ENVIRONMENT` defaults to `dev` and, when set, also loads a matching `.env.<APPLICATION_ENVIRONMENT>` file on top of `.env`.
+
+`SHARD_INDEX`/`SHARD_TOTAL` are optional and only meant to be set by CI when running with [Playwright's `--shard` flag](https://playwright.dev/docs/test-sharding) (see [CI/CD](#cicd)); locally they're empty by default and have no effect on log file names or reports.
 
 ## Running the Tests
 
@@ -378,7 +385,7 @@ A `AllureCleanupReporter` (`src/reporters/allure-cleanup.reporter.ts`) automatic
 
 ### Logs
 
-Structured logs (via Winston) are written per worker under `artifacts/logs/`, and the global teardown (`src/global/global.teardown.ts`) finalizes/splits them at the end of a run. Set `LOG_CONSOLE=true` in `.env` to also stream logs to stdout during execution.
+Structured logs (via Winston) are written per worker under `artifacts/logs/`, and the global teardown (`src/global/global.teardown.ts`) finalizes/splits them at the end of a run. Set `LOG_CONSOLE=true` in `.env` to also stream logs to stdout during execution. When `SHARD_INDEX` is set (as CI does for each matrix shard), it's embedded in both the temporary per-worker log file names and the final split, per-execution-tag log file names, so logs produced by different shards never collide when gathered together into one place.
 
 ---
 
@@ -389,7 +396,7 @@ The general rule: **add the selector in `locators/page/` or `locators/component/
 ### Adding a New Page
 
 1. **Locators** — create `src/locators/page/<page-name>.locators.ts`, exporting a class that takes `Page` in its constructor and exposes every needed `Locator` (or locator-returning function for parameterized elements).
-2. **Page object** — create `src/pages/<page-name>.page.ts`, extending `BasePage`:
+2. **Page object** — create `src/pages/pages/<page-name>.page.ts`, extending `BasePage`:
    ```ts
    export class MyNewPage extends BasePage {
        readonly locators: MyNewLocators;
@@ -416,7 +423,7 @@ The general rule: **add the selector in `locators/page/` or `locators/component/
 Use this when a piece of UI is shared by two or more pages (e.g. a footer, a modal, a filter sidebar).
 
 1. **Locators** — `src/locators/component/<component-name>.locators.ts`, same pattern as page locators, class named `<ComponentName>ComponentLocators`.
-2. **Component** — `src/components/<component-name>.component.ts`, extending `BasePage`, exposing only actions scoped to that UI fragment, class named `<ComponentName>Component`.
+2. **Component** — `src/pages/components/<component-name>.component.ts`, extending `BasePage`, exposing only actions scoped to that UI fragment, class named `<ComponentName>Component`.
 3. **Compose it** into every page object that displays it, as a `readonly` property instantiated in the constructor (see `HeaderComponent`/`SubscriptionComponent` usage in `home.page.ts`).
 
 ### Adding New UI Steps
@@ -443,6 +450,8 @@ Use this when a piece of UI is shared by two or more pages (e.g. a footer, a mod
    ```
 4. Add `@ui` and/or `@api` tags (and any other custom tag you rely on for filtering) as needed.
 
+For specs that only exercise API clients (no browser page objects at all), create `src/tests/api/<feature>.spec.ts` instead, following the same fixture-import pattern but destructuring only the `*Api`/`*ApiSteps` fixtures you need (see `user.spec.ts` / `product.spec.ts` under `src/tests/api/` for the pattern).
+
 ### Adding a New API Client / API Steps
 
 1. **Client** — create `src/api/<resource>.api.ts`, exporting a class whose constructor takes an `APIRequestContext` and exposes methods per endpoint (see `user.api.ts` / `product.api.ts` for the pattern, including simple retry handling).
@@ -460,14 +469,41 @@ Use this when a piece of UI is shared by two or more pages (e.g. a footer, a mod
 
 ## CI/CD
 
-`.github/workflows/playwright.yml` runs on every push/PR to `main` (and manually via `workflow_dispatch`):
+`.github/workflows/playwright.yml` runs on every push/PR to `main` (and manually via `workflow_dispatch`), across three jobs:
 
-1. Installs dependencies and Playwright browsers (with caching).
-2. Runs `npm test`.
-3. Generates a single-file Allure report (`npm run report:export`).
-4. Uploads the Allure report and logs as workflow artifacts.
-5. Publishes the Allure report to **GitHub Pages** after the GitHub Action completes on `main`.
-6. Fails the job explicitly if any test failed, even though report generation always runs first (`continue-on-error` on the test step ensures reports are produced regardless of pass/fail).
+### 1. `test` — 4 parallel Playwright shards
+
+```
+strategy:
+  matrix:
+    shardIndex: [1, 2, 3, 4]
+```
+
+Each of the 4 jobs:
+
+1. Installs dependencies and Playwright browsers (shared cache across the matrix).
+2. Sets `SHARD_INDEX`/`SHARD_TOTAL` (from `matrix.shardIndex`/`SHARDS_TOTAL`) as env vars for the job.
+3. Runs its slice of the suite: `npm test -- --shard=<shardIndex>/4`.
+4. Uploads its **raw** Allure results (`artifacts/reports/allure/allure-results`) and its split logs (`artifacts/logs/**/**/*.log`) as uniquely named artifacts (`allure-results-shard-<n>`, `automation-logs-shard-<n>`) — nothing is merged yet at this stage.
+5. Fails the job explicitly if its shard's tests failed (`continue-on-error` on the test step ensures the artifact-upload steps still run first, exactly like the previous single-job pipeline).
+
+`fail-fast: false` ensures one failing shard doesn't cancel the other 3.
+
+### 2. `merge-reports` — combine every shard into one report
+
+Runs once `test` finishes (`if: !cancelled()`, so it runs even if some shards failed):
+
+1. Downloads **all** `allure-results-*` artifacts and merges them (`merge-multiple: true`) into a single `artifacts/reports/allure/allure-results` directory. Allure result files are UUID-named, so results from all 4 shards combine safely with no collisions.
+2. Downloads and merges **all** `automation-logs-*` artifacts the same way into `artifacts/logs`, giving one consolidated set of logs — this is the log-splitter output from every shard, gathered in one place (log filenames now include a `-shard<N>` suffix precisely so this merge never overwrites a file from a different shard).
+3. Generates **one single-file Allure report** from the merged results (`npm run report:export`), reflecting the results from all 4 shards.
+4. Uploads the merged Allure report and the merged logs as the workflow's `Allure Report` / `Automation Logs` artifacts (same names/paths as before).
+5. Uploads the report for GitHub Pages.
+
+This job doesn't fail the workflow itself even if some shards failed — that's already handled by each shard's own "Fail job if tests failed" step in the `test` job; `merge-reports` runs regardless (`if: !cancelled()`) purely to make sure a combined report/log set is always published.
+
+### 3. `deploy` — publish to GitHub Pages
+
+Unchanged: publishes the merged single-file report from `merge-reports` to **GitHub Pages** on pushes to `main`.
 
 ## License
 

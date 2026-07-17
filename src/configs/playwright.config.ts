@@ -42,7 +42,8 @@ export default defineConfig({
           'Application': Environment.APPLICATION,
           'Environment': Environment.APPLICATION_ENVIRONMENT,
           'Instance': Environment.BASE_URL,
-          'Date and Time': DateTimeUtils.getDateTime().datetime
+          'Date and Time': DateTimeUtils.getDateTime().datetime,
+          'Shards': Environment.SHARD_TOTAL
         },
         resultsDir: PATHS.ALLURE_RESULTS_DIR,
         details: true

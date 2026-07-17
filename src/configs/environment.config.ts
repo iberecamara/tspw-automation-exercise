@@ -29,6 +29,10 @@ const variables = {
     APPLICATION: Joi.string().required(),
     APPLICATION_ENVIRONMENT: Joi.string().empty('').valid('local', 'dev', 'qa', 'stg', 'uat', 'prd'),
 
+    // Sharding variables (set by CI when the suite is split across Playwright shards)
+    SHARD_INDEX: Joi.string().allow('').empty('').default(''),
+    SHARD_TOTAL: Joi.string().allow('').empty('').default(''),
+
     // Logger variables
     LOG_CONSOLE: Joi.boolean().empty('').default(false),
     LOG_TYPE: Joi.string().empty('').valid('text', 'json').default('text'),
@@ -86,6 +90,10 @@ export class Environment {
 
     static readonly APPLICATION: string = parsed.value.APPLICATION;
     static readonly APPLICATION_ENVIRONMENT: string = parsed.value.APPLICATION_ENVIRONMENT;
+
+    static readonly SHARD_INDEX: string = parsed.value.SHARD_INDEX;
+    static readonly SHARD_TOTAL: string = parsed.value.SHARD_TOTAL;
+
     static readonly BASE_URL: string = 'https://automationexercise.com';
     static readonly BASE_API_URL: string = `${Environment.BASE_URL}/api`;
     static readonly CREATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/createAccount`;

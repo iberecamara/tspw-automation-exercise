@@ -44,8 +44,9 @@ export class TestAutomationLogger {
             transports.push(new winston.transports.Console());
         }
         TestAutomationLogger.dirpath = `${LOG_FOLDER}/${Environment.APPLICATION_ENVIRONMENT}/${dateTime.date}`;
+        const shardSuffix = TestAutomationLogger.getShardSuffix();
         transports.push(new winston.transports.File({
-            filename: `TEMP-test-automation-${worker}-${dateTime.datetime}.log`,
+            filename: `TEMP-test-automation-${worker}${shardSuffix}-${dateTime.datetime}.log`,
             dirname: TestAutomationLogger.dirpath,
         }));
 
@@ -55,6 +56,10 @@ export class TestAutomationLogger {
             transports: transports,
         });
 
+    }
+
+    private static getShardSuffix(): string {
+        return Environment.SHARD_INDEX ? `-shard${Environment.SHARD_INDEX}` : EMPTY;
     }
 
     private static getFormat(): winston.Logform.Format {
@@ -125,7 +130,8 @@ export class TestAutomationLogger {
                 }
                 const executionTag = TestAutomationLogger.extractExecutionTag(executionContent);
                 const timestamp = TestAutomationLogger.extractTimestampFromFileName(path.basename(logFile));
-                const outputFileName = `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}-${timestamp}.log`;
+                const shardSuffix = TestAutomationLogger.getShardSuffix();
+                const outputFileName = `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`;
                 const outputFilePath = path.join(path.dirname(logFile), outputFileName);
                 fs.writeFileSync(outputFilePath, executionContent, 'utf8');
             }
