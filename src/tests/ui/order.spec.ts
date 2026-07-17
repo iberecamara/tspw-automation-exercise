@@ -20,7 +20,7 @@ test.describe('Orders validations - UI', {
 
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -73,7 +73,7 @@ test.describe('Orders validations - UI', {
             await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
             await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -109,7 +109,7 @@ test.describe('Orders validations - UI', {
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -152,7 +152,7 @@ test.describe('Orders validations - UI', {
             await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
             await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -176,7 +176,7 @@ test.describe('Orders validations - UI', {
 
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);

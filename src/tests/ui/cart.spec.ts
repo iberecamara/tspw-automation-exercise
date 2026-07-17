@@ -78,7 +78,7 @@ test.describe('Cart validations - UI', {
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts() as ProductType[];
+            const products = await productApiSteps.all() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -98,7 +98,7 @@ test.describe('Cart validations - UI', {
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
             await sharedSteps.validateTitle('Products');
-            const apiProducts = await productApiSteps.getAllProducts() as ProductType[];
+            const apiProducts = await productApiSteps.all() as ProductType[];
             const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
             const searchTerm: string = selectedProduct.name.split(SPACE)[0];
             await productsSteps.searchProducts(searchTerm);

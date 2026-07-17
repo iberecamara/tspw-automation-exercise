@@ -21,7 +21,7 @@ test.describe('Brands validations - UI', {
             await sharedSteps.validateTitleDirectly('Brand', `Automation Exercise - ${selectedBrand} Products`);
             await sharedSteps.validateBrandPageHeading(selectedBrand);
             let products = await sharedSteps.getProducts(brandPage);
-            let apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand }) as ProductType[];
+            let apiProducts = await productApiSteps.all({ brand: selectedBrand }) as ProductType[];
             await sharedSteps.validateProductsByName(products, apiProducts);
             brands = await sharedSteps.getBrands(productsPage);
             selectedBrand = ArraysUtils.getRandomElement(brands, { exclude: [selectedBrand] });
@@ -29,7 +29,7 @@ test.describe('Brands validations - UI', {
             await sharedSteps.validateTitleDirectly('Brand', `Automation Exercise - ${selectedBrand} Products`);
             await sharedSteps.validateBrandPageHeading(selectedBrand);
             products = await sharedSteps.getProducts(brandPage);
-            apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand }) as ProductType[];
+            apiProducts = await productApiSteps.all({ brand: selectedBrand }) as ProductType[];
             await sharedSteps.validateProductsByName(products, apiProducts);
         });
 

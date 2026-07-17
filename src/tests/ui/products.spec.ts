@@ -61,7 +61,7 @@ test.describe('Products page validations - UI', {
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
             await sharedSteps.validateTitle('Products');
-            const apiProducts = await productApiSteps.getAllProducts() as ProductType[];
+            const apiProducts = await productApiSteps.all() as ProductType[];
             const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
             await sharedSteps.viewProduct(productsPage, selectedProduct.id as number);
             const user: UserType = GenerateRandomUser();

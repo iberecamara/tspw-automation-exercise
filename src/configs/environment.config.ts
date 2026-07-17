@@ -91,6 +91,7 @@ export class Environment {
     static readonly CREATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/createAccount`;
     static readonly DELETE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/deleteAccount`;
     static readonly PRODUCT_LIST_API_URL: string = `${Environment.BASE_API_URL}/productsList`;
+    static readonly PRODUCT_SEARCH_API_URL: string = `${Environment.BASE_API_URL}/searchProduct`;
     static readonly BRAND_LIST_API_URL: string = `${Environment.BASE_API_URL}/brandsList`;
 
     static readonly LOG_CONSOLE: boolean = parsed.value.LOG_CONSOLE;
