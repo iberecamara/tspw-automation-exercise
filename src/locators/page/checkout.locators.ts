@@ -51,7 +51,7 @@ export class CheckoutLocators {
         switch (addressType) {
             case 'delivery':
                 return this.deliveryAddressContainer;
-            case 'delivery':
+            case 'billing':
                 return this.billingAddressContainer;
             default:
                 return this.deliveryAddressContainer;
