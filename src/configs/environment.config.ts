@@ -93,6 +93,7 @@ export class Environment {
     static readonly PRODUCT_LIST_API_URL: string = `${Environment.BASE_API_URL}/productsList`;
     static readonly PRODUCT_SEARCH_API_URL: string = `${Environment.BASE_API_URL}/searchProduct`;
     static readonly BRAND_LIST_API_URL: string = `${Environment.BASE_API_URL}/brandsList`;
+    static readonly VERIFY_LOGIN_API_URL: string = `${Environment.BASE_API_URL}/verifyLogin`;
 
     static readonly LOG_CONSOLE: boolean = parsed.value.LOG_CONSOLE;
     static readonly LOG_TYPE: string = parsed.value.LOG_TYPE;
