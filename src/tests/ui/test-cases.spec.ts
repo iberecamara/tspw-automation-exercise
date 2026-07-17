@@ -1,9 +1,11 @@
 import { test } from '@fixtures/fixtures';
 
-test.describe('Test Cases page', async () => {
+test.describe('Test Cases page validations - UI', {
+    tag: ['@test-cases', '@ui']
+}, async () => {
 
     test('Verify Test Cases Page',
-        { tag: ['@SAMPLE-0004', '@TC7', '@test-cases'] },
+        { tag: ['@SAMPLE-0004', '@TC-UI-7'] },
         async ({
             homePage, sharedSteps
         }) => {

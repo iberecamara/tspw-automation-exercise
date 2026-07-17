@@ -1,17 +1,18 @@
 import { CREATED, DELETED } from '@data/constants/common.constants';
 import { CreditCardDetailsType, GenerateRandomCard } from '@data/model/credit-card-details.model';
+import { ProductType } from '@data/model/product.model';
 import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { FileUtils } from '@utils/file.utils';
 import { NumberUtils } from '@utils/number.utils';
 import { StringUtils } from '@utils/string.utils';
 
-test.describe('Orders', {
-    tag: ['@orders', '@checkout']
+test.describe('Orders validations - UI', {
+    tag: ['@orders', '@checkout', '@ui']
 }, async () => {
 
     test('Place Order: Register while Checkout',
-        { tag: ['@SAMPLE-0015', '@TC14', '@user-register-checkout'] },
+        { tag: ['@SAMPLE-0015', '@TC-UI-14', '@user-register-checkout'] },
         async ({
             productApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
@@ -19,7 +20,7 @@ test.describe('Orders', {
 
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -53,7 +54,7 @@ test.describe('Orders', {
         });
 
     test('Place Order: Register before Checkout',
-        { tag: ['@SAMPLE-0016', '@TC15'] },
+        { tag: ['@SAMPLE-0016', '@TC-UI-15'] },
         async ({
             productApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
@@ -72,7 +73,7 @@ test.describe('Orders', {
             await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
             await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -95,7 +96,7 @@ test.describe('Orders', {
         });
 
     test('Place Order: Login before Checkout',
-        { tag: ['@SAMPLE-0017', '@TC16'] },
+        { tag: ['@SAMPLE-0017', '@TC-UI-16'] },
         async ({
             productApiSteps, userApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, checkoutSteps
@@ -108,7 +109,7 @@ test.describe('Orders', {
             await sharedSteps.clickSignupLogin(homePage.header);
             await signupLoginSteps.login(user);
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -132,7 +133,7 @@ test.describe('Orders', {
 
 
     test('Verify address details in checkout page',
-        { tag: ['@SAMPLE-0024', '@TC23', '@address-validation'] },
+        { tag: ['@SAMPLE-0024', '@TC-UI-23', '@address-validation'] },
         async ({
             productApiSteps, homePage, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
@@ -151,7 +152,7 @@ test.describe('Orders', {
             await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
             await accountCreatedDeletedSteps.clickContinue(StringUtils.capitalize(CREATED));
             await sharedSteps.validateUserLoggedText(homePage.header, user);
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -167,7 +168,7 @@ test.describe('Orders', {
         });
 
     test('Download Invoice after purchase order',
-        { tag: ['@SAMPLE-0025', '@TC24', '@user-register-checkout'] },
+        { tag: ['@SAMPLE-0025', '@TC-UI-24', '@user-register-checkout'] },
         async ({
             productApiSteps, homePage, paymentSteps, cartSteps, signupLoginSteps, sharedSteps,
             accountCreatedDeletedSteps, signupSteps, checkoutSteps
@@ -175,7 +176,7 @@ test.describe('Orders', {
 
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);

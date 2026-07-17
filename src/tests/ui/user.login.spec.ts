@@ -2,7 +2,9 @@ import { DELETED } from '@data/constants/common.constants';
 import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 
-test.describe('User login', async () => {
+test.describe('User login validations - UI', {
+    tag: ['@user-login', '@ui']
+}, async () => {
 
     let user: UserType;
     test.beforeEach('Create valid user via API', async ({ userApiSteps }) => {
@@ -11,7 +13,7 @@ test.describe('User login', async () => {
     });
 
     test('Login User with correct email and password',
-        { tag: ['@SAMPLE-0001', '@TC2', '@user-login', '@valid-user'] },
+        { tag: ['@SAMPLE-0001', '@TC-UI-2', '@valid-user'] },
         async ({
             signupLoginSteps, accountCreatedDeletedSteps, homePage, sharedSteps
         }) => {
@@ -26,7 +28,7 @@ test.describe('User login', async () => {
         });
 
     test('Login User with incorrect email',
-        { tag: ['@SAMPLE-0002', '@TC3', '@TC3.1', '@user-login', '@login-error', '@invalid-user'] },
+        { tag: ['@SAMPLE-0002', '@TC-UI-3', '@TC-UI-3.1', '@login-error', '@invalid-user'] },
         async ({
             signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {
@@ -43,7 +45,7 @@ test.describe('User login', async () => {
         });
 
     test('Login User with incorrect password',
-        { tag: ['@SAMPLE-0003', '@TC3', '@TC3.2', '@user-login', '@invalid-password'] },
+        { tag: ['@SAMPLE-0003', '@TC-UI-3', '@TC-UI-3.2', '@invalid-password'] },
         async ({
             signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {

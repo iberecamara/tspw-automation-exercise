@@ -1,12 +1,12 @@
 import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
 
-test.describe('Categories validations', {
-    tag: ['@categories']
+test.describe('Categories validations - UI', {
+    tag: ['@categories', '@ui']
 }, async () => {
 
     test('View Category Products',
-        { tag: ['@SAMPLE-0019', '@TC18'] },
+        { tag: ['@SAMPLE-0019', '@TC-UI-18'] },
         async ({
             homePage, sharedSteps, categorySteps, categoryPage
         }) => {

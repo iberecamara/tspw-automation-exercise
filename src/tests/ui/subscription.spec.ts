@@ -3,10 +3,12 @@ import { DOWN } from '@data/constants/constants';
 import { test } from '@fixtures/fixtures';
 import { StringUtils } from '@utils/string.utils';
 
-test.describe('Subscription validations', async () => {
+test.describe('Subscription validations - UI', {
+    tag: ['@subscription', '@ui']
+}, async () => {
 
     test('Verify Subscription in home page',
-        { tag: ['@SAMPLE-0005', '@TC10', '@home', '@subscription'] },
+        { tag: ['@SAMPLE-0005', '@TC-UI-10', '@home'] },
         async ({
             homePage, sharedSteps
         }) => {
@@ -19,7 +21,7 @@ test.describe('Subscription validations', async () => {
         });
 
     test('Verify Subscription in Cart page',
-        { tag: ['@SAMPLE-0006', '@TC11', '@cart', '@subscription'] },
+        { tag: ['@SAMPLE-0006', '@TC-UI-11', '@cart'] },
         async ({
             homePage, sharedSteps
         }) => {

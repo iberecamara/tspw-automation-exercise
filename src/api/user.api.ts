@@ -1,7 +1,7 @@
 import { Environment } from '@configs/environment.config';
 import { MINUTE_IN_MILISSECONDS } from '@data/constants/common.constants';
 import { UserType } from '@data/model/user.model';
-import { ResponseType } from '@data/types/response.type';
+import { CustomResponseType } from '@data/types/custom-response.type';
 import { APIRequestContext, APIResponse } from 'playwright-core';
 
 export class UserApi {
@@ -12,7 +12,7 @@ export class UserApi {
         this.request = request;
     }
 
-    async createUser(user: UserType, options?: { retries?: number }): Promise<ResponseType> {
+    async createUser(user: UserType, options?: { retries?: number }): Promise<CustomResponseType> {
         const formData = {
             name: user.name,
             email: user.email,
@@ -40,12 +40,13 @@ export class UserApi {
         }
         const body = await response.json();
         return {
-            responseCode: body.responseCode,
-            message: body.message
+            statusCode: response.status(),
+            statusText: response.statusText(),
+            body: body
         };
     }
 
-    async deleteUser(email: string, password: string, options?: { retries?: number }): Promise<ResponseType> {
+    async deleteUser(email: string, password: string, options?: { retries?: number }): Promise<CustomResponseType> {
         const formData = {
             email: email,
             password: password
@@ -58,8 +59,9 @@ export class UserApi {
         }
         const body = await response.json();
         return {
-            responseCode: body.responseCode,
-            message: body.message
+            statusCode: response.status(),
+            statusText: response.statusText(),
+            body: body
         };
     }
 

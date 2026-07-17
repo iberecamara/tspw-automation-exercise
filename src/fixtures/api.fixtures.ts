@@ -1,7 +1,8 @@
 
-import { APIRequestContext, test as base } from '@playwright/test';
-import { UserApi } from '@api/user.api';
+import { BrandApi } from '@api/brand.api';
 import { ProductApi } from '@api/product.api';
+import { UserApi } from '@api/user.api';
+import { APIRequestContext, test as base } from '@playwright/test';
 
 type ApiConstructor<ApiClass> = new (request: APIRequestContext) => ApiClass;
 
@@ -15,9 +16,11 @@ function createApiFixture<ApiClass>(apiConstructor: ApiConstructor<ApiClass>) {
 type ApiFixtures = {
     userApi: UserApi,
     productApi: ProductApi,
+    brandApi: BrandApi,
 };
 
 export const test = base.extend<ApiFixtures>({
     userApi: createApiFixture(UserApi),
     productApi: createApiFixture(ProductApi),
+    brandApi: createApiFixture(BrandApi),
 });

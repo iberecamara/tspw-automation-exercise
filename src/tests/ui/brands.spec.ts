@@ -1,12 +1,13 @@
+import { ProductType } from '@data/model/product.model';
 import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
 
-test.describe('Brands validations', {
-    tag: ['@brands']
+test.describe('Brands validations - UI', {
+    tag: ['@brands', '@ui']
 }, async () => {
 
     test('View & Cart Brand Products',
-        { tag: ['@SAMPLE-0020', '@TC19'] },
+        { tag: ['@SAMPLE-0020', '@TC-UI-19'] },
         async ({
             homePage, sharedSteps, productsPage, brandSteps, brandPage, productApiSteps
         }) => {
@@ -20,7 +21,7 @@ test.describe('Brands validations', {
             await sharedSteps.validateTitleDirectly('Brand', `Automation Exercise - ${selectedBrand} Products`);
             await sharedSteps.validateBrandPageHeading(selectedBrand);
             let products = await sharedSteps.getProducts(brandPage);
-            let apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand });
+            let apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand }) as ProductType[];
             await sharedSteps.validateProductsByName(products, apiProducts);
             brands = await sharedSteps.getBrands(productsPage);
             selectedBrand = ArraysUtils.getRandomElement(brands, { exclude: [selectedBrand] });
@@ -28,7 +29,7 @@ test.describe('Brands validations', {
             await sharedSteps.validateTitleDirectly('Brand', `Automation Exercise - ${selectedBrand} Products`);
             await sharedSteps.validateBrandPageHeading(selectedBrand);
             products = await sharedSteps.getProducts(brandPage);
-            apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand });
+            apiProducts = await productApiSteps.getAllProducts({ brand: selectedBrand }) as ProductType[];
             await sharedSteps.validateProductsByName(products, apiProducts);
         });
 

@@ -7,12 +7,12 @@ import { ArraysUtils } from '@utils/arrays.utils';
 import { NumberUtils } from '@utils/number.utils';
 import { StringUtils } from '@utils/string.utils';
 
-test.describe('Cart validations', {
-    tag: ['@products', '@cart']
+test.describe('Cart validations - UI', {
+    tag: ['@products', '@cart', '@ui']
 }, async () => {
 
     test('Add Products in Cart',
-        { tag: ['@SAMPLE-0010', '@TC12'] },
+        { tag: ['@SAMPLE-0010', '@TC-UI-12'] },
         async ({
             homePage, productsPage, sharedSteps, cartSteps
         }) => {
@@ -55,7 +55,7 @@ test.describe('Cart validations', {
         });
 
     test('Verify Product quantity in Cart',
-        { tag: ['@SAMPLE-0011', '@TC13'] },
+        { tag: ['@SAMPLE-0011', '@TC-UI-13'] },
         async ({
             homePage, productSteps, sharedSteps, cartSteps
         }) => {
@@ -72,13 +72,13 @@ test.describe('Cart validations', {
         });
 
     test('Remove Products from Cart',
-        { tag: ['@SAMPLE-0018', '@TC17'] },
+        { tag: ['@SAMPLE-0018', '@TC-UI-17'] },
         async ({
             homePage, productApiSteps, sharedSteps, cartSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            const products = await productApiSteps.getAllProducts();
+            const products = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProducts = await sharedSteps.selectRandomProducts(products);
             await sharedSteps.addProductsToCart(homePage, selectedProducts);
             await sharedSteps.clickCart(homePage.header);
@@ -89,7 +89,7 @@ test.describe('Cart validations', {
         });
 
     test('Search Products and Verify Cart After Login',
-        { tag: ['@SAMPLE-0021', '@TC20'] },
+        { tag: ['@SAMPLE-0021', '@TC-UI-20'] },
         async ({
             homePage, userApiSteps, productApiSteps, sharedSteps, productsPage, productsSteps, cartSteps, cartPage, signupLoginSteps
         }) => {
@@ -98,7 +98,7 @@ test.describe('Cart validations', {
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
             await sharedSteps.validateTitle('Products');
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
             const searchTerm: string = selectedProduct.name.split(SPACE)[0];
             await productsSteps.searchProducts(searchTerm);
@@ -120,7 +120,7 @@ test.describe('Cart validations', {
         });
 
     test('Add to cart from Recommended items',
-        { tag: ['@SAMPLE-0023', '@TC22'] },
+        { tag: ['@SAMPLE-0023', '@TC-UI-22'] },
         async ({
             homePage, homeSteps, sharedSteps, cartSteps
         }) => {

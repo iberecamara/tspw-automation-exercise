@@ -3,12 +3,12 @@ import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { StringUtils } from '@utils/string.utils';
 
-test.describe('User registration', {
-    tag: ['@user-register']
+test.describe('User registration validations - UI', {
+    tag: ['@user-register', '@ui']
 }, async () => {
 
     test('Register user',
-        { tag: ['@SAMPLE-0013', '@TC1'] },
+        { tag: ['@SAMPLE-0013', '@TC-UI-1'] },
         async ({
             signupLoginSteps, signupSteps, accountCreatedDeletedSteps, homePage, sharedSteps
         }) => {
@@ -33,7 +33,7 @@ test.describe('User registration', {
         });
 
     test('Register User with existing email',
-        { tag: ['@SAMPLE-0014', '@TC5', '@user-register-error'] },
+        { tag: ['@SAMPLE-0014', '@TC-UI-5', '@user-register-error'] },
         async ({
             signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {

@@ -1,6 +1,7 @@
 import { test as apis } from '@fixtures/api.fixtures';
 import { test as logging } from '@fixtures/logging.fixtures';
 import { test as pages } from '@fixtures/pages.fixtures';
+import { BrandApiSteps } from '@steps/api/brand.steps';
 import { ProductApiSteps } from '@steps/api/product.steps';
 import { UserApiSteps } from '@steps/api/user.steps';
 import { AccountCreatedDeletedSteps } from '@steps/ui/account-created-deleted.steps';
@@ -36,6 +37,7 @@ type StepsFixtures = {
     // API
     userApiSteps: UserApiSteps,
     productApiSteps: ProductApiSteps,
+    brandApiSteps: BrandApiSteps,
 
     // UI
     homeSteps: HomeSteps,
@@ -60,6 +62,7 @@ export const test = merged.extend<StepsFixtures>({
     // API
     userApiSteps: async ({ logger, userApi }, use) => createStepFixture(UserApiSteps, logger, userApi, use),
     productApiSteps: async ({ logger, productApi }, use) => createStepFixture(ProductApiSteps, logger, productApi, use),
+    brandApiSteps: async ({ logger, brandApi }, use) => createStepFixture(BrandApiSteps, logger, brandApi, use),
 
     // UI
     homeSteps: async ({ logger, homePage }, use) => createStepFixture(HomeSteps, logger, homePage, use),

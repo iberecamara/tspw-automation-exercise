@@ -1,12 +1,12 @@
 import { DOWN, UP } from '@data/constants/common.constants';
 import { test } from '@fixtures/fixtures';
 
-test.describe('Contact Us form', {
-    tag: ['@home', '@scroll']
+test.describe('Home page validations - UI', {
+    tag: ['@home', '@scroll', '@ui']
 }, async () => {
 
     test(`Verify Scroll Up using 'Arrow' button and Scroll Down functionality`,
-        { tag: ['@SAMPLE-0026', '@TC25', '@arrow-button'] },
+        { tag: ['@SAMPLE-0026', '@TC-UI-25', '@arrow-button'] },
         async ({
             homePage, sharedSteps, homeSteps
         }) => {
@@ -19,7 +19,7 @@ test.describe('Contact Us form', {
         });
 
     test(`Verify Scroll Up without 'Arrow' button and Scroll Down functionality`,
-        { tag: ['@SAMPLE-0027', '@TC26', '@arrow-button'] },
+        { tag: ['@SAMPLE-0027', '@TC-UI-26', '@arrow-button'] },
         async ({
             homePage, sharedSteps, homeSteps
 

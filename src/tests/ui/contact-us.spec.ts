@@ -1,10 +1,12 @@
 import { GenerateRandomContactUsData } from '@data/model/contact-us.model';
 import { test } from '@fixtures/fixtures';
 
-test.describe('Contact Us form', async () => {
+test.describe('Contact Us form validations - UI', {
+    tag: ['@contact-us', '@ui']
+}, async () => {
 
     test('Contact Us Form',
-        { tag: ['@SAMPLE-0009', '@TC6', '@contact-us'] },
+        { tag: ['@SAMPLE-0009', '@TC-UI-6'] },
         async ({
             homePage, contactUsSteps, sharedSteps
         }) => {

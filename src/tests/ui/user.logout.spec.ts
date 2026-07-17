@@ -1,7 +1,9 @@
 import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 
-test.describe('User logout', async () => {
+test.describe('User logout validations - UI', {
+    tag: ['@user-logout', '@ui']
+}, async () => {
 
     let user: UserType;
     test.beforeEach('Create valid user via API', async ({ userApiSteps }) => {
@@ -10,7 +12,7 @@ test.describe('User logout', async () => {
     });
 
     test('Logout User',
-        { tag: ['@SAMPLE-0012', '@TC4', '@user-logout'] },
+        { tag: ['@SAMPLE-0012', '@TC-UI-4'] },
         async ({
             signupLoginSteps, userApiSteps, homePage, sharedSteps
         }) => {

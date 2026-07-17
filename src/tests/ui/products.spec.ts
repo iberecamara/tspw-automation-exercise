@@ -4,12 +4,12 @@ import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
 import { StringUtils } from '@utils/string.utils';
 
-test.describe('Products page', {
-    tag: ['@products']
+test.describe('Products page validations - UI', {
+    tag: ['@products', '@ui']
 }, async () => {
 
     test('Verify All Products and product detail page',
-        { tag: ['@SAMPLE-0007', '@TC8'] },
+        { tag: ['@SAMPLE-0007', '@TC-UI-8'] },
         async ({
             homePage, productsSteps, productsPage, productSteps, sharedSteps
         }) => {
@@ -38,7 +38,7 @@ test.describe('Products page', {
         });
 
     test('Search Product',
-        { tag: ['@SAMPLE-0008', '@TC9', '@search-products'] },
+        { tag: ['@SAMPLE-0008', '@TC-UI-9', '@search-products'] },
         async ({
             homePage, productsSteps, productsPage, sharedSteps
         }) => {
@@ -53,7 +53,7 @@ test.describe('Products page', {
         });
 
     test('Add review on Product',
-        { tag: ['@SAMPLE-0022', '@TC21', '@review'] },
+        { tag: ['@SAMPLE-0022', '@TC-UI-21', '@review'] },
         async ({
             homePage, productSteps, productsPage, sharedSteps, productApiSteps
         }) => {
@@ -61,7 +61,7 @@ test.describe('Products page', {
             await sharedSteps.validateTitle('Home');
             await sharedSteps.clickProducts(homePage.header);
             await sharedSteps.validateTitle('Products');
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.getAllProducts() as ProductType[];
             const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
             await sharedSteps.viewProduct(productsPage, selectedProduct.id as number);
             const user: UserType = GenerateRandomUser();
