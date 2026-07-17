@@ -117,6 +117,7 @@ test.describe('Cart validations - UI', {
             await sharedSteps.validateTitle('Cart');
             const loggedCartProducts = await cartSteps.getCartProducts();
             await sharedSteps.validateProductsByName(products, loggedCartProducts);
+            await userApiSteps.deleteAccount(user);
         });
 
     test('Add to cart from Recommended items',

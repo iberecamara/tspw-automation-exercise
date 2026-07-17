@@ -4,21 +4,22 @@ import { ArraysUtils } from '@utils/arrays.utils';
 import { AddressType } from './address.model';
 
 export interface UserType {
+    id?: number,
     name: string,
     email: string,
     password: string,
     address: AddressType
 }
 
-export function GenerateRandomUser(): UserType {
+export function GenerateRandomUser(options?: { name?: string, email?: string, password?: string }): UserType {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const dob: Date = faker.date.birthdate();
 
     return {
-        name: faker.internet.displayName({ firstName: firstName, lastName: lastName }),
-        email: faker.internet.email({ firstName: firstName, lastName: lastName }).toLocaleLowerCase(),
-        password: faker.internet.password(),
+        name: options?.name ?? faker.internet.displayName({ firstName: firstName, lastName: lastName }),
+        email: options?.email ?? faker.internet.email({ firstName: firstName, lastName: lastName }).toLocaleLowerCase(),
+        password: options?.password ?? faker.internet.password(),
         address: {
             title: ArraysUtils.getRandomElement(VALID_TITLES),
             birthDate: dob.getUTCDate().toString(),

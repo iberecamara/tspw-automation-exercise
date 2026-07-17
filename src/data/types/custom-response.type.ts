@@ -1,5 +1,6 @@
 import { BrandType } from "@data/model/brand.model";
 import { ProductType } from "@data/model/product.model";
+import { UserType } from "@data/model/user.model";
 
 export interface CustomResponseType {
     statusCode: number,
@@ -9,5 +10,6 @@ export interface CustomResponseType {
         message?: string,
         products?: ProductType[],
         brands?: BrandType[],
+        user?: UserType
     },
 }

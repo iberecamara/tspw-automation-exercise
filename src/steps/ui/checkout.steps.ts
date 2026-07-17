@@ -112,7 +112,7 @@ export class CheckoutSteps {
             await expect.soft(
                 this.checkoutPage.locators.addressPhone(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address associated phone number '${user.address.mobileNumber}'.`
-            ).toContainText(user.address.mobileNumber);
+            ).toContainText(user.address.mobileNumber as string);
         });
     }
 

@@ -35,7 +35,7 @@ export class SignupSteps {
             await this.signupPage.enterAddressState(user.address.state);
             await this.signupPage.enterAddressCity(user.address.city);
             await this.signupPage.enterAddressZipCode(user.address.zipcode);
-            await this.signupPage.enterAddressMobilePhone(user.address.mobileNumber);
+            await this.signupPage.enterAddressMobilePhone(user.address.mobileNumber as string);
         });
     }
 

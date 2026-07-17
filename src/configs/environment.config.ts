@@ -90,6 +90,8 @@ export class Environment {
     static readonly BASE_API_URL: string = `${Environment.BASE_URL}/api`;
     static readonly CREATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/createAccount`;
     static readonly DELETE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/deleteAccount`;
+    static readonly UPDATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/updateAccount`;
+    static readonly GET_USER_BY_EMAIL_API_URL: string = `${Environment.BASE_API_URL}/getUserDetailByEmail`;
     static readonly PRODUCT_LIST_API_URL: string = `${Environment.BASE_API_URL}/productsList`;
     static readonly PRODUCT_SEARCH_API_URL: string = `${Environment.BASE_API_URL}/searchProduct`;
     static readonly BRAND_LIST_API_URL: string = `${Environment.BASE_API_URL}/brandsList`;

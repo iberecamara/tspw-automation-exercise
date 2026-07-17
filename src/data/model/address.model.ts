@@ -12,7 +12,7 @@ export interface AddressType {
     zipcode: string,
     state: string,
     city: string,
-    mobileNumber: string
+    mobileNumber?: string
 }
 
 export interface ResumedAddressType {
