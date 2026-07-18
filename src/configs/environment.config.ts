@@ -81,23 +81,25 @@ const variables = {
 
   // Miscellanea
   JIRA_BOARD: Joi.string().allow(""),
-  ALLURE_REPORT_REMOVE_STATUS: Joi.string()
-    .allow("")
-    .custom((value: string, helpers) => {
-      const statuses = value.split(",").map((item: string) => item.trim());
+  ALLURE_REPORT_REMOVE_STATUS: (Joi.array()
+    .items(Joi.string())
+    .custom((value: unknown, helpers) => {
+      // Se vier do process.env como string, transformamos em array antes de validar
+      const stringValue = typeof value === 'string' ? value : '';
+      if (!stringValue) return [];
+
+      const statuses = stringValue.split(',').map((item: string) => item.trim());
 
       for (const status of statuses) {
-        const { error } = Joi.string()
-          .valid(...VALID_ALLURE_STATUSES)
-          .validate(status);
+        const { error } = Joi.string().valid(...VALID_ALLURE_STATUSES).validate(status);
         if (error) {
-          return helpers.error("any.invalid", {
-            message: `'VALID_ALLURE_STATUSES' contém o valor inválido: '${status}'.`,
+          return helpers.error('any.invalid', {
+            message: `'VALID_ALLURE_STATUSES' contém o valor inválido: '${status}'.`
           });
         }
       }
       return statuses;
-    }),
+    }) as unknown as Joi.ArraySchema),
 };
 
 const validationResult: Joi.ValidationResult = Joi.object<EnvVars, true>(
@@ -130,9 +132,9 @@ export class Environment {
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
-          height: envValues.VIEWPORT_HEIGHT,
-          width: envValues.VIEWPORT_WIDTH,
-        }
+        height: envValues.VIEWPORT_HEIGHT,
+        width: envValues.VIEWPORT_WIDTH,
+      }
       : null;
 
   static readonly APPLICATION: string = envValues.APPLICATION;
