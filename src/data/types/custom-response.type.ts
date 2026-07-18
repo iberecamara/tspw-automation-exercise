@@ -1,15 +1,17 @@
-import { BrandType } from "@data/model/brand.model";
-import { ProductType } from "@data/model/product.model";
-import { UserType } from "@data/model/user.model";
+import { BrandResponseType } from "./brand-response.type";
+import { ProductResponseType } from "./product-response.type";
+import { UserResponseType } from "./user-response.type";
+
+export interface CustomResponseBodyType {
+    responseCode: number,
+    message?: string,
+    products?: ProductResponseType[],
+    brands?: BrandResponseType[],
+    user?: UserResponseType
+}
 
 export interface CustomResponseType {
     statusCode: number,
     statusText: string,
-    body: {
-        responseCode: number,
-        message?: string,
-        products?: ProductType[],
-        brands?: BrandType[],
-        user?: UserType
-    },
+    body: CustomResponseBodyType,
 }

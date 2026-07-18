@@ -2,7 +2,7 @@ import { test } from '@fixtures/fixtures';
 
 test.describe('Test Cases page validations - UI', {
     tag: ['@test-cases', '@ui']
-}, async () => {
+}, () => {
 
     test('Verify Test Cases Page',
         { tag: ['@SAMPLE-0004', '@TC-UI-7'] },

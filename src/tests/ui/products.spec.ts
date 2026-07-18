@@ -6,7 +6,7 @@ import { StringUtils } from '@utils/string.utils';
 
 test.describe('Products page validations - UI', {
     tag: ['@products', '@ui']
-}, async () => {
+}, () => {
 
     test('Verify All Products and product detail page',
         { tag: ['@SAMPLE-0007', '@TC-UI-8'] },
@@ -32,7 +32,7 @@ test.describe('Products page validations - UI', {
                 condition: 'New',
                 brand: 'Polo'
             };
-            await sharedSteps.navigateToProductView(productsPage, firstProduct.id!);
+            await sharedSteps.navigateToProductView(productsPage, firstProduct.id);
             const productDetails: ProductType = await productSteps.productDetails();
             await productSteps.validateProductDetails(firstProduct, productDetails);
         });
@@ -63,7 +63,7 @@ test.describe('Products page validations - UI', {
             await sharedSteps.validateTitle('Products');
             const apiProducts = await productApiSteps.all() as ProductType[];
             const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
-            await sharedSteps.viewProduct(productsPage, selectedProduct.id as number);
+            await sharedSteps.viewProduct(productsPage, selectedProduct.id);
             const user: UserType = GenerateRandomUser();
             const review: string = StringUtils.generateRandomText({ words: 10 });
             await productSteps.enterReviewName(user.name);

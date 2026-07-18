@@ -3,9 +3,10 @@ import { test } from '@fixtures/fixtures';
 
 test.describe('User logout validations - UI', {
     tag: ['@user-logout', '@ui']
-}, async () => {
+}, () => {
 
     let user: UserType;
+
     test.beforeEach('Create valid user via API', async ({ userApiSteps }) => {
         user = GenerateRandomUser();
         await userApiSteps.createAccount(user);

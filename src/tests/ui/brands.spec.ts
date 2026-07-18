@@ -4,12 +4,12 @@ import { ArraysUtils } from '@utils/arrays.utils';
 
 test.describe('Brands validations - UI', {
     tag: ['@brands', '@ui']
-}, async () => {
+}, () => {
 
     test('View & Cart Brand Products',
         { tag: ['@SAMPLE-0020', '@TC-UI-19'] },
         async ({
-            homePage, sharedSteps, productsPage, brandSteps, brandPage, productApiSteps
+            homePage, sharedSteps, productsPage, brandPage, productApiSteps
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');

@@ -4,12 +4,12 @@ export class CartLocators {
 
     readonly cartItemsTable: Locator;
     readonly cartItemsTableProducts: Locator;
-    readonly productName: Function;
-    readonly productCategory: Function;
-    readonly productPrice: Function;
-    readonly productQuantity: Function;
-    readonly productTotalPrice: Function;
-    readonly removeProductFromCartButton: Function;
+    readonly productName: (locator: Locator) => Locator;
+    readonly productCategory: (locator: Locator) => Locator;
+    readonly productPrice: (locator: Locator) => Locator;
+    readonly productQuantity: (locator: Locator) => Locator;
+    readonly productTotalPrice: (locator: Locator) => Locator;
+    readonly removeProductFromCartButton: (lindex: number) => Locator;
 
     constructor(page: Page) {
         this.cartItemsTable = page.locator('#cart_info_table').or(page.locator('#cart_info'));

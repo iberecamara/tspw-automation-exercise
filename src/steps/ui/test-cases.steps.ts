@@ -1,13 +1,12 @@
 import { TestCasesPage } from "@pages/test-cases.page";
-import { TestAutomationLogger } from "@utils/logger.utils";
+import { BaseSteps } from "@steps/base.steps";
 
-export class TestCasesSteps {
+export class TestCasesSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly testCasesPage: TestCasesPage;
 
-    constructor(logger: TestAutomationLogger, testCasesPage: TestCasesPage) {
-        this.logger = logger;
+    constructor(testCasesPage: TestCasesPage) {
+        super();
         this.testCasesPage = testCasesPage;
     }
 

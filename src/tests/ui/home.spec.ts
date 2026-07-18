@@ -1,9 +1,8 @@
-import { DOWN, UP } from '@data/constants/common.constants';
 import { test } from '@fixtures/fixtures';
 
 test.describe('Home page validations - UI', {
     tag: ['@home', '@scroll', '@ui']
-}, async () => {
+}, () => {
 
     test(`Verify Scroll Up using 'Arrow' button and Scroll Down functionality`,
         { tag: ['@SAMPLE-0026', '@TC-UI-25', '@arrow-button'] },
@@ -12,7 +11,7 @@ test.describe('Home page validations - UI', {
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            await sharedSteps.scrolling(homePage, DOWN);
+            await sharedSteps.scrolling(homePage, 'down');
             await sharedSteps.validateSubscriptionHeading(homePage);
             await homeSteps.scrollUp();
             await homeSteps.validateSubHeading();
@@ -26,9 +25,9 @@ test.describe('Home page validations - UI', {
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            await sharedSteps.scrolling(homePage, DOWN);
+            await sharedSteps.scrolling(homePage, 'down');
             await sharedSteps.validateSubscriptionHeading(homePage);
-            await sharedSteps.scrolling(homePage, UP);
+            await sharedSteps.scrolling(homePage, 'up');
             await homeSteps.validateSubHeading();
         });
 

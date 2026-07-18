@@ -1,15 +1,15 @@
-import { Locator, Page } from 'playwright-core';
+import { Locator, Page } from '@playwright/test';
 
 export class ProductComponentLocators {
 
     readonly productsContainer: Locator;
-    readonly productViewLink: Function;
-    readonly productLocator: Function;
-    readonly productAddFromOverlay: Function;
+    readonly productViewLink: (index: number) => Locator;
+    readonly productLocator: (name: string) => Locator;
+    readonly productAddFromOverlay: (name: string) => Locator;
     readonly indexOffset = 1;
     readonly products: Locator;
-    readonly productName: Function;
-    readonly productPrice: Function;
+    readonly productName: (locator: Locator) => Locator;
+    readonly productPrice: (locator: Locator) => Locator;
 
     constructor(page: Page) {
         this.productsContainer = page.locator('.features_items');
@@ -23,8 +23,8 @@ export class ProductComponentLocators {
             return page.getByRole('link', { name: ' View Product' }).nth(index - this.indexOffset);
         };
         this.products = this.productsContainer.locator('.single-products');
-        this.productName = (locator: Locator) => { return locator.locator('h2').first() };
-        this.productPrice = (locator: Locator) => { return locator.locator('p').first() };
+        this.productName = (locator: Locator) => { return locator.locator('p').first() };
+        this.productPrice = (locator: Locator) => { return locator.locator('h2').first() };
     }
 
 }

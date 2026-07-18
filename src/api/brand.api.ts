@@ -1,7 +1,7 @@
-import { Environment } from "@configs/environment.config";
-import { BrandType } from "@data/model/brand.model";
-import { CustomResponseType } from "@data/types/custom-response.type";
-import { APIRequestContext, APIResponse } from "playwright-core";
+import { Environment } from '@configs/environment.config';
+import { BrandType } from '@data/model/brand.model';
+import { CustomResponseBodyType, CustomResponseType } from '@data/types/custom-response.type';
+import { APIRequestContext, APIResponse } from '@playwright/test';
 
 export class BrandApi {
 
@@ -15,7 +15,7 @@ export class BrandApi {
         const brands: BrandType[] = [];
         const method = options?.method ?? 'GET';
         const response: APIResponse = await this.request.fetch(Environment.BRAND_LIST_API_URL, { method: method });
-        const body = await response.json();
+        const body = await response.json() as CustomResponseBodyType;
         if (options?.raw) {
             return {
                 statusCode: response.status(),

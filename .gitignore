@@ -14,4 +14,5 @@ node_modules/
 # Environment settings
 .env
 # Development playground test
+src/tests/dev/
 src/tests/**/dev.spec.ts

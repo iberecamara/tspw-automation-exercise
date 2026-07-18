@@ -1,13 +1,12 @@
 import { BrandPage } from "@pages/brand.page";
-import { TestAutomationLogger } from "@utils/logger.utils";
+import { BaseSteps } from "@steps/base.steps";
 
-export class BrandSteps {
+export class BrandSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly brandPage: BrandPage;
 
-    constructor(logger: TestAutomationLogger, brandPage: BrandPage) {
-        this.logger = logger;
+    constructor(brandPage: BrandPage) {
+        super();
         this.brandPage = brandPage;
     }
 

@@ -9,7 +9,7 @@ import { StringUtils } from '@utils/string.utils';
 
 test.describe('Orders validations - UI', {
     tag: ['@orders', '@checkout', '@ui']
-}, async () => {
+}, () => {
 
     test('Place Order: Register while Checkout',
         { tag: ['@SAMPLE-0015', '@TC-UI-14', '@user-register-checkout'] },

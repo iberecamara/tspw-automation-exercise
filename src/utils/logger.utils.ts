@@ -2,10 +2,17 @@ import { Environment } from '@configs/environment.config';
 import { EMPTY } from '@data/constants/string.constants';
 import { DateTimeUtils } from '@utils/datetime.utils';
 import * as fs from 'fs';
+import { TransformableInfo } from 'logform';
 import * as path from 'path';
 import winston from 'winston';
 
-const PRINTF_FORMATTER = winston.format.printf(({ level, message, timestamp }: any) => {
+interface LogInfo extends TransformableInfo {
+    timestamp: string;
+    message: string;
+}
+
+const PRINTF_FORMATTER = winston.format.printf((info) => {
+    const { level, message, timestamp } = info as LogInfo;
     return `[${level}] - ${timestamp}: ${message}`;
 });
 

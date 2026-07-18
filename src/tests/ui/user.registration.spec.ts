@@ -5,7 +5,7 @@ import { StringUtils } from '@utils/string.utils';
 
 test.describe('User registration validations - UI', {
     tag: ['@user-register', '@ui']
-}, async () => {
+}, () => {
 
     test('Register user',
         { tag: ['@SAMPLE-0013', '@TC-UI-1'] },

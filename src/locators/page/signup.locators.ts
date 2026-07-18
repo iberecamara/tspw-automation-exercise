@@ -1,5 +1,4 @@
 import { Locator, Page } from '@playwright/test';
-import { TestAutomationException } from '../../exceptions/test-automation.exception';
 
 export class SignupLocators {
 
@@ -65,15 +64,9 @@ export class SignupLocators {
         await this.signupButton.click();
     }
 
-    async setTitle(title: string): Promise<void> {
-        if (title != 'Mr.' && title != 'Ms.') {
-            throw new TestAutomationException(`Invalid title: ${title}, must be either 'Mr.' or 'Ms.'`);
-        }
-        if (title === 'Mr.') {
-            await this.titleMrRadio.check();
-        } else {
-            await this.titleMsRadio.check();
-        }
+    async setTitle(title: 'Mr.' | 'Ms.'): Promise<void> {
+        const locator = title === 'Mr.' ? this.titleMrRadio : this.titleMsRadio;
+        await locator.check();
     }
 
     async inputPassword(password: string): Promise<void> {

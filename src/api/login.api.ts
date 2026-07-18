@@ -1,7 +1,6 @@
-import { Environment } from "@configs/environment.config";
-import { BrandType } from "@data/model/brand.model";
-import { CustomResponseType } from "@data/types/custom-response.type";
-import { APIRequestContext, APIResponse } from "playwright-core";
+import { Environment } from '@configs/environment.config';
+import { CustomResponseBodyType, CustomResponseType } from '@data/types/custom-response.type';
+import { APIRequestContext, APIResponse } from '@playwright/test';
 
 export class LoginApi {
 
@@ -11,7 +10,7 @@ export class LoginApi {
         this.request = request;
     }
 
-    async verify(options?: { method?: 'POST' | 'DELETE', email?: string, password?: string }): Promise<CustomResponseType | BrandType[]> {
+    async verify(options?: { method?: 'POST' | 'DELETE', email?: string, password?: string }): Promise<CustomResponseType> {
         let formData = {};
         if (options?.email) {
             formData = { email: options.email };
@@ -24,7 +23,7 @@ export class LoginApi {
         }
         const method = options?.method ?? 'GET';
         const response: APIResponse = await this.request.fetch(Environment.VERIFY_LOGIN_API_URL, { method: method, form: formData });
-        const body = await response.json();
+        const body = await response.json() as CustomResponseBodyType;
         return {
             statusCode: response.status(),
             statusText: response.statusText(),

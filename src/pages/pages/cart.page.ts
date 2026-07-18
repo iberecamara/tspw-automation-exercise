@@ -20,4 +20,12 @@ export class CartPage extends BasePage {
         this.cart = new CartComponent(page);
     }
 
+    async clickProceedToCheckoutButton(): Promise<void> {
+        await this.click(this.locators.proceedToCheckoutButton);
+    }
+
+    async clickRegisterFromCheckoutLink(): Promise<void> {
+        await this.click(this.locators.registerFromCheckoutLink);
+    }
+
 }

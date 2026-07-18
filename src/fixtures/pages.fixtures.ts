@@ -18,8 +18,7 @@ type PageConstructor<PageClass> = new (page: Page) => PageClass;
 
 function createPageFixture<PageClass>(pageConstructor: PageConstructor<PageClass>) {
     return async ({ page }: { page: Page }, use: (value: PageClass) => Promise<void>) => {
-        const pageInstance = new pageConstructor(page);
-        await use(pageInstance);
+        await use(new pageConstructor(page));
     };
 }
 
@@ -43,15 +42,15 @@ type PageFixtures = {
 export const test = base.extend<PageFixtures>({
     adblocker: [
         async ({ page }, use) => {
-            await page.route('**/*', route => {
-                route.request().url().startsWith('https://googleads.') ?
-                    route.abort() : route.continue();
-                return;
+            await page.route('**/*', async route => {
+                if (route.request().url().startsWith('https://googleads.')) {
+                    await route.abort();
+                } else {
+                    await route.continue();
+                }
             });
-            use();
-        }, {
-            auto: true
-        }
+            await use();
+        }, { auto: true }
     ],
     homePage: createPageFixture(HomePage),
     signupLoginPage: createPageFixture(SignupLoginPage),

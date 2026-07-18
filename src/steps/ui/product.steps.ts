@@ -2,83 +2,98 @@ import { ProductType } from '@data/model/product.model';
 import { test } from '@fixtures/fixtures';
 import { ProductPage } from '@pages/product.page';
 import { expect } from '@playwright/test';
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { BaseSteps } from '@steps/base.steps';
 import { StringUtils } from '@utils/string.utils';
 
-export class ProductSteps {
+export class ProductSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly productPage: ProductPage;
 
-    constructor(logger: TestAutomationLogger, productPage: ProductPage) {
-        this.logger = logger;
+    constructor(productPage: ProductPage) {
+        super();
         this.productPage = productPage;
     }
 
     // Actions
     async setProductQuantity(quantity: number): Promise<void> {
         this.logger.debug(`Setting product quantity to ${quantity}`);
+
         await test.step('Set product quantity', async () => {
             await this.productPage.setQuantity(quantity);
         });
+
         this.logger.debug(`Set product quantity to ${quantity}`);
     }
 
     async addToCart(): Promise<void> {
         this.logger.debug('Adding product to cart');
+
         await test.step('Add product to cart', async () => {
             await this.productPage.clickAddToCart();
         });
+
         this.logger.debug('Added product to cart');
     }
 
     async viewCart(): Promise<void> {
         this.logger.debug('Clicking View Cart');
+
         await test.step('Navigating to cart from modal', async () => {
             await this.productPage.continueShoppingViewCart.clickViewCart();
         });
+
         this.logger.debug('Clicked View Cart');
     }
 
     async productDetails(): Promise<ProductType> {
         this.logger.debug('Retrieving product details');
-        let product;
+        let product = {} as ProductType;
+
         await test.step('Retrieve product details', async () => {
             product = await this.productPage.getProductDetails();
         });
+
         this.logger.debug('Retrieved product details');
-        return product!;
+        return product;
     }
 
     async enterReviewName(name: string): Promise<void> {
         this.logger.debug(`Adding '${name}' name to review.`);
+
         await test.step(`Add '${name}' name to review.`, async () => {
             await this.productPage.enterReviewName(name);
         });
+
         this.logger.debug(`Added '${name}' name to review.`);
     }
 
     async enterReviewEmail(email: string): Promise<void> {
         this.logger.debug(`Adding '${email}' email to review.`);
+
         await test.step(`Add '${email}' email to review.`, async () => {
             await this.productPage.enterReviewEmail(email);
         });
+
         this.logger.debug(`Added '${email}' email to review.`);
     }
 
     async enterReviewText(text: string): Promise<void> {
         this.logger.debug(`Adding '${text}' text to review.`);
+
         await test.step(`Add '${text}' text to review.`, async () => {
             await this.productPage.enterReviewText(text);
         });
+
         this.logger.debug(`Added '${text}' text to review.`);
     }
 
     async submitReview(): Promise<void> {
         this.logger.debug('Clicking Submit in review');
+
         await test.step('Click Submit in review', async () => {
             await this.productPage.submitReview();
         });
+
         this.logger.debug('Clicked Submit in review');
     }
 
@@ -88,7 +103,8 @@ export class ProductSteps {
         this.logger.debug('Validating that retrieved product matches the first product.');
         this.logger.debug(`First product: ${StringUtils.prettyJson(firstProduct)}`);
         this.logger.debug(`Retrieved product: ${StringUtils.prettyJson(productDetails)}`);
-        await test.step('Validate that retrieved product matches the first product', async () => {
+
+        await test.step('Validate that retrieved product matches the first product', () => {
             expect.soft(
                 productDetails,
                 'Retrieved product should match the first product'
@@ -98,6 +114,7 @@ export class ProductSteps {
 
     async validateReviewSuccessMessage(): Promise<void> {
         this.logger.debug('Validating that review success message is displayed.');
+
         await test.step('Validat that review success message is displayed', async () => {
             await expect.soft(
                 this.productPage.locators.reviewSuccessMessage,

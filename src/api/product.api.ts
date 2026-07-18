@@ -2,7 +2,8 @@ import { Environment } from '@configs/environment.config';
 import { RUPEES } from '@data/constants/common.constants';
 import { EMPTY } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
-import { CustomResponseType } from '@data/types/custom-response.type';
+import { CustomResponseBodyType, CustomResponseType } from '@data/types/custom-response.type';
+import { ProductResponseType } from '@data/types/product-response.type';
 import { APIRequestContext, APIResponse } from '@playwright/test';
 
 export class ProductApi {
@@ -17,7 +18,7 @@ export class ProductApi {
         const products: ProductType[] = [];
         const method = options?.method ?? 'GET';
         const response: APIResponse = await this.request.fetch(Environment.PRODUCT_LIST_API_URL, { method: method });
-        const body = await response.json();
+        const body = await response.json() as CustomResponseBodyType;
         if (options?.raw) {
             return {
                 statusCode: response.status(),
@@ -36,7 +37,7 @@ export class ProductApi {
         return products;
     }
 
-    private parseProduct(responseProduct: any): ProductType {
+    private parseProduct(responseProduct: ProductResponseType): ProductType {
         return {
             id: responseProduct.id,
             name: responseProduct.name,
@@ -58,7 +59,7 @@ export class ProductApi {
         }
         const products: ProductType[] = [];
         const response: APIResponse = await this.request.post(Environment.PRODUCT_SEARCH_API_URL, { form: formData });
-        const body = await response.json();
+        const body = await response.json() as CustomResponseBodyType;
         if (options?.raw) {
             return {
                 statusCode: response.status(),

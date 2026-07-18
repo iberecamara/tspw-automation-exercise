@@ -1,7 +1,8 @@
+import { Environment } from '@configs/environment.config';
+import { NEWLINE } from '@data/constants/constants';
 import { test as base, TestInfo } from '@playwright/test';
 import { TestAutomationLogger } from '@utils/logger.utils';
-import { NEWLINE } from '@data/constants/constants';
-import { Environment } from '@configs/environment.config';
+import { StringUtils } from '@utils/string.utils';
 
 type LoggingFixtures = {
     logger: TestAutomationLogger;
@@ -19,9 +20,9 @@ export const test = base.extend<LoggingFixtures>({
             logger.info('*'.repeat(Environment.LOG_LINE_LENGTH));
             logger.info(NEWLINE);
             logger.info(`Starting test: ${testInfo.title}`);
-            logger.info(`Test tags: ${testInfo.tags}`);
+            logger.info(`Test tags: ${testInfo.tags.length > 0 ? testInfo.tags.join(', ') : 'none'}`);
             if (testInfo.annotations.length > 0) {
-                logger.info(`Test annotations: ${testInfo.annotations}`);
+                logger.info(`Test annotations: ${StringUtils.prettyJson(testInfo.annotations, { sameline: true })}`);
             }
             await use();
             logger.info(`Test finished: ${testInfo.title}`);

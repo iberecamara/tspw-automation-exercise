@@ -1,9 +1,9 @@
 import { EMPTY, RUPEES } from '@data/constants/constants';
 import { ProductType } from '@data/model/product.model';
+import { TestAutomationException } from '@exceptions/test-automation.exception';
 import { ProductComponentLocators } from '@locators/component/product.locators';
 import { BasePage } from '@pages.base/base.page';
-import { Locator, Page } from 'playwright-core';
-import { TestAutomationException } from '../../exceptions/test-automation.exception';
+import { Locator, Page } from '@playwright/test';
 
 export class ProductComponent extends BasePage {
 
@@ -32,10 +32,10 @@ export class ProductComponent extends BasePage {
             throw new TestAutomationException('Please provide either a locator or a product name.');
         }
         const product: Locator = options.productName ?
-            await this.locators.productLocator(options.productName) :
+            this.locators.productLocator(options.productName) :
             options.locator;
-        const price = await this.locators.productName(product).textContent() ?? EMPTY;
-        const name = await this.locators.productPrice(product).textContent() ?? EMPTY;
+        const price = await this.locators.productPrice(product).textContent() ?? EMPTY;
+        const name = await this.locators.productName(product).textContent() ?? EMPTY;
         return {
             name: name,
             price: +price.replace(RUPEES, EMPTY),
@@ -43,11 +43,13 @@ export class ProductComponent extends BasePage {
     }
 
     async clickProductView(productIndex: number): Promise<void> {
-        this.click(this.locators.productViewLink(productIndex));
+        const locator = this.locators.productViewLink(productIndex);
+        await locator.scrollIntoViewIfNeeded();
+        await this.click(locator);
     }
 
     async hoverProduct(productName: string): Promise<void> {
-        await this.hover(await this.locators.productLocator(productName));
+        await this.hover(this.locators.productLocator(productName));
     }
 
     async clickAddToCartFromHover(productName: string): Promise<void> {

@@ -6,13 +6,13 @@ export class CheckoutLocators {
     readonly deliveryAddressHeading: Locator;
     readonly billingAddressContainer: Locator;
     readonly billingAddressHeading: Locator;
-    readonly addressName: Function;
-    readonly addressAddressOne: Function;
-    readonly addressAddressTwo: Function;
-    readonly addressAddressThree: Function;
-    readonly addressCityStateZipcode: Function;
-    readonly addressCountry: Function;
-    readonly addressPhone: Function;
+    readonly addressName: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressAddressOne: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressAddressTwo: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressAddressThree: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressCityStateZipcode: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressCountry: (addressType: 'delivery' | 'billing') => Locator;
+    readonly addressPhone: (addressType: 'delivery' | 'billing') => Locator;
     readonly messageTextArea: Locator;
     readonly placeOrderButton: Locator;
 

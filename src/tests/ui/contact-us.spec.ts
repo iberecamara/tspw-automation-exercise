@@ -3,7 +3,7 @@ import { test } from '@fixtures/fixtures';
 
 test.describe('Contact Us form validations - UI', {
     tag: ['@contact-us', '@ui']
-}, async () => {
+}, () => {
 
     test('Contact Us Form',
         { tag: ['@SAMPLE-0009', '@TC-UI-6'] },

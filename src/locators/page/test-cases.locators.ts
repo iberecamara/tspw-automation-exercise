@@ -2,8 +2,10 @@ import { Page } from '@playwright/test';
 
 export class TestCasesLocators {
 
-    constructor(page: Page) {
+    readonly page: Page;
 
+    constructor(page: Page) {
+        this.page = page;
     }
 
 }

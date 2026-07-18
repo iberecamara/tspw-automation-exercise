@@ -9,7 +9,7 @@ import { EMPTY } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { HomeLocators } from '@locators/page/home.locators';
 import { BasePage } from '@pages.base/base.page';
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 export class HomePage extends BasePage {
 
@@ -36,7 +36,6 @@ export class HomePage extends BasePage {
     async getRecommendedItems(): Promise<ProductType[]> {
         const recommendedItems: ProductType[] = [];
         const recommendedItemsLocators: Locator[] = await this.locators.recommendedItemsProducts.all();
-        console.log(recommendedItemsLocators.length)
         for (const locator of recommendedItemsLocators) {
             const product: ProductType = await this.parseRecommendedItem(locator);
             recommendedItems.push(product);
@@ -60,9 +59,9 @@ export class HomePage extends BasePage {
     }
 
     async clickScrollUp(): Promise<void> {
-        expect(this.locators.scrollUpButton).toBeVisible();
+        await this.locators.scrollUpButton.waitFor({ state: 'visible' });
         await this.click(this.locators.scrollUpButton);
-        expect(this.locators.subheading).toBeInViewport();
+        await this.locators.subheading.waitFor({ state: 'visible' });
     }
 
 }

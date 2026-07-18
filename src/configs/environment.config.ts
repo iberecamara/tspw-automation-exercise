@@ -16,6 +16,36 @@ config({
 
 const VALID_ALLURE_STATUSES = ['passed', 'failed', 'broken', 'skipped', 'unknown'];
 
+interface EnvVars {
+    // Playwright variables
+    WORKERS: number;
+    RETRIES: number;
+    HEADLESS: boolean;
+    SLOWMO: number;
+    VIEWPORT_HEIGHT: number | null;
+    VIEWPORT_WIDTH: number | null;
+
+    // Application variables
+    APPLICATION: string;
+    APPLICATION_ENVIRONMENT?: 'local' | 'dev' | 'qa' | 'stg' | 'uat' | 'prd';
+    BASE_URL: string;
+
+    // Sharding variables
+    SHARD_INDEX: string;
+    SHARD_TOTAL: string;
+
+    // Logger variables
+    LOG_CONSOLE: boolean;
+    LOG_TYPE: 'text' | 'json';
+    LOG_LEVEL: 'info' | 'debug' | 'warn' | 'error' | 'trace';
+    LOG_TIMESTAMP_FORMAT: string;
+    LOG_LINE_LENGTH: number;
+
+    // Miscellanea
+    JIRA_BOARD?: string;
+    ALLURE_REPORT_REMOVE_STATUS?: string[];
+}
+
 const variables = {
     // Playwright variables
     WORKERS: Joi.number().integer().positive().empty('').default(1),
@@ -28,6 +58,7 @@ const variables = {
     // Application variables
     APPLICATION: Joi.string().required(),
     APPLICATION_ENVIRONMENT: Joi.string().empty('').valid('local', 'dev', 'qa', 'stg', 'uat', 'prd'),
+    BASE_URL: Joi.string().uri().required(),
 
     // Sharding variables (set by CI when the suite is split across Playwright shards)
     SHARD_INDEX: Joi.string().allow('').empty('').default(''),
@@ -58,7 +89,7 @@ const variables = {
         })
 }
 
-const parsed = Joi.object(variables)
+const validationResult: Joi.ValidationResult = Joi.object<EnvVars, true>(variables)
     .unknown(true)
     .validate(
         process.env, {
@@ -66,9 +97,11 @@ const parsed = Joi.object(variables)
         abortEarly: false,
     });
 
-if (parsed.error) {
-    throw new Error(`Environment variables validation error: ${parsed.error.message}`);
+if (validationResult.error) {
+    throw new Error(`Environment variables validation error: ${validationResult.error.message}`);
 }
+
+const envValues = validationResult.value as EnvVars;
 
 type Viewport = {
     height: number,
@@ -77,24 +110,24 @@ type Viewport = {
 
 export class Environment {
 
-    static readonly WORKERS: number = parsed.value.WORKERS;
-    static readonly RETRIES: number = parsed.value.RETRIES;
-    static readonly HEADLESS: boolean = parsed.value.HEADLESS;
-    static readonly SLOWMO: number = parsed.value.SLOWMO ?? 0;
-    static readonly VIEWPORT: Viewport | null = parsed.value.VIEWPORT_HEIGHT && parsed.value.VIEWPORT_WIDTH
+    static readonly WORKERS: number = envValues.WORKERS;
+    static readonly RETRIES: number = envValues.RETRIES;
+    static readonly HEADLESS: boolean = envValues.HEADLESS;
+    static readonly SLOWMO: number = envValues.SLOWMO;
+    static readonly VIEWPORT: Viewport | null = envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
         ? {
-            height: parsed.value.VIEWPORT_HEIGHT,
-            width: parsed.value.VIEWPORT_WIDTH
+            height: envValues.VIEWPORT_HEIGHT,
+            width: envValues.VIEWPORT_WIDTH
         }
         : null;
 
-    static readonly APPLICATION: string = parsed.value.APPLICATION;
-    static readonly APPLICATION_ENVIRONMENT: string = parsed.value.APPLICATION_ENVIRONMENT;
+    static readonly APPLICATION: string = envValues.APPLICATION;
+    static readonly APPLICATION_ENVIRONMENT: string = envValues.APPLICATION_ENVIRONMENT ?? 'dev';
 
-    static readonly SHARD_INDEX: string = parsed.value.SHARD_INDEX;
-    static readonly SHARD_TOTAL: string = parsed.value.SHARD_TOTAL;
+    static readonly SHARD_INDEX: string = envValues.SHARD_INDEX;
+    static readonly SHARD_TOTAL: string = envValues.SHARD_TOTAL;
 
-    static readonly BASE_URL: string = 'https://automationexercise.com';
+    static readonly BASE_URL: string = envValues.BASE_URL;
     static readonly BASE_API_URL: string = `${Environment.BASE_URL}/api`;
     static readonly CREATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/createAccount`;
     static readonly DELETE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/deleteAccount`;
@@ -105,15 +138,15 @@ export class Environment {
     static readonly BRAND_LIST_API_URL: string = `${Environment.BASE_API_URL}/brandsList`;
     static readonly VERIFY_LOGIN_API_URL: string = `${Environment.BASE_API_URL}/verifyLogin`;
 
-    static readonly LOG_CONSOLE: boolean = parsed.value.LOG_CONSOLE;
-    static readonly LOG_TYPE: string = parsed.value.LOG_TYPE;
-    static readonly LOG_LEVEL: string = parsed.value.LOG_LEVEL;
-    static readonly LOG_TIMESTAMP_FORMAT: string = parsed.value.LOG_TIMESTAMP_FORMAT;
-    static readonly LOG_LINE_LENGTH: number = parsed.value.LOG_LINE_LENGTH;
+    static readonly LOG_CONSOLE: boolean = envValues.LOG_CONSOLE;
+    static readonly LOG_TYPE: string = envValues.LOG_TYPE;
+    static readonly LOG_LEVEL: string = envValues.LOG_LEVEL;
+    static readonly LOG_TIMESTAMP_FORMAT: string = envValues.LOG_TIMESTAMP_FORMAT;
+    static readonly LOG_LINE_LENGTH: number = envValues.LOG_LINE_LENGTH;
 
-    static readonly JIRA_BOARD: string = parsed.value.JIRA_BOARD;
+    static readonly JIRA_BOARD: string = envValues.JIRA_BOARD ?? '';
     static readonly PROJECT_TAG: string = `@${Environment.JIRA_BOARD}`;
-    static readonly SET_JIRA_TAG: Function = (id: number): string => { return `${Environment.PROJECT_TAG}-${id}` };
+    static readonly SET_JIRA_TAG: (id: number) => string = (id: number): string => { return `${Environment.PROJECT_TAG}-${id}` };
 
-    static readonly ALLURE_REPORT_REMOVE_STATUS: string[] = parsed.value.ALLURE_REPORT_REMOVE_STATUS;
+    static readonly ALLURE_REPORT_REMOVE_STATUS: string[] = envValues.ALLURE_REPORT_REMOVE_STATUS ?? [];
 }

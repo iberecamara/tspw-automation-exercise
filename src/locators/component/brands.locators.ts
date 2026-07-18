@@ -5,7 +5,7 @@ export class BrandsComponentLocators {
     readonly brandsHeading: Locator;
     readonly brandsContainer: Locator;
     readonly brands: Locator;
-    readonly brandByName: Function;
+    readonly brandByName: (brand: string) => Locator;
 
     constructor(page: Page) {
         this.brandsHeading = page.getByText('Brands');

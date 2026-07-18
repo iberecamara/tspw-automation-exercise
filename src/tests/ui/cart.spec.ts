@@ -1,15 +1,13 @@
-import { DOWN } from '@data/constants/common.constants';
 import { SPACE } from '@data/constants/string.constants';
 import { ProductType } from '@data/model/product.model';
 import { GenerateRandomUser } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { ArraysUtils } from '@utils/arrays.utils';
 import { NumberUtils } from '@utils/number.utils';
-import { StringUtils } from '@utils/string.utils';
 
 test.describe('Cart validations - UI', {
     tag: ['@products', '@cart', '@ui']
-}, async () => {
+}, () => {
 
     test('Add Products in Cart',
         { tag: ['@SAMPLE-0010', '@TC-UI-12'] },
@@ -32,7 +30,6 @@ test.describe('Cart validations - UI', {
                 category: 'Tops'
             };
             firstProductData.totalPrice = firstProductData.quantity * firstProductData.price;
-
             const secondProductName = 'Men Tshirt';
             const secondProductData: ProductType = await sharedSteps.getProductDetails(productsPage, secondProductName);
             secondProductData.id = 2;
@@ -42,7 +39,6 @@ test.describe('Cart validations - UI', {
                 category: 'Tshirts'
             };
             secondProductData.totalPrice = secondProductData.quantity * secondProductData.price;
-
             await sharedSteps.hoverProduct(productsPage, firstProductName);
             await sharedSteps.addProductToCartFromHover(productsPage, firstProductName);
             await sharedSteps.continueShopping(productsPage);
@@ -127,7 +123,7 @@ test.describe('Cart validations - UI', {
         }) => {
             await sharedSteps.navigateHome(homePage);
             await sharedSteps.validateTitle('Home');
-            await sharedSteps.scrolling(homePage, DOWN);
+            await sharedSteps.scrolling(homePage, 'down');
             await homeSteps.validateRecommendedItems();
             const recommendedItems: ProductType[] = await homeSteps.getRecommendedItems();
             const item: ProductType = ArraysUtils.getRandomElement(recommendedItems);
@@ -136,7 +132,6 @@ test.describe('Cart validations - UI', {
             await sharedSteps.clickCart(homePage.header);
             await sharedSteps.validateTitle('Cart');
             const cartItems: ProductType[] = await cartSteps.getCartProducts();
-            console.log(StringUtils.prettyJson(cartItems))
             await cartSteps.validateCartItems(cartItems, [item], { partial: true });
         });
 

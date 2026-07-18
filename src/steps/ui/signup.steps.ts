@@ -2,22 +2,22 @@ import { UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { SignupPage } from '@pages/signup.page';
 import { expect } from '@playwright/test';
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { BaseSteps } from '@steps/base.steps';
 import { StringUtils } from '@utils/string.utils';
 
-export class SignupSteps {
+export class SignupSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly signupPage: SignupPage;
 
-    constructor(logger: TestAutomationLogger, signupPage: SignupPage) {
-        this.logger = logger;
+    constructor(signupPage: SignupPage) {
+        super();
         this.signupPage = signupPage;
     }
 
     // Actions
     async enterSignupData(user: UserType): Promise<void> {
         this.logger.debug(`Using signup data: ${StringUtils.prettyJson(user)}`)
+
         await test.step('Enter user data for Signup', async () => {
             await this.signupPage.chooseTitle(user.address.title);
             await this.signupPage.enterPassword(user.password);
@@ -35,21 +35,24 @@ export class SignupSteps {
             await this.signupPage.enterAddressState(user.address.state);
             await this.signupPage.enterAddressCity(user.address.city);
             await this.signupPage.enterAddressZipCode(user.address.zipcode);
-            await this.signupPage.enterAddressMobilePhone(user.address.mobileNumber as string);
+            await this.signupPage.enterAddressMobilePhone(user.address.mobileNumber);
         });
     }
 
     async clickCreateAccount(): Promise<void> {
         this.logger.debug('Clicking Signup page Create Account link.');
+
         await test.step('Click Create Account in Signup page', async () => {
             await this.signupPage.clickCreateAccount();
         });
+
         this.logger.debug('Clicked Signup page Create Account link.');
     }
 
     // Validations
     async validateEnterAccountInformationText(): Promise<void> {
         this.logger.debug('Validating Signup page data entry heading text.');
+
         await test.step('Validate that Signup page have the expected text', async () => {
             await expect.soft(
                 this.signupPage.locators.enterAccountInformationHeader,

@@ -1,4 +1,5 @@
 import { CartComponent } from '@components/cart.component';
+import { EMPTY } from '@data/constants/string.constants';
 import { ResumedAddressType } from '@data/model/address.model';
 import { CheckoutLocators } from '@locators/page/checkout.locators';
 import { BasePage } from '@pages.base/base.page';
@@ -16,14 +17,14 @@ export class CheckoutPage extends BasePage {
         this.cart = new CartComponent(page);
     }
 
-    async getAddress(addressType: string): Promise<ResumedAddressType> {
-        const name = await this.locators.addressName(addressType).textContent();
-        const addressOne = await this.locators.addressAddressOne(addressType).textContent();
-        const addressTwo = await this.locators.addressAddressTwo(addressType).textContent();
-        const addressThree = await this.locators.addressAddressThree(addressType).textContent();
-        const cityStateZipcode = await this.locators.addressCityStateZipcode(addressType).textContent();
-        const country = await this.locators.addressCountry(addressType).textContent();
-        const phone = await this.locators.addressPhone(addressType).textContent();
+    async getAddress(addressType: 'delivery' | 'billing'): Promise<ResumedAddressType> {
+        const name = await this.locators.addressName(addressType).textContent() ?? EMPTY;
+        const addressOne = await this.locators.addressAddressOne(addressType).textContent() ?? EMPTY;
+        const addressTwo = await this.locators.addressAddressTwo(addressType).textContent() ?? EMPTY;
+        const addressThree = await this.locators.addressAddressThree(addressType).textContent() ?? EMPTY;
+        const cityStateZipcode = await this.locators.addressCityStateZipcode(addressType).textContent() ?? EMPTY;
+        const country = await this.locators.addressCountry(addressType).textContent() ?? EMPTY;
+        const phone = await this.locators.addressPhone(addressType).textContent() ?? EMPTY;
         return {
             name: name,
             addressOne: addressOne,

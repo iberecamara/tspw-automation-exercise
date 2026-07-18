@@ -4,9 +4,9 @@ export class CategoriesComponentLocators {
 
     readonly categoriesHeading: Locator;
     readonly categoriesAccordian: Locator;
-    readonly categoryByName: Function;
-    readonly subCategoriesBycategory: Function;
-    readonly subCategory: Function;
+    readonly categoryByName: (category: string) => Locator;
+    readonly subCategoriesBycategory: (category: string) => Locator;
+    readonly subCategory: (category: string) => Locator;
     readonly categories: Locator;
 
     constructor(page: Page) {

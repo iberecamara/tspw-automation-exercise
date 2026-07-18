@@ -4,7 +4,7 @@ export class HeaderComponentLocators {
 
     readonly homeButton: Locator;
     readonly signupLoginButton: Locator;
-    readonly loggedInText: Function;
+    readonly loggedInText: (username: string) => Locator;
     readonly deleteAccountLink: Locator;
     readonly logoutLink: Locator;
     readonly contactUsLink: Locator;

@@ -1,5 +1,5 @@
 import { Environment } from '@configs/environment.config';
-import { MINUTE_IN_MILISSECONDS } from '@data/constants/common.constants';
+import { SECOND_IN_MILISSECONDS } from '@data/constants/common.constants';
 import { defineConfig, devices } from '@playwright/test';
 import { DateTimeUtils } from '@utils/datetime.utils';
 import * as os from 'node:os';
@@ -13,9 +13,9 @@ const globalLaunchOptions = {
 
 export default defineConfig({
   testDir: '../tests/',
-  timeout: process.env.CI ? 30 * MINUTE_IN_MILISSECONDS : 90 * MINUTE_IN_MILISSECONDS,
+  timeout: 90 * SECOND_IN_MILISSECONDS,
   expect: {
-    timeout: 5 * MINUTE_IN_MILISSECONDS,
+    timeout: 5 * SECOND_IN_MILISSECONDS,
   },
   fullyParallel: true,
   retries: Environment.RETRIES,
@@ -55,7 +55,7 @@ export default defineConfig({
   use: {
     testIdAttribute: 'data-qa',
     ignoreHTTPSErrors: true,
-    actionTimeout: 5 * MINUTE_IN_MILISSECONDS,
+    actionTimeout: 5 * SECOND_IN_MILISSECONDS,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'retain-on-failure',

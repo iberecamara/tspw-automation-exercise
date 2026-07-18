@@ -3,16 +3,16 @@ import { Locator, Page } from '@playwright/test';
 export class HomeLocators {
 
     readonly productsContainer: Locator;
-    readonly productViewLink: Function;
-    readonly productLocator: Function;
+    readonly productViewLink: (index: number) => Locator;
+    readonly productLocator: (name: string) => Locator;
     readonly indexOffset = 1;
     readonly recommendedItemsHeading: Locator;
     readonly recommendedItemsContainer: Locator;
     readonly recommendedItemsProducts: Locator;
-    readonly recommendedProductsId: Function;
-    readonly recommendedProductsName: Function;
-    readonly recommendedProductsPrice: Function;
-    readonly addRecommendedItem: Function;
+    readonly recommendedProductsId: (locator: Locator) => Locator;
+    readonly recommendedProductsName: (locator: Locator) => Locator;
+    readonly recommendedProductsPrice: (locator: Locator) => Locator;
+    readonly addRecommendedItem: (id: number) => Locator;
     readonly subheading: Locator;
     readonly scrollUpButton: Locator;
 

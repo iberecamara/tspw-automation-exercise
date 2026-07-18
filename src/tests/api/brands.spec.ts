@@ -3,7 +3,7 @@ import { test } from '@fixtures/fixtures';
 
 test.describe('Brands validations - API', {
     tag: ['@brands', '@api']
-}, async () => {
+}, () => {
 
     test('Get All Brands List',
         { tag: ['@SAMPLE-0030', '@TC-API-3'] },

@@ -1,10 +1,9 @@
 import { CustomResponseType } from '@data/types/custom-response.type';
 import { test } from '@fixtures/fixtures';
-import { StringUtils } from '@utils/string.utils';
 
 test.describe('Products validations - API', {
     tag: ['@products', '@api']
-}, async () => {
+}, () => {
 
     test('Get All Products List',
         { tag: ['@SAMPLE-0028', '@TC-API-1'] },
@@ -40,7 +39,7 @@ test.describe('Products validations - API', {
             productApiSteps
         }) => {
             const response: CustomResponseType = await productApiSteps.search({ raw: true }) as CustomResponseType;
-            console.log(StringUtils.prettyJson(response))
+            await productApiSteps.validateMissingParameter(response);
         });
 
 });

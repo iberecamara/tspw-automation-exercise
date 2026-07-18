@@ -3,7 +3,7 @@ import { ArraysUtils } from '@utils/arrays.utils';
 
 test.describe('Categories validations - UI', {
     tag: ['@categories', '@ui']
-}, async () => {
+}, () => {
 
     test('View Category Products',
         { tag: ['@SAMPLE-0019', '@TC-UI-18'] },

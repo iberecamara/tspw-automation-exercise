@@ -1,16 +1,15 @@
 import { LoginApi } from '@api/login.api';
 import { CustomResponseType } from '@data/types/custom-response.type';
 import { test } from '@fixtures/fixtures';
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { BaseSteps } from '@steps/base.steps';
 import { expect } from 'playwright/test';
 
-export class LoginApiSteps {
+export class LoginApiSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly loginApi: LoginApi;
 
-    constructor(logger: TestAutomationLogger, loginApi: LoginApi) {
-        this.logger = logger;
+    constructor(loginApi: LoginApi) {
+        super();
         this.loginApi = loginApi;
     }
 
@@ -18,17 +17,20 @@ export class LoginApiSteps {
     async verify(options?: { method?: 'POST' | 'DELETE', email?: string, password?: string }): Promise<CustomResponseType> {
         this.logger.debug('Retrieving raw response from API - Verify Login.');
         let response: CustomResponseType;
+
         await test.step('Retrieve raw response from API - Verify Login', async () => {
-            response = await this.loginApi.verify(options) as CustomResponseType;
+            response = await this.loginApi.verify(options);
         });
+
         this.logger.debug('Retrieved raw response from API - Verify Login.');
-        return response!;
+        return response;
     }
 
     // Validations
     async validateUserExists(response: CustomResponseType): Promise<void> {
         this.logger.debug('Validating User Exists - Verify Login.');
-        await test.step('Validating User Exists - Verify Login', async () => {
+
+        await test.step('Validating User Exists - Verify Login', () => {
             expect.soft(
                 response.body.responseCode,
                 'Response Code (from body) for Verify Login where user exists should be 200'
@@ -43,7 +45,8 @@ export class LoginApiSteps {
 
     async validateUserNotFound(response: CustomResponseType): Promise<void> {
         this.logger.debug('Validating User Not Found - Verify Login.');
-        await test.step('Validating User Not Found - Verify Login', async () => {
+
+        await test.step('Validating User Not Found - Verify Login', () => {
             expect.soft(
                 response.body.responseCode,
                 'Response Code (from body) for Verify Login where user does not exist should be 404'
@@ -58,7 +61,8 @@ export class LoginApiSteps {
 
     async validateMissingParameter(response: CustomResponseType): Promise<void> {
         this.logger.debug('Validating Missing Parameter - Password - Verify Login.');
-        await test.step('Validating Missing Parameter - Password - Verify Login', async () => {
+
+        await test.step('Validating Missing Parameter - Password - Verify Login', () => {
             expect.soft(
                 response.body.responseCode,
                 'Response Code (from body) for Missing Parameter - Password - Verify Login should be 400'
@@ -73,7 +77,8 @@ export class LoginApiSteps {
 
     async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
         this.logger.debug('Validating Method Not Allowed - DELETE - Verify Login.');
-        await test.step('Validating Method Not Allowed - DELETE - Verify Login', async () => {
+
+        await test.step('Validating Method Not Allowed - DELETE - Verify Login', () => {
             expect.soft(
                 response.body.responseCode,
                 'Response Code (from body) for DELETE into Verify Login should be 405'

@@ -2,22 +2,22 @@ import { ContactUsType } from '@data/model/contact-us.model';
 import { test } from '@fixtures/fixtures';
 import { ContactUsPage } from '@pages/contact-us.page';
 import { expect } from '@playwright/test';
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { BaseSteps } from '@steps/base.steps';
 import { StringUtils } from '@utils/string.utils';
 
-export class ContactUsSteps {
+export class ContactUsSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly contactUsPage: ContactUsPage;
 
-    constructor(logger: TestAutomationLogger, contactUsPage: ContactUsPage) {
-        this.logger = logger;
+    constructor(contactUsPage: ContactUsPage) {
+        super();
         this.contactUsPage = contactUsPage;
     }
 
     // Actions
     async enterContactFormData(formData: ContactUsType): Promise<void> {
         this.logger.debug(`Using Contact Us data: ${StringUtils.prettyJson(formData)}`)
+
         await test.step('Enter Contact Us data', async () => {
             await this.contactUsPage.enterName(formData.name);
             await this.contactUsPage.enterEmail(formData.email);
@@ -30,23 +30,28 @@ export class ContactUsSteps {
 
     async clickSubmit(options?: { accept: boolean }): Promise<void> {
         this.logger.debug(`Clicking Submit button, will ${options?.accept ? 'click Ok in' : 'dismiss'} confirmation dialog`);
+
         await test.step(`Clicking Submit button and ${options?.accept ? 'confirming' : 'dismissing'} confirmation dialog'`, async () => {
             await this.contactUsPage.clickSubmit(options?.accept);
         });
+
         this.logger.debug(`Clicked Submit button, and ${options?.accept ? 'clicked Ok in' : 'dismissed'} confirmation dialog`);
     }
 
     async clickHome(): Promise<void> {
         this.logger.debug('Clicking Home button');
+
         await test.step('Clicking Home button in Contact Us page', async () => {
             await this.contactUsPage.clickHome();
         });
+
         this.logger.debug('Clicked Home button');
     }
 
     // Validations
     async validateGetInTouchText(): Promise<void> {
         this.logger.debug('Validating Contact Us form heading text.');
+
         await test.step('Validate that Contact Us form have the expected text', async () => {
             await expect.soft(
                 this.contactUsPage.locators.getInTouchText,
@@ -57,6 +62,7 @@ export class ContactUsSteps {
 
     async validateSubmitSuccessMessage(): Promise<void> {
         this.logger.debug('Validating Contact Us form submit success message.');
+
         await test.step('Validate that Contact Us form displays the submit success message', async () => {
             await expect.soft(
                 this.contactUsPage.locators.submitSuccessMessage,

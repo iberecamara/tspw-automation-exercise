@@ -1,10 +1,11 @@
 import { GenerateRandomUser, UserType } from '@data/model/user.model';
 import { CustomResponseType } from '@data/types/custom-response.type';
+import { UserResponseType } from '@data/types/user-response.type';
 import { test } from '@fixtures/fixtures';
 
 test.describe('User validations - API', {
     tag: ['@user', '@api']
-}, async () => {
+}, () => {
 
     test('POST To Create/Register User Account',
         { tag: ['@SAMPLE-0038', '@TC-API-11'] },
@@ -37,7 +38,10 @@ test.describe('User validations - API', {
             await userApiSteps.createAccount(user);
             const updatedUser: UserType = GenerateRandomUser({ name: user.name, email: user.email, password: user.password });
             const response: CustomResponseType = await userApiSteps.updateAccount(updatedUser);
-            await userApiSteps.validateUpdateUser(response);
+            await userApiSteps.validateUpdateUserResponse(response);
+            const retrievedUserResponse: CustomResponseType = await userApiSteps.getUserByEmail(updatedUser.email);
+            const { user: retrievedUser = {} as UserResponseType } = retrievedUserResponse.body;
+            await userApiSteps.validateUpdatedUser(updatedUser, retrievedUser);
             await userApiSteps.deleteAccount(updatedUser);
         });
 

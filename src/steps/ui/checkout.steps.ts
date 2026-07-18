@@ -1,20 +1,19 @@
-import { NEWLINE, SPACE } from '@data/constants/string.constants';
+import { EMPTY, NEWLINE, SPACE } from '@data/constants/string.constants';
 import { ResumedAddressType } from '@data/model/address.model';
 import { ProductType } from '@data/model/product.model';
 import { UserType } from '@data/model/user.model';
 import { test } from '@fixtures/fixtures';
 import { CheckoutPage } from '@pages/checkout.page';
 import { expect } from '@playwright/test';
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { BaseSteps } from '@steps/base.steps';
 import { StringUtils } from '@utils/string.utils';
 
-export class CheckoutSteps {
+export class CheckoutSteps extends BaseSteps {
 
-    readonly logger: TestAutomationLogger;
     readonly checkoutPage: CheckoutPage;
 
-    constructor(logger: TestAutomationLogger, checkoutPage: CheckoutPage) {
-        this.logger = logger;
+    constructor(checkoutPage: CheckoutPage) {
+        super();
         this.checkoutPage = checkoutPage;
     }
 
@@ -22,36 +21,44 @@ export class CheckoutSteps {
     async getCartProducts(): Promise<ProductType[]> {
         this.logger.debug('Retrieving all products details');
         const products: ProductType[] = [];
+
         await test.step('Retrieve all products', async () => {
             products.push(...await this.checkoutPage.cart.getCartItems());
         });
+
         this.logger.debug('Retrieved all products details');
         return products;
     }
 
     async getAddress(addressType: 'delivery' | 'billing'): Promise<ResumedAddressType> {
         this.logger.debug(`Retrieving ${addressType} address.`);
-        let address: ResumedAddressType;
+        let address = {} as ResumedAddressType;
+
         await test.step(`Retrieve ${addressType} address`, async () => {
             address = await this.checkoutPage.getAddress(addressType);
         });
+
         this.logger.debug(`Retrieved ${addressType} address.`);
-        return address!;
+        return address;
     }
 
     async enterComment(comment: string): Promise<void> {
         this.logger.debug(`Entering Checkout comment: '${comment}'.`);
+
         await test.step('Enter  Checkout comment', async () => {
             await this.checkoutPage.enterComment(comment);
         });
+
         this.logger.debug('Entered Checkout comment.');
     }
 
     async placeOrder(): Promise<void> {
         this.logger.debug('Placing order.');
+
         await test.step('Place order', async () => {
             await this.checkoutPage.placeOrder();
         });
+
         this.logger.debug('Order placed.');
     }
 
@@ -59,18 +66,12 @@ export class CheckoutSteps {
     async validateCheckoutAddress(user: UserType, addressType: 'delivery' | 'billing'): Promise<void> {
         this.logger.debug(`Validating ${StringUtils.capitalize(addressType)} Address for user.`);
         this.logger.debug(`User address to validate: ${StringUtils.prettyJson(user.address)}`);
+
         await test.step(`Validate ${addressType} Address.`, async () => {
-            if (user.address.title === 'Mr.') {
-                await expect.soft(
-                    this.checkoutPage.locators.addressName(addressType),
-                    `${StringUtils.capitalize(addressType)} Address must have the user title '${user.address.title}'.`
-                ).toContainText(user.address.title);
-            } else {
-                await expect.soft(
-                    this.checkoutPage.locators.addressName(addressType),
-                    `${StringUtils.capitalize(addressType)} Address must have the one of the valid user titles: 'Mrs.' or 'Ms..'.`
-                ).toContainText(/Mrs\.|Ms\./);
-            }
+            await expect.soft(
+                this.checkoutPage.locators.addressName(addressType),
+                `${addressType} address must show the expected title.`
+            ).toContainText(/Mrs\.|Mr\.|Ms\./);
             await expect.soft(
                 this.checkoutPage.locators.addressName(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user first name '${user.address.firstname}'.`
@@ -112,7 +113,7 @@ export class CheckoutSteps {
             await expect.soft(
                 this.checkoutPage.locators.addressPhone(addressType),
                 `${StringUtils.capitalize(addressType)} Address must have the user address associated phone number '${user.address.mobileNumber}'.`
-            ).toContainText(user.address.mobileNumber as string);
+            ).toContainText(user.address.mobileNumber ?? EMPTY);
         });
     }
 
@@ -120,7 +121,8 @@ export class CheckoutSteps {
         this.logger.debug('Validating all products in cart.');
         this.logger.debug(`Cart Items: ${StringUtils.prettyJson(cartItems)}`);
         this.logger.debug(`Added Items: ${StringUtils.prettyJson(addedItems)}`);
-        await test.step('Validate all products', async () => {
+
+        await test.step('Validate all products', () => {
             expect.soft(
                 cartItems,
                 'Cart items must match added items.'

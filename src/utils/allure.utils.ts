@@ -4,18 +4,19 @@ import {
     ALLURE_REPORT_SINGLE_FILE_DIR,
     ALLURE_RESULTS_DIR,
 } from '@configs/paths';
-import { NEWLINE } from '@data/constants/string.constants';
+import { EMPTY, NEWLINE } from '@data/constants/string.constants';
+import type { Attachment, TestResult } from 'allure-js-commons';
 import * as fs from 'fs';
 import { execSync } from 'node:child_process';
 import * as path from 'path';
 
 export class AllureUtils {
 
-    static async allureRemoveResults(): Promise<void> {
+    static allureRemoveResults(): void {
 
         const resultsDir = ALLURE_RESULTS_DIR;
         if (!fs.existsSync(resultsDir)) {
-            console.log('No allure-results directory found. Skipping cleanup.');
+            console.info('No allure-results directory found. Skipping cleanup.');
             return;
         }
 
@@ -26,11 +27,11 @@ export class AllureUtils {
                 const filePath = path.join(resultsDir, file);
                 try {
                     const fileContent = fs.readFileSync(filePath, 'utf8');
-                    const testResult = JSON.parse(fileContent);
-                    if (Environment.ALLURE_REPORT_REMOVE_STATUS && Environment.ALLURE_REPORT_REMOVE_STATUS.includes(testResult.status)) {
+                    const testResult: TestResult = JSON.parse(fileContent) as TestResult;
+                    if (Environment.ALLURE_REPORT_REMOVE_STATUS && Environment.ALLURE_REPORT_REMOVE_STATUS.includes(testResult.status ?? EMPTY)) {
                         fs.unlinkSync(filePath);
                         if (testResult.attachments) {
-                            testResult.attachments.forEach((attachment: any) => {
+                            testResult.attachments.forEach((attachment: Attachment) => {
                                 const attachmentPath = path.join(resultsDir, attachment.source);
                                 if (fs.existsSync(attachmentPath)) {
                                     fs.unlinkSync(attachmentPath);
@@ -45,9 +46,9 @@ export class AllureUtils {
         });
 
         if (Environment.ALLURE_REPORT_REMOVE_STATUS) {
-            console.log(`Allure Results Cleanup complete, status results removed: '${Environment.ALLURE_REPORT_REMOVE_STATUS}'.`);
+            console.info(`Allure Results Cleanup complete, status results removed: '${Environment.ALLURE_REPORT_REMOVE_STATUS.join(', ')}'.`);
         } else {
-            console.log('Allure Results Cleanup will not be executed.');
+            console.info('Allure Results Cleanup will not be executed.');
         }
     }
 
@@ -91,10 +92,7 @@ if (require.main === module) {
             AllureUtils.all();
             break;
         default:
-            console.error(
-                `Unknown or missing command: '${command ?? ''}${NEWLINE}Expected one of: generate | open | export | all`
-            );
-            process.exit(1);
+            console.error(`Unknown or missing command: '${String(command) ?? ''}'${NEWLINE}Expected one of: generate | open | export | all`);
     }
 
 }

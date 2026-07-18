@@ -4,7 +4,7 @@ import { test } from '@fixtures/fixtures';
 
 test.describe('Login validations - API', {
     tag: ['@login', '@api']
-}, async () => {
+}, () => {
 
     test('POST To Verify Login with valid details',
         { tag: ['@SAMPLE-0034', '@TC-API-7'] },
@@ -13,7 +13,7 @@ test.describe('Login validations - API', {
         }) => {
             const user: UserType = GenerateRandomUser();
             await userApiSteps.createAccount(user);
-            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', email: user.email, password: user.password }) as CustomResponseType;
+            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', email: user.email, password: user.password });
             await loginApiSteps.validateUserExists(response);
             await userApiSteps.deleteAccount(user);
         });
@@ -25,7 +25,7 @@ test.describe('Login validations - API', {
         }) => {
             const user: UserType = GenerateRandomUser();
             await userApiSteps.createAccount(user);
-            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', password: user.password }) as CustomResponseType;
+            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', password: user.password });
             await loginApiSteps.validateMissingParameter(response);
             await userApiSteps.deleteAccount(user);
         });
@@ -35,7 +35,7 @@ test.describe('Login validations - API', {
         async ({
             loginApiSteps
         }) => {
-            const response: CustomResponseType = await loginApiSteps.verify({ method: 'DELETE' }) as CustomResponseType;
+            const response: CustomResponseType = await loginApiSteps.verify({ method: 'DELETE' });
             await loginApiSteps.validateMethodNotAllowed(response);
         });
 
@@ -46,7 +46,7 @@ test.describe('Login validations - API', {
         }) => {
             const email = 'notavalidemailforsure@shouldnotwork.com';
             const password = 'definatelynotavalidpassword';
-            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', email: email, password: password }) as CustomResponseType;
+            const response: CustomResponseType = await loginApiSteps.verify({ method: 'POST', email: email, password: password });
             await loginApiSteps.validateUserNotFound(response);
         });
 
