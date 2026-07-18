@@ -131,7 +131,7 @@ jobs:
           merge-multiple: true
 
       - name: Generate single file Allure Report (all shards combined)
-        run: npm run report:export
+        run: npm run report:allure:export
 
       - name: Upload Allure Report - Zipped File
         uses: actions/upload-artifact@v7
