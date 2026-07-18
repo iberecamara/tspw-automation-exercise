@@ -1,24 +1,22 @@
-import { ContinueShoppingViewCartComponentLocators } from '@locators/component/continueshopping-viewcart.locators';
-import { BasePage } from '@pages.base/base.page';
-import { expect, Page } from '@playwright/test';
+import { ContinueShoppingViewCartComponentLocators } from "@locators/component/continueshopping-viewcart.locators";
+import { BasePage } from "@pages.base/base.page";
+import { expect, Page } from "@playwright/test";
 
 export class ContinueShoppingViewCartComponent extends BasePage {
+  readonly locators: ContinueShoppingViewCartComponentLocators;
 
-    readonly locators: ContinueShoppingViewCartComponentLocators;
+  constructor(page: Page) {
+    super(page);
+    this.locators = new ContinueShoppingViewCartComponentLocators(page);
+  }
 
-    constructor(page: Page) {
-        super(page);
-        this.locators = new ContinueShoppingViewCartComponentLocators(page);
-    }
+  async clickContinueShopping(): Promise<void> {
+    await expect(this.locators.continueShoppingButton).toBeVisible();
+    await this.click(this.locators.continueShoppingButton);
+  }
 
-    async clickContinueShopping(): Promise<void> {
-        await expect(this.locators.continueShoppingButton).toBeVisible();
-        await this.click(this.locators.continueShoppingButton);
-    }
-
-    async clickViewCart(): Promise<void> {
-        await expect(this.locators.viewCartLink).toBeVisible();
-        await this.click(this.locators.viewCartLink);
-    }
-
+  async clickViewCart(): Promise<void> {
+    await expect(this.locators.viewCartLink).toBeVisible();
+    await this.click(this.locators.viewCartLink);
+  }
 }

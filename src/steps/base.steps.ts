@@ -1,11 +1,9 @@
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { TestAutomationLogger } from "@utils/logger.utils";
 
 export class BaseSteps {
+  readonly logger: TestAutomationLogger;
 
-    readonly logger: TestAutomationLogger;
-
-    constructor() {
-        this.logger = TestAutomationLogger.getInstance();
-    }
-
+  constructor() {
+    this.logger = TestAutomationLogger.getInstance();
+  }
 }

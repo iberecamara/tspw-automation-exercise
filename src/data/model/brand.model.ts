@@ -1,6 +1,4 @@
-
 export interface BrandType {
-    id: number,
-    brand: string,
+  id: number;
+  brand: string;
 }
-

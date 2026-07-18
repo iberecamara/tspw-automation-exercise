@@ -1,59 +1,64 @@
-import { EMPTY, RUPEES } from '@data/constants/constants';
-import { ProductType } from '@data/model/product.model';
-import { TestAutomationException } from '@exceptions/test-automation.exception';
-import { ProductComponentLocators } from '@locators/component/product.locators';
-import { BasePage } from '@pages.base/base.page';
-import { Locator, Page } from '@playwright/test';
+import { EMPTY, RUPEES } from "@data/constants/constants";
+import { ProductType } from "@data/model/product.model";
+import { TestAutomationException } from "@exceptions/test-automation.exception";
+import { ProductComponentLocators } from "@locators/component/product.locators";
+import { BasePage } from "@pages.base/base.page";
+import { Locator, Page } from "@playwright/test";
 
 export class ProductComponent extends BasePage {
+  readonly locators: ProductComponentLocators;
 
-    readonly locators: ProductComponentLocators;
+  constructor(page: Page) {
+    super(page);
+    this.locators = new ProductComponentLocators(page);
+  }
 
-    constructor(page: Page) {
-        super(page);
-        this.locators = new ProductComponentLocators(page);
+  async getProductsCount(): Promise<number> {
+    return await this.locators.products.count();
+  }
+
+  async getProducts(): Promise<ProductType[]> {
+    const products: ProductType[] = [];
+    const locators: Locator[] = await this.locators.products.all();
+    for (const locator of locators) {
+      products.push(await this.getProductDetails({ locator: locator }));
     }
+    return products;
+  }
 
-    async getProductsCount(): Promise<number> {
-        return await this.locators.products.count();
+  async getProductDetails(options: {
+    locator?: Locator;
+    productName?: string;
+  }): Promise<ProductType> {
+    if (!options.locator && !options.productName) {
+      throw new TestAutomationException(
+        "Please provide either a locator or a product name.",
+      );
     }
+    const product: Locator = options.productName
+      ? this.locators.productLocator(options.productName)
+      : (options.locator ?? this.locators.productLocator(""));
+    const price =
+      (await this.locators.productPrice(product).textContent()) ?? EMPTY;
+    const name =
+      (await this.locators.productName(product).textContent()) ?? EMPTY;
+    return {
+      name: name,
+      price: +price.replace(RUPEES, EMPTY),
+    };
+  }
 
-    async getProducts(): Promise<ProductType[]> {
-        const products: ProductType[] = [];
-        const locators: Locator[] = await this.locators.products.all();
-        for (const locator of locators) {
-            products.push(await this.getProductDetails({ locator: locator }));
-        }
-        return products;
-    }
+  async clickProductView(productIndex: number): Promise<void> {
+    const locator = this.locators.productViewLink(productIndex);
+    await locator.scrollIntoViewIfNeeded();
+    await this.click(locator);
+  }
 
-    async getProductDetails(options: { locator?: Locator, productName?: string }): Promise<ProductType> {
-        if (!options.locator && !options.productName) {
-            throw new TestAutomationException('Please provide either a locator or a product name.');
-        }
-        const product: Locator = options.productName ?
-            this.locators.productLocator(options.productName) :
-            options.locator;
-        const price = await this.locators.productPrice(product).textContent() ?? EMPTY;
-        const name = await this.locators.productName(product).textContent() ?? EMPTY;
-        return {
-            name: name,
-            price: +price.replace(RUPEES, EMPTY),
-        }
-    }
+  async hoverProduct(productName: string): Promise<void> {
+    await this.hover(this.locators.productLocator(productName));
+  }
 
-    async clickProductView(productIndex: number): Promise<void> {
-        const locator = this.locators.productViewLink(productIndex);
-        await locator.scrollIntoViewIfNeeded();
-        await this.click(locator);
-    }
-
-    async hoverProduct(productName: string): Promise<void> {
-        await this.hover(this.locators.productLocator(productName));
-    }
-
-    async clickAddToCartFromHover(productName: string): Promise<void> {
-        await this.click(this.locators.productAddFromOverlay(productName));
-    }
-
+  async clickAddToCartFromHover(productName: string): Promise<void> {
+    await this.click(this.locators.productAddFromOverlay(productName));
+  }
 }

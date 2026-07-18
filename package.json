@@ -22,7 +22,9 @@
     "clean": "npm run clean:logs && npm run clean:reports",
     "lint": "eslint src --config src/configs/eslint.config.mjs .",
     "lint:fix": "eslint src --fix --config src/configs/eslint.config.mjs .",
-    "format:check": "prettier --check \"src/**/*.ts\""
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "format:write": "prettier --write \"src/**/*.ts\"",
+    "lint:formatcheck": "npm run lint; npm run format:check"
   },
   "keywords": [],
   "author": "Iberê Camara",

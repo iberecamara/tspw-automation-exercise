@@ -1,4 +1,4 @@
 export interface BrandResponseType {
-    id: number;
-    brand: string;
+  id: number;
+  brand: string;
 }

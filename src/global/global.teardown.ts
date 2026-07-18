@@ -1,7 +1,7 @@
-import { TestAutomationLogger } from '@utils/logger.utils';
+import { TestAutomationLogger } from "@utils/logger.utils";
 
 async function globalTeardown() {
-    await TestAutomationLogger.splitGeneratedLogs();
+  await TestAutomationLogger.splitGeneratedLogs();
 }
 
 export default globalTeardown;

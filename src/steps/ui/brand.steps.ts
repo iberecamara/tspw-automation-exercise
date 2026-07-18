@@ -2,12 +2,10 @@ import { BrandPage } from "@pages/brand.page";
 import { BaseSteps } from "@steps/base.steps";
 
 export class BrandSteps extends BaseSteps {
+  readonly brandPage: BrandPage;
 
-    readonly brandPage: BrandPage;
-
-    constructor(brandPage: BrandPage) {
-        super();
-        this.brandPage = brandPage;
-    }
-
+  constructor(brandPage: BrandPage) {
+    super();
+    this.brandPage = brandPage;
+  }
 }
