@@ -12,7 +12,7 @@ export class HeaderComponent extends BasePage {
     }
 
     async clickHome(): Promise<void> {
-        await this.click(this.locators.signupLoginButton);
+        await this.click(this.locators.homeButton);
     }
 
     async clickSignupLogin(): Promise<void> {
