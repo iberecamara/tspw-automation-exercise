@@ -17,6 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
+  BASE_URL: https://automationexercise.com
   APPLICATION: Automation Exercise
   WORKERS: 4
   RETRIES: 2
