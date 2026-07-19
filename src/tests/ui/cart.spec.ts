@@ -3,7 +3,6 @@ import { ProductType } from "@data/model/product.model";
 import { GenerateRandomUser } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
 import { ArraysUtils } from "@utils/arrays.utils";
-import { NumberUtils } from "@utils/number.utils";
 
 test.describe(
   "Cart validations - UI",
@@ -68,11 +67,18 @@ test.describe(
     test(
       "Verify Product quantity in Cart",
       { tag: ["@SAMPLE-0011", "@TC-UI-13"] },
-      async ({ homePage, productSteps, sharedSteps, cartSteps }) => {
+      async ({
+        homePage,
+        productSteps,
+        sharedSteps,
+        cartSteps,
+        productApiSteps,
+      }) => {
         await sharedSteps.navigateHome(homePage);
         await sharedSteps.validateTitle("Home");
-        const randomIndex = NumberUtils.getRandomNumber({ min: 1, max: 34 });
-        await sharedSteps.viewProduct(homePage, randomIndex);
+        const products = (await productApiSteps.all()) as ProductType[];
+        const randomProduct = ArraysUtils.getRandomElement(products);
+        await sharedSteps.viewProduct(homePage, randomProduct.id ?? -1);
         await sharedSteps.validateTitle("Product");
         const quantity = 4;
         await productSteps.setProductQuantity(quantity);

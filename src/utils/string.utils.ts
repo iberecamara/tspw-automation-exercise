@@ -14,14 +14,31 @@ export class StringUtils {
   }
 
   static prettyJson<T>(target: T, options?: { sameline?: boolean }): string {
-    let stringfied = JSON.stringify(target, null, 4);
-
+    let stringfied: string = StringUtils.parseJson(target);
     const shouldAddNewline = options?.sameline ?? true;
 
     if (shouldAddNewline) {
-      stringfied = `${NEWLINE}${stringfied}`;
+      stringfied = `${NEWLINE}${stringfied} `;
     }
 
+    return stringfied;
+  }
+
+  private static parseJson<T>(target: T) {
+    let stringfied: string;
+    try {
+      stringfied = JSON.stringify(target, null, 4);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        stringfied = error.message;
+      } else if (error instanceof Error) {
+        stringfied = `Error: ${error.message}`;
+      } else if (typeof error === "string") {
+        stringfied = error;
+      } else {
+        stringfied = "Unknown error";
+      }
+    }
     return stringfied;
   }
 

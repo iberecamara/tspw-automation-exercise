@@ -1,3 +1,4 @@
+import { BaseApi } from "@api/base.api";
 import { Environment } from "@configs/environment.config";
 import { BrandType } from "@data/model/brand.model";
 import {
@@ -5,11 +6,13 @@ import {
   CustomResponseType,
 } from "@data/types/custom-response.type";
 import { APIRequestContext, APIResponse } from "@playwright/test";
+import { StringUtils } from "@utils/string.utils";
 
-export class BrandApi {
+export class BrandApi extends BaseApi {
   readonly request: APIRequestContext;
 
   constructor(request: APIRequestContext) {
+    super();
     this.request = request;
   }
 
@@ -24,6 +27,7 @@ export class BrandApi {
       Environment.BRAND_LIST_API_URL,
       { method: method },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     if (options?.raw) {
       return {

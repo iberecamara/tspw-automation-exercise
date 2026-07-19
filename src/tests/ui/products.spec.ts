@@ -39,10 +39,7 @@ test.describe(
           condition: "New",
           brand: "Polo",
         };
-        await sharedSteps.navigateToProductView(
-          productsPage,
-          firstProduct.id ?? -1,
-        );
+        await sharedSteps.viewProduct(productsPage, firstProduct.id ?? -1);
         const productDetails: ProductType = await productSteps.productDetails();
         await productSteps.validateProductDetails(firstProduct, productDetails);
       },
@@ -76,6 +73,7 @@ test.describe(
         productsPage,
         sharedSteps,
         productApiSteps,
+        logger,
       }) => {
         await sharedSteps.navigateHome(homePage);
         await sharedSteps.validateTitle("Home");
@@ -83,6 +81,7 @@ test.describe(
         await sharedSteps.validateTitle("Products");
         const apiProducts = (await productApiSteps.all()) as ProductType[];
         const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
+        logger.info(StringUtils.prettyJson(selectedProduct));
         await sharedSteps.viewProduct(productsPage, selectedProduct.id ?? -1);
         const user: UserType = GenerateRandomUser();
         const review: string = StringUtils.generateRandomText({ words: 10 });

@@ -5,7 +5,6 @@ export class ProductComponentLocators {
   readonly productViewLink: (index: number) => Locator;
   readonly productLocator: (name: string) => Locator;
   readonly productAddFromOverlay: (name: string) => Locator;
-  readonly indexOffset = 1;
   readonly products: Locator;
   readonly productName: (locator: Locator) => Locator;
   readonly productPrice: (locator: Locator) => Locator;
@@ -24,7 +23,7 @@ export class ProductComponentLocators {
     this.productViewLink = (index: number): Locator => {
       return page
         .getByRole("link", { name: " View Product" })
-        .nth(index - this.indexOffset);
+        .and(page.locator(`a[href="/product_details/${index}"]`));
     };
     this.products = this.productsContainer.locator(".single-products");
     this.productName = (locator: Locator) => {

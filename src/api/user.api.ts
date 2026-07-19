@@ -1,3 +1,4 @@
+import { BaseApi } from "@api/base.api";
 import { Environment } from "@configs/environment.config";
 import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
@@ -7,11 +8,13 @@ import {
 } from "@data/types/custom-response.type";
 import { TestAutomationException } from "@exceptions/test-automation.exception";
 import { APIRequestContext, APIResponse } from "@playwright/test";
+import { StringUtils } from "@utils/string.utils";
 
-export class UserApi {
+export class UserApi extends BaseApi {
   readonly request: APIRequestContext;
 
   constructor(request: APIRequestContext) {
+    super();
     this.request = request;
   }
 
@@ -23,7 +26,7 @@ export class UserApi {
     }
     if (!user.address.mobileNumber) {
       throw new TestAutomationException(
-        `User moobile number cannot be undefined/null but was '${user.address.mobileNumber}'.`,
+        `User mobile number cannot be undefined/null but was '${user.address.mobileNumber}'.`,
       );
     }
     const formData = {
@@ -49,6 +52,7 @@ export class UserApi {
       Environment.CREATE_ACCOUNT_API_URL,
       { form: formData, failOnStatusCode: false },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     return {
       statusCode: response.status(),
@@ -69,6 +73,7 @@ export class UserApi {
       Environment.DELETE_ACCOUNT_API_URL,
       { form: formData },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     return {
       statusCode: response.status(),
@@ -111,6 +116,7 @@ export class UserApi {
       Environment.UPDATE_ACCOUNT_API_URL,
       { form: formData, failOnStatusCode: false },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     return {
       statusCode: response.status(),
@@ -125,6 +131,7 @@ export class UserApi {
       Environment.GET_USER_BY_EMAIL_API_URL,
       { params: params },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     body.user = {
       id: body.user?.id ?? 0,

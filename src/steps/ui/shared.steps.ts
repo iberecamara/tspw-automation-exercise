@@ -242,26 +242,13 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | ProductsPage,
     productIndex: number,
   ): Promise<void> {
-    this.logger.debug(`Clicking 'View Product' in home page`);
+    this.logger.debug(`Clicking 'View Product'`);
 
-    await test.step(`Click 'View Product' in home page`, async () => {
+    await test.step(`Click 'View Product'`, async () => {
       await pageObject.products.clickProductView(productIndex);
     });
 
-    this.logger.debug(`Clicked 'View Product' in home page`);
-  }
-
-  async navigateToProductView(
-    pageObject: ProductsPage | HomePage,
-    productIndex: number,
-  ): Promise<void> {
-    this.logger.debug(`Navigating to product #${productIndex}`);
-
-    await test.step("Navigating to product view", async () => {
-      await pageObject.products.clickProductView(productIndex);
-    });
-
-    this.logger.debug(`Navigated to product #${productIndex}`);
+    this.logger.debug(`Clicked 'View Product'`);
   }
 
   async getProducts(

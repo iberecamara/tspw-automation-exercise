@@ -1,3 +1,4 @@
+import { BaseApi } from "@api/base.api";
 import { Environment } from "@configs/environment.config";
 import { RUPEES } from "@data/constants/common.constants";
 import { EMPTY } from "@data/constants/string.constants";
@@ -8,11 +9,13 @@ import {
 } from "@data/types/custom-response.type";
 import { ProductResponseType } from "@data/types/product-response.type";
 import { APIRequestContext, APIResponse } from "@playwright/test";
+import { StringUtils } from "@utils/string.utils";
 
-export class ProductApi {
+export class ProductApi extends BaseApi {
   readonly request: APIRequestContext;
 
   constructor(request: APIRequestContext) {
+    super();
     this.request = request;
   }
 
@@ -27,6 +30,7 @@ export class ProductApi {
       Environment.PRODUCT_LIST_API_URL,
       { method: method },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     if (options?.raw) {
       return {
@@ -74,6 +78,7 @@ export class ProductApi {
       Environment.PRODUCT_SEARCH_API_URL,
       { form: formData },
     );
+    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
     if (options?.raw) {
       return {
