@@ -394,7 +394,7 @@ import { AllureUtils } from '@utils/allure.utils';
 await AllureUtils.generate();
 ```
 
-A `AllureCleanupReporter` (`src/reporters/allure-cleanup.reporter.ts`) automatically prunes Allure result entries whose status matches `ALLURE_REPORT_REMOVE_STATUS` (comma-separated, e.g. `passed,skipped`) after every run, keeping the report focused on actionable results.
+A `AllureCleanupReporter` (`src/reporters/allure-cleanup.reporter.ts`) automatically prunes Allure result entries whose status matches `ALLURE_REPORT_REMOVE_STATUS` (e.g. `passed,skipped`) after every run, keeping the report focused on actionable results.
 
 ### Logs
 

@@ -39,9 +39,8 @@ export class HomeSteps extends BaseSteps {
 
   async scrollUp(): Promise<void> {
     this.logger.debug("Clicking Scroll Up button");
-    this.logger.debug("Click Scroll Up button");
 
-    await test.step("Add Recommended Item to Cart", async () => {
+    await test.step("Click Scroll Up button", async () => {
       await this.homePage.clickScrollUp();
     });
 

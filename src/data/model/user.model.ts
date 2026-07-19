@@ -33,7 +33,7 @@ export function GenerateRandomUser(options?: {
     address: {
       title: ArraysUtils.getRandomElement(VALID_TITLES),
       birthDate: dob.getUTCDate().toString(),
-      birthMonth: dob.getUTCMonth().toString(),
+      birthMonth: (dob.getUTCMonth() + 1).toString(),
       birthYear: dob.getUTCFullYear().toString(),
       firstname: firstName,
       lastname: lastName,
