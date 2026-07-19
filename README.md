@@ -2,8 +2,6 @@
 
 A TypeScript, vanilla [Playwright](https://playwright.dev/) end-to-end and API test automation framework built against [automationexercise.com](https://automationexercise.com). "Vanilla" means no BDD wrapper (no Cucumber/Gherkin) — the framework relies on Playwright's native test runner, fixtures, and `test.step()` calls, organized through a layered Page Object Model.
 
-> Code created without AI help, to showcase knowledge of the Playwright framework.
-
 **Live Allure report:** available at [iberecamara.github.io/tspw-automation-exercise](https://iberecamara.github.io/tspw-automation-exercise/) after every push/merge to `main` (see [CI/CD](#cicd)).
 
 ---
@@ -19,6 +17,7 @@ A TypeScript, vanilla [Playwright](https://playwright.dev/) end-to-end and API t
 - [Installing Dependencies](#installing-dependencies)
 - [Environment Configuration](#environment-configuration)
 - [Running the Tests](#running-the-tests)
+- [Linting & Formatting](#linting--formatting)
 - [Reports](#reports)
 - [Extending the Project](#extending-the-project)
   - [Adding a New Page](#adding-a-new-page)
@@ -185,7 +184,7 @@ Steps are the business-readable layer that tests actually call, split by concern
 - `steps/ui/` — drives `pages/`/`components/` (e.g. `HomeSteps`, `ProductsSteps`, `SharedSteps`, `CheckoutSteps`).
 - `steps/api/` — drives `api/` clients directly, without going through the browser at all (e.g. `UserApiSteps`, `ProductApiSteps`), mainly used for fast test-data setup/teardown from inside UI specs (e.g. creating a user via API before a login test, or deleting it during cleanup).
 
-Each `*.steps.ts` file groups related **actions** and **validations** as methods on a class. The step class receives its `logger: TestAutomationLogger` and its page/component/API-client dependency once, through the **constructor** (injected by the corresponding fixture) — methods themselves don't take `logger` as a parameter, they just use `this.logger`. Every step method:
+Every `*.steps.ts` class **extends `BaseSteps`** (`src/steps/base.steps.ts`), which pulls the shared `TestAutomationLogger` singleton in its own constructor and exposes it as `this.logger` — subclasses just call `super()` and only need to accept their page/component/API-client dependency in their own constructor (injected by the corresponding fixture). Methods never take `logger` as a parameter, they just use `this.logger`. Each `*.steps.ts` file groups related **actions** and **validations** as methods on the class. Every step method:
 
 - Wraps its logic in Playwright's `test.step(...)` for readable trace/report output
 - Logs via `this.logger` (debug-level before/after, or info for higher-level actions)
@@ -193,12 +192,11 @@ Each `*.steps.ts` file groups related **actions** and **validations** as methods
 
 ```ts
 // src/steps/ui/shared.steps.ts
-export class SharedSteps {
-    readonly logger: TestAutomationLogger;
+export class SharedSteps extends BaseSteps {
     readonly page: Page;
 
-    constructor(logger: TestAutomationLogger, page: Page) {
-        this.logger = logger;
+    constructor(page: Page) {
+        super();
         this.page = page;
     }
 
@@ -221,8 +219,8 @@ Playwright's [fixture](https://playwright.dev/docs/test-fixtures) mechanism is u
 | File | Provides |
 |---|---|
 | `pages.fixtures.ts` | One fixture per Page Object (`homePage`, `cartPage`, `checkoutPage`, `brandPage`, `categoryPage`, …), plus an auto-running `adblocker` route interceptor |
-| `steps.fixtures.ts` | One fixture per Steps class, both UI (`homeSteps`, `sharedSteps`, `productsSteps`, …) and API (`userApiSteps`, `productApiSteps`) |
-| `api.fixtures.ts` | One fixture per API client (`userApi`, `productApi`) |
+| `steps.fixtures.ts` | One fixture per Steps class, both UI (`homeSteps`, `sharedSteps`, `productsSteps`, `brandSteps`, …) and API (`userApiSteps`, `productApiSteps`, `brandApiSteps`, `loginApiSteps`) |
+| `api.fixtures.ts` | One fixture per API client (`userApi`, `productApi`, `brandApi`, `loginApi`) |
 | `logging.fixtures.ts` | `logger` fixture (per-worker `TestAutomationLogger`), plus `autologger`/`logError` auto-fixtures that log test start/end and dump errors |
 | `fixtures.ts` | Merges all of the above via `mergeTests()` into the single `test` object every spec imports |
 
@@ -245,10 +243,10 @@ A `dev.spec.ts` file holds tests tagged `@dev`, used for scratch/debugging work 
 
 #### 7. Supporting layers
 
-- **`data/`** — `constants/` (magic strings/numbers), `model/` (TS interfaces like `UserType`, `ProductType`, `ProductCategoryType`, `AddressType`, `ContactUsType`, `CreditCardDetailsType`), and `types/` (API response shapes, site-page/title mappings).
-- **`api/`** — Thin classes wrapping raw HTTP calls to `automationexercise.com/api` via Playwright's `APIRequestContext` (`UserApi`, `ProductApi`), used for fast test-data setup/teardown, e.g. creating/deleting a user without going through the UI.
-- **`configs/`** — `environment.config.ts` loads and validates `.env` values with Joi and exposes them as a static `Environment` class; `playwright.config.ts` is the actual Playwright configuration; `paths.ts` centralizes filesystem paths (artifacts/reports/allure directories) so they aren't hardcoded in multiple places.
-- **`utils/`** — `logger.utils.ts` (Winston-based `TestAutomationLogger`, singleton per worker), `allure.utils.ts` (`AllureUtils` class wrapping the `allure` CLI — generate/open/export/cleanup reports), `file.utils.ts` (small filesystem helpers, e.g. reading a file into a trimmed, non-empty array of lines), plus small helpers (`datetime.utils.ts`, `string.utils.ts`, `number.utils.ts`, `arrays.utils.ts`).
+- **`data/`** — `constants/` (magic strings/numbers), `model/` (TS interfaces like `UserType`, `ProductType`, `ProductCategoryType`, `AddressType`, `ContactUsType`, `CreditCardDetailsType`, `BrandType`), and `types/` (API response shapes, site-page/title mappings).
+- **`api/`** — Thin classes wrapping raw HTTP calls to `automationexercise.com/api` via Playwright's `APIRequestContext` (`UserApi`, `ProductApi`, `BrandApi`, `LoginApi`), used for fast test-data setup/teardown, e.g. creating/deleting a user without going through the UI.
+- **`configs/`** — `environment.config.ts` loads and validates `.env` values with Joi and exposes them as a static `Environment` class; `playwright.config.ts` is the actual Playwright configuration; `paths.ts` centralizes filesystem paths (artifacts/reports/allure directories) so they aren't hardcoded in multiple places; `eslint.config.mjs` is the ESLint flat config used by `npm run lint`.
+- **`utils/`** — `logger.utils.ts` (Winston-based `TestAutomationLogger`, singleton per worker), `allure.utils.ts` (`AllureUtils` class wrapping the `allure` CLI — generate/open/export/cleanup Allure reports), `html-report.utils.ts` (`HtmlReportUtils`, opens the Playwright HTML report), `file.utils.ts` (small filesystem helpers, e.g. reading a file into a trimmed, non-empty array of lines), plus small helpers (`datetime.utils.ts`, `string.utils.ts`, `number.utils.ts`, `arrays.utils.ts`).
 - **`reporters/`** — Custom Playwright reporters, e.g. `allure-cleanup.reporter.ts`, which removes stale Allure result files matching `ALLURE_REPORT_REMOVE_STATUS` after a run.
 - **`global/`** — `global.teardown.ts`, run once after the whole suite finishes (currently finalizes/splits generated logs).
 - **`exceptions/`** — `TestAutomationException`, thrown by framework code when methods are misused.
@@ -357,6 +355,20 @@ npm run clean:reports   # removes artifacts/reports/*
 npm run clean           # both of the above
 ```
 
+## Linting & Formatting
+
+ESLint (flat config, `src/configs/eslint.config.mjs`) and Prettier are used to keep the codebase consistent:
+
+| Command | Description |
+|---|---|
+| `npm run lint` | Runs ESLint against `src` |
+| `npm run lint:fix` | Runs ESLint and auto-fixes what it can |
+| `npm run format:check` | Checks that every `src/**/*.ts` file is Prettier-formatted, without writing changes |
+| `npm run format:write` | Formats every `src/**/*.ts` file with Prettier |
+| `npm run lint:formatcheck` | Runs `lint` followed by `format:check`, e.g. as a CI-style gate |
+
+The ESLint config type-checks against `tsconfig.json` (`tseslint.configs.recommendedTypeChecked`), layers in `eslint-plugin-playwright`'s recommended rules, and excludes `src/tests/dev/dev.spec.ts` (the scratch/debugging spec file) from linting.
+
 ## Reports
 
 The suite produces three report formats simultaneously (configured in `playwright.config.ts`):
@@ -369,10 +381,11 @@ Allure reports are generated/opened through the `AllureUtils` class (`src/utils/
 
 | Command | Description |
 |---|---|
-| `npm run report:generate` | Generates the multi-page Allure HTML report from raw results |
-| `npm run report:open` | Opens the generated Allure report |
-| `npm run report` | Generates and opens the report in one step |
-| `npm run report:export` | Generates a single-file, portable Allure report (used by CI, uploaded as an artifact and published to GitHub Pages) |
+| `npm run report:allure:generate` | Generates the multi-page Allure HTML report from raw results |
+| `npm run report:allure:open` | Opens the generated Allure report |
+| `npm run report` | Generates and opens the Allure report in one step |
+| `npm run report:allure:export` | Generates a single-file, portable Allure report (used by CI, uploaded as an artifact and published to GitHub Pages) |
+| `npm run report:html:open` | Opens the Playwright HTML report (`artifacts/reports/html`) via `HtmlReportUtils` |
 
 `AllureUtils` is also usable programmatically elsewhere in the codebase:
 
@@ -429,7 +442,7 @@ Use this when a piece of UI is shared by two or more pages (e.g. a footer, a mod
 ### Adding New UI Steps
 
 1. Add a method to an existing `src/steps/ui/*.steps.ts` file (if it belongs to an existing flow) or create `src/steps/ui/<name>.steps.ts` exporting a class for a new flow.
-2. The class constructor should accept `logger: TestAutomationLogger` plus the page/component it drives, and store both as `readonly` fields.
+2. The class should `extend BaseSteps` (`@steps/base.steps`); its constructor should call `super()` and accept the page/component it drives, storing it as a `readonly` field. `this.logger` is then available for free — don't accept `logger` as a constructor parameter.
 3. Each method should:
    - Wrap its core logic in `await test.step('<readable description>', async () => { ... })`.
    - Log a `debug` line before and after via `this.logger` (or `info` for higher-level actions).
@@ -454,10 +467,10 @@ For specs that only exercise API clients (no browser page objects at all), creat
 
 ### Adding a New API Client / API Steps
 
-1. **Client** — create `src/api/<resource>.api.ts`, exporting a class whose constructor takes an `APIRequestContext` and exposes methods per endpoint (see `user.api.ts` / `product.api.ts` for the pattern, including simple retry handling).
+1. **Client** — create `src/api/<resource>.api.ts`, exporting a class whose constructor takes an `APIRequestContext` and exposes methods per endpoint (see `user.api.ts` / `product.api.ts` / `brand.api.ts` / `login.api.ts` for the pattern, including simple retry handling).
 2. Add any new endpoint URLs to `Environment` in `src/configs/environment.config.ts`.
 3. **Register the client** in `ApiFixtures` in `src/fixtures/api.fixtures.ts`.
-4. **API steps** — add a method to an existing `src/steps/api/*.steps.ts` file, or create a new one following the same `logger`-in-constructor, `test.step()`-wrapped pattern used by UI steps (see `user.steps.ts` / `product.steps.ts`). Register the class in `StepsFixtures` in `src/fixtures/steps.fixtures.ts`.
+4. **API steps** — add a method to an existing `src/steps/api/*.steps.ts` file, or create a new one extending `BaseSteps`, following the same `test.step()`-wrapped pattern used by UI steps (see `user.steps.ts` / `product.steps.ts`). Register the class in `StepsFixtures` in `src/fixtures/steps.fixtures.ts`.
 
 ### Adding Constants / Models
 
@@ -495,7 +508,7 @@ Runs once `test` finishes (`if: !cancelled()`, so it runs even if some shards fa
 
 1. Downloads **all** `allure-results-*` artifacts and merges them (`merge-multiple: true`) into a single `artifacts/reports/allure/allure-results` directory. Allure result files are UUID-named, so results from all 4 shards combine safely with no collisions.
 2. Downloads and merges **all** `automation-logs-*` artifacts the same way into `artifacts/logs`, giving one consolidated set of logs — this is the log-splitter output from every shard, gathered in one place (log filenames now include a `-shard<N>` suffix precisely so this merge never overwrites a file from a different shard).
-3. Generates **one single-file Allure report** from the merged results (`npm run report:export`), reflecting the results from all 4 shards.
+3. Generates **one single-file Allure report** from the merged results (`npm run report:allure:export`), reflecting the results from all 4 shards.
 4. Uploads the merged Allure report and the merged logs as the workflow's `Allure Report` / `Automation Logs` artifacts (same names/paths as before).
 5. Uploads the report for GitHub Pages.
 
