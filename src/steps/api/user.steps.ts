@@ -18,19 +18,19 @@ export class UserApiSteps extends BaseSteps {
 
   // Actions
   async createAccount(user: UserType): Promise<CustomResponseType> {
-    this.logger.debug(`Creating user via API:${StringUtils.prettyJson(user)}`);
+    this.logger.verbose(`Creating user via API:${StringUtils.prettyJson(user)}`);
     let response = {} as CustomResponseType;
 
     await test.step("Create valid user via API", async () => {
       response = await this.userApi.createUser(user);
     });
 
-    this.logger.debug("User created.");
+    this.logger.verbose("User created.");
     return response;
   }
 
   async deleteAccount(user: UserType): Promise<CustomResponseType> {
-    this.logger.debug(`Deleting user via API:${StringUtils.prettyJson(user)}`);
+    this.logger.verbose(`Deleting user via API:${StringUtils.prettyJson(user)}`);
     let response = {} as CustomResponseType;
 
     await test.step("Delete user via API", async () => {
@@ -40,12 +40,12 @@ export class UserApiSteps extends BaseSteps {
       );
     });
 
-    this.logger.debug("User deleted.");
+    this.logger.verbose("User deleted.");
     return response;
   }
 
   async updateAccount(updatedUser: UserType): Promise<CustomResponseType> {
-    this.logger.debug(
+    this.logger.verbose(
       `Updating user via API:${StringUtils.prettyJson(updatedUser)}`,
     );
     let response = {} as CustomResponseType;
@@ -54,25 +54,25 @@ export class UserApiSteps extends BaseSteps {
       response = await this.userApi.updateUser(updatedUser);
     });
 
-    this.logger.debug("User updated.");
+    this.logger.verbose("User updated.");
     return response;
   }
 
   async getUserByEmail(email: string): Promise<CustomResponseType> {
-    this.logger.debug("Retrieving Get User by Email.");
+    this.logger.verbose("Retrieving Get User by Email.");
     let response = {} as CustomResponseType;
 
     await test.step("Retrieve Get User by Email", async () => {
       response = await this.userApi.getUser(email);
     });
 
-    this.logger.debug("Retrieved Get User by Email.");
+    this.logger.verbose("Retrieved Get User by Email.");
     return response;
   }
 
   // Validations
   async validateCreateAccount(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating Create User.");
+    this.logger.verbose("Validating Create User.");
 
     await test.step("Validate Create User", () => {
       expect
@@ -92,7 +92,7 @@ export class UserApiSteps extends BaseSteps {
   }
 
   async validateDeleteAccount(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating Delete User.");
+    this.logger.verbose("Validating Delete User.");
 
     await test.step("Validating Delete User", () => {
       expect
@@ -114,7 +114,7 @@ export class UserApiSteps extends BaseSteps {
   async validateUpdateUserResponse(
     response: CustomResponseType,
   ): Promise<void> {
-    this.logger.debug("Validating Update User.");
+    this.logger.verbose("Validating Update User.");
 
     await test.step("Validate Update User", () => {
       expect
@@ -137,7 +137,7 @@ export class UserApiSteps extends BaseSteps {
     updatedUser: UserType,
     retrievedUser: UserResponseType,
   ): Promise<void> {
-    this.logger.debug("Validating Updated User.");
+    this.logger.verbose("Validating Updated User.");
 
     await test.step("Validate Updated User", () => {
       expect
@@ -237,7 +237,7 @@ export class UserApiSteps extends BaseSteps {
     response: CustomResponseType,
     user: UserType,
   ): Promise<void> {
-    this.logger.debug("Validating Get User by Email.");
+    this.logger.verbose("Validating Get User by Email.");
 
     await test.step("Validating Get User by Email", () => {
       expect

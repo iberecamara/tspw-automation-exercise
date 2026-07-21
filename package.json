@@ -12,6 +12,9 @@
     "test:pwui:ui": "npm test -- --ui --grep @ui",
     "test:api": "npm test --grep @api",
     "test:pwui:api": "npm test --ui --grep @api",
+    "docker:shards": "docker compose up --build tests-shard-1 tests-shard-2 tests-shard-3 tests-shard-4 --remove-orphans",
+    "docker:merge": "docker compose run --rm merge-reports",
+    "docker:test:sharded": "npm run docker:shards; npm run docker:merge",
     "report:allure:generate": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts generate",
     "report:allure:open": "ts-node -r tsconfig-paths/register src/utils/allure.utils.ts open",
     "report:html:open": "ts-node -r tsconfig-paths/register src/utils/html-report.utils.ts open",
@@ -56,5 +59,8 @@
     "playwright": "^1.57.0",
     "prettier": "^3.9.5",
     "typescript-eslint": "^8.64.0"
+  },
+  "overrides": {
+    "adm-zip": "^0.6.0"
   }
 }

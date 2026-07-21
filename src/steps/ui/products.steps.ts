@@ -14,25 +14,25 @@ export class ProductsSteps extends BaseSteps {
 
   // Actions
   async getProductsCount(): Promise<number> {
-    this.logger.debug("Getting the number of Products displayed");
+    this.logger.verbose("Getting the number of Products displayed");
     let count: number = 0;
 
     await test.step("Getting the number of Products displayed", async () => {
       count = await this.productsPage.products.getProductsCount();
     });
 
-    this.logger.debug(`Found ${count} Products in page`);
+    this.logger.verbose(`Found ${count} Products in page`);
     return count;
   }
 
   async searchProducts(searchTerm: string): Promise<void> {
-    this.logger.debug(`Searching for products with '${searchTerm}'.`);
+    this.logger.verbose(`Searching for products with '${searchTerm}'.`);
 
     await test.step("Searching products", async () => {
       await this.productsPage.searchProducts(searchTerm);
     });
 
-    this.logger.debug(`Searched for '${searchTerm}'.`);
+    this.logger.verbose(`Searched for '${searchTerm}'.`);
   }
 
   // Validations
@@ -40,7 +40,7 @@ export class ProductsSteps extends BaseSteps {
     products: ProductType[],
     searchTerm: string,
   ): void {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating displayed Products have the search term '${searchTerm}'.`,
     );
     for (const product of products) {

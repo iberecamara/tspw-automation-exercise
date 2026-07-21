@@ -1,0 +1,23 @@
+# Dependencies are installed fresh inside the image (see Dockerfile: `npm ci`).
+node_modules
+
+# Generated run artifacts shouldn't be baked into the image; they're written fresh on each
+# `docker run` and should be retrieved via a bind mount instead (see docker-compose.yml).
+artifacts
+test-results
+playwright-report
+blob-report
+playwright/.cache
+playwright/.auth
+
+# VCS / editor / OS noise.
+.git
+.gitignore
+.vscode
+.idea
+*.log
+.DS_Store
+
+# .env files
+.env
+.env.*

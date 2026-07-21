@@ -21,24 +21,24 @@ export class ProductApiSteps extends BaseSteps {
     brand?: string;
   }): Promise<CustomResponseType | ProductType[]> {
     if (options?.raw) {
-      this.logger.debug("Retrieving raw response from API - Get All Products.");
+      this.logger.verbose("Retrieving raw response from API - Get All Products.");
       let response = {} as CustomResponseType;
 
       await test.step("Retrieve raw response from API - Get All Products", async () => {
         response = (await this.productApi.all(options)) as CustomResponseType;
       });
 
-      this.logger.debug("Retrieved raw response from API - Get All Products.");
+      this.logger.verbose("Retrieved raw response from API - Get All Products.");
       return response;
     }
-    this.logger.debug("Retrieving all products from API.");
+    this.logger.verbose("Retrieving all products from API.");
     const products: ProductType[] = [];
 
     await test.step("Retrieve all products from API", async () => {
       products.push(...((await this.productApi.all(options)) as ProductType[]));
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Retrieved ${products.length} product${products.length > 1 ? "s" : EMPTY} from API.`,
     );
     return products;
@@ -49,7 +49,7 @@ export class ProductApiSteps extends BaseSteps {
     search?: string;
   }): Promise<CustomResponseType | ProductType[]> {
     if (options?.raw) {
-      this.logger.debug("Retrieving raw response from API - Search Products.");
+      this.logger.verbose("Retrieving raw response from API - Search Products.");
       let response = {} as CustomResponseType;
 
       await test.step("Retrieve raw response from API - Search Products", async () => {
@@ -58,10 +58,10 @@ export class ProductApiSteps extends BaseSteps {
         )) as CustomResponseType;
       });
 
-      this.logger.debug("Retrieved raw response from API - Search Products.");
+      this.logger.verbose("Retrieved raw response from API - Search Products.");
       return response;
     }
-    this.logger.debug(
+    this.logger.verbose(
       `Retrieving products from API matching search '${options?.search}'.`,
     );
     const products: ProductType[] = [];
@@ -72,7 +72,7 @@ export class ProductApiSteps extends BaseSteps {
       );
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Retrieved ${products.length} product${products.length > 1 ? "s" : EMPTY} from API matching search '${options?.search}'.`,
     );
     return products;
@@ -83,7 +83,7 @@ export class ProductApiSteps extends BaseSteps {
     response: CustomResponseType,
     options?: { search?: string },
   ): Promise<void> {
-    this.logger.debug("Validating raw response from API - Get All Products.");
+    this.logger.verbose("Validating raw response from API - Get All Products.");
 
     await test.step("Validate raw response from API - Get All Products", () => {
       expect
@@ -151,7 +151,7 @@ export class ProductApiSteps extends BaseSteps {
   }
 
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       "Validating Method Not Allowed - POST - Get All Products.",
     );
 
@@ -173,7 +173,7 @@ export class ProductApiSteps extends BaseSteps {
   }
 
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       "Validating Missing Paramater - search_product - Search Products.",
     );
 

@@ -18,49 +18,49 @@ export class CheckoutSteps extends BaseSteps {
 
   // Actions
   async getCartProducts(): Promise<ProductType[]> {
-    this.logger.debug("Retrieving all products details");
+    this.logger.verbose("Retrieving all products details");
     const products: ProductType[] = [];
 
     await test.step("Retrieve all products", async () => {
       products.push(...(await this.checkoutPage.cart.getCartItems()));
     });
 
-    this.logger.debug("Retrieved all products details");
+    this.logger.verbose("Retrieved all products details");
     return products;
   }
 
   async getAddress(
     addressType: "delivery" | "billing",
   ): Promise<ResumedAddressType> {
-    this.logger.debug(`Retrieving ${addressType} address.`);
+    this.logger.verbose(`Retrieving ${addressType} address.`);
     let address = {} as ResumedAddressType;
 
     await test.step(`Retrieve ${addressType} address`, async () => {
       address = await this.checkoutPage.getAddress(addressType);
     });
 
-    this.logger.debug(`Retrieved ${addressType} address.`);
+    this.logger.verbose(`Retrieved ${addressType} address.`);
     return address;
   }
 
   async enterComment(comment: string): Promise<void> {
-    this.logger.debug(`Entering Checkout comment: '${comment}'.`);
+    this.logger.verbose(`Entering Checkout comment: '${comment}'.`);
 
     await test.step("Enter  Checkout comment", async () => {
       await this.checkoutPage.enterComment(comment);
     });
 
-    this.logger.debug("Entered Checkout comment.");
+    this.logger.verbose("Entered Checkout comment.");
   }
 
   async placeOrder(): Promise<void> {
-    this.logger.debug("Placing order.");
+    this.logger.verbose("Placing order.");
 
     await test.step("Place order", async () => {
       await this.checkoutPage.placeOrder();
     });
 
-    this.logger.debug("Order placed.");
+    this.logger.verbose("Order placed.");
   }
 
   // Validations
@@ -68,10 +68,10 @@ export class CheckoutSteps extends BaseSteps {
     user: UserType,
     addressType: "delivery" | "billing",
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating ${StringUtils.capitalize(addressType)} Address for user.`,
     );
-    this.logger.debug(
+    this.logger.verbose(
       `User address to validate: ${StringUtils.prettyJson(user.address)}`,
     );
 
@@ -151,9 +151,9 @@ export class CheckoutSteps extends BaseSteps {
   }
 
   async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
-    this.logger.debug("Validating all products in cart.");
-    this.logger.debug(`Cart Items: ${StringUtils.prettyJson(cartItems)}`);
-    this.logger.debug(`Added Items: ${StringUtils.prettyJson(addedItems)}`);
+    this.logger.verbose("Validating all products in cart.");
+    this.logger.verbose(`Cart Items: ${StringUtils.prettyJson(cartItems)}`);
+    this.logger.verbose(`Added Items: ${StringUtils.prettyJson(addedItems)}`);
 
     await test.step("Validate all products", () => {
       expect

@@ -1,4 +1,4 @@
-name: Vanilla Playwright Test Automation Framework for Automation Exercise frontend
+name: Vanilla Playwright Test Automation Framework for Automation Exercise website
 
 on:
   push:
@@ -23,7 +23,7 @@ env:
   RETRIES: 2
   LOG_LINE_LENGTH: 100
   LOG_CONSOLE: true
-  LOG_LEVEL: debug
+  LOG_LEVEL: verbose
   HEADLESS: true
   JIRA_BOARD: SAMPLE
   SHARDS_TOTAL: 4

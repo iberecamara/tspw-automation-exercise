@@ -1,4 +1,4 @@
-import { EMPTY } from "@data/constants/string.constants";
+import { EMPTY, NEWLINE } from "@data/constants/string.constants";
 import { CreditCardDetailsType } from "@data/model/credit-card-details.model";
 import { UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
@@ -17,7 +17,7 @@ export class PaymentSteps extends BaseSteps {
 
   // Actions
   async enterCardDetails(cardDetails: CreditCardDetailsType): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Entering Credit Card details: ${StringUtils.prettyJson(cardDetails)}`,
     );
 
@@ -33,44 +33,44 @@ export class PaymentSteps extends BaseSteps {
       );
     });
 
-    this.logger.debug(`Entered Credit Card details.`);
+    this.logger.verbose(`Entered Credit Card details.`);
   }
 
   async payAndConfirmOrder(): Promise<void> {
-    this.logger.debug(`Clicking Pay and Confirm Order`);
+    this.logger.verbose(`Clicking Pay and Confirm Order`);
 
     await test.step(`Click Pay and Confirm Order`, async () => {
       await this.paymentPage.clickPayAndConfirmOrder();
     });
 
-    this.logger.debug(`Clicked Pay and Confirm Order`);
+    this.logger.verbose(`Clicked Pay and Confirm Order`);
   }
 
   async downloadInvoice(): Promise<string> {
-    this.logger.debug(`Clicking Download Invoice`);
+    this.logger.verbose(`Clicking Download Invoice`);
     let filepath: string = EMPTY;
 
     await test.step(`Click Download Invoice`, async () => {
       filepath = await this.paymentPage.downloadInvoice();
     });
 
-    this.logger.debug(`Clicked Download Invoice`);
+    this.logger.verbose(`Clicked Download Invoice`);
     return filepath;
   }
 
   async continue(): Promise<void> {
-    this.logger.debug(`Clicking Continue`);
+    this.logger.verbose(`Clicking Continue`);
 
     await test.step(`Click Continue`, async () => {
       await this.paymentPage.clickContinue();
     });
 
-    this.logger.debug(`Clicked Continue`);
+    this.logger.verbose(`Clicked Continue`);
   }
 
   // Validations
   async validateOrderPlaced(): Promise<void> {
-    this.logger.debug("Validating Payment page Order Placed message.");
+    this.logger.verbose("Validating Payment page Order Placed message.");
 
     await test.step("Validate Payment page Order Placed message", async () => {
       await expect
@@ -81,7 +81,7 @@ export class PaymentSteps extends BaseSteps {
         .toHaveText("Order Placed!");
     });
 
-    this.logger.debug("Validating Payment page Order Confirmed message.");
+    this.logger.verbose("Validating Payment page Order Confirmed message.");
 
     await test.step("Validate Payment page Order Confirmed message", async () => {
       await expect
@@ -98,7 +98,8 @@ export class PaymentSteps extends BaseSteps {
     user: UserType,
     totalPrice: number,
   ): Promise<void> {
-    this.logger.debug("Validating Invoice File details.");
+    this.logger.verbose("Validating Invoice File details.");
+    this.logger.verbose(`Invoice: ${NEWLINE}${fileContents.join(', ')}`);
 
     await test.step("Validate Invoice File details", () => {
       expect

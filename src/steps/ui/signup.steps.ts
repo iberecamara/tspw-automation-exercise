@@ -16,7 +16,7 @@ export class SignupSteps extends BaseSteps {
 
   // Actions
   async enterSignupData(user: UserType): Promise<void> {
-    this.logger.debug(`Using signup data: ${StringUtils.prettyJson(user)}`);
+    this.logger.verbose(`Using signup data: ${StringUtils.prettyJson(user)}`);
 
     await test.step("Enter user data for Signup", async () => {
       await this.signupPage.chooseTitle(user.address.title);
@@ -42,18 +42,18 @@ export class SignupSteps extends BaseSteps {
   }
 
   async clickCreateAccount(): Promise<void> {
-    this.logger.debug("Clicking Signup page Create Account link.");
+    this.logger.verbose("Clicking Signup page Create Account link.");
 
     await test.step("Click Create Account in Signup page", async () => {
       await this.signupPage.clickCreateAccount();
     });
 
-    this.logger.debug("Clicked Signup page Create Account link.");
+    this.logger.verbose("Clicked Signup page Create Account link.");
   }
 
   // Validations
   async validateEnterAccountInformationText(): Promise<void> {
-    this.logger.debug("Validating Signup page data entry heading text.");
+    this.logger.verbose("Validating Signup page data entry heading text.");
 
     await test.step("Validate that Signup page have the expected text", async () => {
       await expect
