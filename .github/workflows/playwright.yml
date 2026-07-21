@@ -1,4 +1,4 @@
-name: Vanilla Playwright Test Automation Framework for Automation Exercise frontend
+name: Vanilla Playwright Test Automation Framework for Automation Exercise website
 
 on:
   push:

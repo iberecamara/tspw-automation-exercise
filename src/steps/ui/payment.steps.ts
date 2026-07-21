@@ -1,4 +1,4 @@
-import { EMPTY } from "@data/constants/string.constants";
+import { EMPTY, NEWLINE } from "@data/constants/string.constants";
 import { CreditCardDetailsType } from "@data/model/credit-card-details.model";
 import { UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
@@ -99,6 +99,7 @@ export class PaymentSteps extends BaseSteps {
     totalPrice: number,
   ): Promise<void> {
     this.logger.verbose("Validating Invoice File details.");
+    this.logger.verbose(`Invoice: ${NEWLINE}${fileContents.join(', ')}`);
 
     await test.step("Validate Invoice File details", () => {
       expect
