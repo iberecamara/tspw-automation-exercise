@@ -1,0 +1,73 @@
+x-shard: &shard
+  build: .
+  image: tspw-automation-exercise:latest
+  # Runs the container as your host user/group instead of root, so anything written into the
+  # bind-mounted artifacts/ folder below is owned by you, not root. Requires HOST_UID/HOST_GID to
+  # be set when invoking compose (named HOST_UID/HOST_GID rather than UID/GID because UID is a
+  # readonly shell variable in bash and can't be reassigned/passed inline):
+  #   HOST_UID=$(id -u) HOST_GID=$(id -g) docker compose up --build ...
+  # Falls back to 1000:1000 (the common default for a first Linux user) if unset.
+  user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+  # Reads BASE_URL and every other variable from .env (see .dockerignore — .env is
+  # intentionally not baked into the image, so it's supplied here at run time instead).
+  env_file:
+    - .env
+  # Mounting artifacts/ means logs and reports (HTML, JSON, Allure) survive after the
+  # containers exit and are readable directly from the host. Every shard/service below writes
+  # into the same host artifacts/ folder — the logger and allure-playwright reporter already
+  # namespace their output per shard/worker (see logger.utils.ts's getShardSuffix), so this is
+  # safe to share without one shard's output overwriting another's.
+  #
+  # NOTE: if ./artifacts doesn't already exist on the host, Docker will create it on first run —
+  # as root, since dockerd itself runs as root — which defeats the point of the `user:` override
+  # above. Run `mkdir -p artifacts` yourself before the first `docker compose up` to avoid this.
+  volumes:
+    - ./artifacts:/app/artifacts
+
+services:
+  # Each shard runs one quarter of the suite, in parallel (mirrors
+  # .github/workflows/playwright.yml's 4-way shard matrix). SHARD_INDEX/SHARD_TOTAL are read by
+  # the framework to tag log files, and `--shard` is Playwright's own flag for splitting the
+  # suite across processes.
+  tests-shard-1:
+    <<: *shard
+    environment:
+      SHARD_INDEX: "1"
+      SHARD_TOTAL: "4"
+    command: npm test -- --shard=1/4
+
+  tests-shard-2:
+    <<: *shard
+    environment:
+      SHARD_INDEX: "2"
+      SHARD_TOTAL: "4"
+    command: npm test -- --shard=2/4
+
+  tests-shard-3:
+    <<: *shard
+    environment:
+      SHARD_INDEX: "3"
+      SHARD_TOTAL: "4"
+    command: npm test -- --shard=3/4
+
+  tests-shard-4:
+    <<: *shard
+    environment:
+      SHARD_INDEX: "4"
+      SHARD_TOTAL: "4"
+    command: npm test -- --shard=4/4
+
+  # Combines every shard's raw Allure results into one single-file report. Invoked as its own
+  # explicit step (see package.json's docker:test:sharded script) rather than via `depends_on`:
+  # Compose's dependency conditions only offer `service_completed_successfully`, which would skip
+  # this service entirely if any shard failed — the opposite of what we want, since a report is
+  # most useful precisely when something failed.
+  merge-reports:
+    build: .
+    image: tspw-automation-exercise:latest
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    env_file:
+      - .env
+    volumes:
+      - ./artifacts:/app/artifacts
+    command: npm run report:allure:export

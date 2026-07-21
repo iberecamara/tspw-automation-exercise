@@ -15,19 +15,19 @@ export class CartSteps extends BaseSteps {
 
   // Actions
   async getCartProducts(): Promise<ProductType[]> {
-    this.logger.debug("Retrieving all products details");
+    this.logger.verbose("Retrieving all products details");
     const products: ProductType[] = [];
 
     await test.step("Retrieve all products", async () => {
       products.push(...(await this.cartPage.cart.getCartItems()));
     });
 
-    this.logger.debug("Retrieved all products details");
+    this.logger.verbose("Retrieved all products details");
     return products;
   }
 
   async removeProducts(products: ProductType[]): Promise<void> {
-    this.logger.debug("Removing products from cart");
+    this.logger.verbose("Removing products from cart");
 
     await test.step("Remove products from cart", async () => {
       for (const product of products) {
@@ -35,7 +35,7 @@ export class CartSteps extends BaseSteps {
           product.id,
           `Cannot remove product '${product.name}' from cart: missing id.`,
         ).toBeDefined();
-        this.logger.debug(
+        this.logger.verbose(
           `Removing product: ${StringUtils.prettyJson(product)}`,
         );
         const productId = product.id ?? -1;
@@ -43,27 +43,27 @@ export class CartSteps extends BaseSteps {
       }
     });
 
-    this.logger.debug("Removed products from cart");
+    this.logger.verbose("Removed products from cart");
   }
 
   async proceedToCheckout(): Promise<void> {
-    this.logger.debug("Clicking Proceed to Checkout");
+    this.logger.verbose("Clicking Proceed to Checkout");
 
     await test.step("Click Proceed to Checkout", async () => {
       await this.cartPage.clickProceedToCheckoutButton();
     });
 
-    this.logger.debug("Clicked Proceed to Checkout");
+    this.logger.verbose("Clicked Proceed to Checkout");
   }
 
   async registerUserFromCheckout(): Promise<void> {
-    this.logger.debug("Clicking Register / Login");
+    this.logger.verbose("Clicking Register / Login");
 
     await test.step("Click Register / Login", async () => {
       await this.cartPage.clickRegisterFromCheckoutLink();
     });
 
-    this.logger.debug("Clicked Register / Login");
+    this.logger.verbose("Clicked Register / Login");
   }
 
   // Validations
@@ -72,7 +72,7 @@ export class CartSteps extends BaseSteps {
     addedItems: ProductType[],
     options?: { partial?: boolean },
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating all (${cartItems.length}) products in cart match all (${addedItems.length}) expected products.`,
     );
 
@@ -105,7 +105,7 @@ export class CartSteps extends BaseSteps {
   }
 
   async validateProductQuantity(quantity: number): Promise<void> {
-    this.logger.debug(`Validating product quantity in cart to be ${quantity}.`);
+    this.logger.verbose(`Validating product quantity in cart to be ${quantity}.`);
 
     await test.step("Validate product quantity in cart", async () => {
       const product = (await this.cartPage.cart.getCartItems()).at(0);

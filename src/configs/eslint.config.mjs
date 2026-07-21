@@ -3,6 +3,10 @@ import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
+  tseslint.configs.recommended,
+  tseslint.configs.eslintRecommended,
+  tseslint.configs.strict,
+  tseslint.configs.stylistic,
   {
     ignores: [
       'node_modules/**',
@@ -12,7 +16,6 @@ export default defineConfig([
   },
   {
     files: ['src/**/*.ts'],
-
     extends: [...tseslint.configs.recommendedTypeChecked],
     languageOptions: {
       parserOptions: {

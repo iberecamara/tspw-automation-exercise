@@ -14,7 +14,7 @@ export class CategorySteps extends BaseSteps {
     category: string,
     subcategory: string,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating Category heading for ${category} - ${subcategory}.`,
     );
     const headingText = `${category} - ${subcategory} Products`;

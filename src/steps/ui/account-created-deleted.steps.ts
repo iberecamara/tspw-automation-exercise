@@ -18,7 +18,7 @@ export class AccountCreatedDeletedSteps extends BaseSteps {
 
   // Actions
   async clickContinue(page: string): Promise<void> {
-    this.logger.debug(`Clicking Continue in Account ${page} page`);
+    this.logger.verbose(`Clicking Continue in Account ${page} page`);
 
     await test.step(`Click Continue in Account ${page} page`, async () => {
       await this.accountCreatedDeletedPage.clickContinue();
@@ -27,12 +27,12 @@ export class AccountCreatedDeletedSteps extends BaseSteps {
       });
     });
 
-    this.logger.debug(`Clicked Continue in Account ${page} page`);
+    this.logger.verbose(`Clicked Continue in Account ${page} page`);
   }
 
   // Validations
   async validateAccountActionText(action: string): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that 'Account ${StringUtils.capitalize(action)}!' text is displayed`,
     );
     const locator: Locator =

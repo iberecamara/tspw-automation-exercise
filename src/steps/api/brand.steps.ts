@@ -21,24 +21,24 @@ export class BrandApiSteps extends BaseSteps {
     brand?: string;
   }): Promise<CustomResponseType | BrandType[]> {
     if (options?.raw) {
-      this.logger.debug("Retrieving raw response from API - Get All Brands.");
+      this.logger.verbose("Retrieving raw response from API - Get All Brands.");
       let response = {} as CustomResponseType;
 
       await test.step("Retrieve raw response from API - Get All Brands", async () => {
         response = (await this.brandApi.all(options)) as CustomResponseType;
       });
 
-      this.logger.debug("Retrieved raw response from API - Get All Brands.");
+      this.logger.verbose("Retrieved raw response from API - Get All Brands.");
       return response;
     }
-    this.logger.debug("Retrieving all brands from API.");
+    this.logger.verbose("Retrieving all brands from API.");
     const brands: BrandType[] = [];
 
     await test.step("Retrieve all brands from API.", async () => {
       brands.push(...((await this.brandApi.all(options)) as BrandType[]));
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Retrieved ${brands.length} brands${brands.length > 1 ? "s" : EMPTY} from API.`,
     );
     return brands;
@@ -46,7 +46,7 @@ export class BrandApiSteps extends BaseSteps {
 
   // Validations
   async validateGetAllBrands(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating raw response from API - Get All Brands.");
+    this.logger.verbose("Validating raw response from API - Get All Brands.");
 
     await test.step("Validate raw response from API - Get All Brands", () => {
       expect
@@ -95,7 +95,7 @@ export class BrandApiSteps extends BaseSteps {
   }
 
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating Method Not Allowed - PUT - Get All Brands.");
+    this.logger.verbose("Validating Method Not Allowed - PUT - Get All Brands.");
 
     await test.step("Validating Method Not Allowed - PUT - Get All Brands", () => {
       expect

@@ -53,7 +53,7 @@ test.describe(
         await sharedSteps.validateTitle("Home");
         await sharedSteps.clickProducts(homePage.header);
         await sharedSteps.validateTitle("Products");
-        const searchTerm: string = "blue";
+        const searchTerm = "blue";
         await productsSteps.searchProducts(searchTerm);
         const products: ProductType[] =
           await sharedSteps.getProducts(productsPage);

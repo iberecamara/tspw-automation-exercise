@@ -15,85 +15,85 @@ export class ProductSteps extends BaseSteps {
 
   // Actions
   async setProductQuantity(quantity: number): Promise<void> {
-    this.logger.debug(`Setting product quantity to ${quantity}`);
+    this.logger.verbose(`Setting product quantity to ${quantity}`);
 
     await test.step("Set product quantity", async () => {
       await this.productPage.setQuantity(quantity);
     });
 
-    this.logger.debug(`Set product quantity to ${quantity}`);
+    this.logger.verbose(`Set product quantity to ${quantity}`);
   }
 
   async addToCart(): Promise<void> {
-    this.logger.debug("Adding product to cart");
+    this.logger.verbose("Adding product to cart");
 
     await test.step("Add product to cart", async () => {
       await this.productPage.clickAddToCart();
     });
 
-    this.logger.debug("Added product to cart");
+    this.logger.verbose("Added product to cart");
   }
 
   async viewCart(): Promise<void> {
-    this.logger.debug("Clicking View Cart");
+    this.logger.verbose("Clicking View Cart");
 
     await test.step("Navigating to cart from modal", async () => {
       await this.productPage.continueShoppingViewCart.clickViewCart();
     });
 
-    this.logger.debug("Clicked View Cart");
+    this.logger.verbose("Clicked View Cart");
   }
 
   async productDetails(): Promise<ProductType> {
-    this.logger.debug("Retrieving product details");
+    this.logger.verbose("Retrieving product details");
     let product = {} as ProductType;
 
     await test.step("Retrieve product details", async () => {
       product = await this.productPage.getProductDetails();
     });
 
-    this.logger.debug("Retrieved product details");
+    this.logger.verbose("Retrieved product details");
     return product;
   }
 
   async enterReviewName(name: string): Promise<void> {
-    this.logger.debug(`Adding '${name}' name to review.`);
+    this.logger.verbose(`Adding '${name}' name to review.`);
 
     await test.step(`Add '${name}' name to review.`, async () => {
       await this.productPage.enterReviewName(name);
     });
 
-    this.logger.debug(`Added '${name}' name to review.`);
+    this.logger.verbose(`Added '${name}' name to review.`);
   }
 
   async enterReviewEmail(email: string): Promise<void> {
-    this.logger.debug(`Adding '${email}' email to review.`);
+    this.logger.verbose(`Adding '${email}' email to review.`);
 
     await test.step(`Add '${email}' email to review.`, async () => {
       await this.productPage.enterReviewEmail(email);
     });
 
-    this.logger.debug(`Added '${email}' email to review.`);
+    this.logger.verbose(`Added '${email}' email to review.`);
   }
 
   async enterReviewText(text: string): Promise<void> {
-    this.logger.debug(`Adding '${text}' text to review.`);
+    this.logger.verbose(`Adding '${text}' text to review.`);
 
     await test.step(`Add '${text}' text to review.`, async () => {
       await this.productPage.enterReviewText(text);
     });
 
-    this.logger.debug(`Added '${text}' text to review.`);
+    this.logger.verbose(`Added '${text}' text to review.`);
   }
 
   async submitReview(): Promise<void> {
-    this.logger.debug("Clicking Submit in review");
+    this.logger.verbose("Clicking Submit in review");
 
     await test.step("Click Submit in review", async () => {
       await this.productPage.submitReview();
     });
 
-    this.logger.debug("Clicked Submit in review");
+    this.logger.verbose("Clicked Submit in review");
   }
 
   // Validations
@@ -101,11 +101,11 @@ export class ProductSteps extends BaseSteps {
     firstProduct: ProductType,
     productDetails: ProductType,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       "Validating that retrieved product matches the first product.",
     );
-    this.logger.debug(`First product: ${StringUtils.prettyJson(firstProduct)}`);
-    this.logger.debug(
+    this.logger.verbose(`First product: ${StringUtils.prettyJson(firstProduct)}`);
+    this.logger.verbose(
       `Retrieved product: ${StringUtils.prettyJson(productDetails)}`,
     );
 
@@ -120,7 +120,7 @@ export class ProductSteps extends BaseSteps {
   }
 
   async validateReviewSuccessMessage(): Promise<void> {
-    this.logger.debug("Validating that review success message is displayed.");
+    this.logger.verbose("Validating that review success message is displayed.");
 
     await test.step("Validat that review success message is displayed", async () => {
       await expect

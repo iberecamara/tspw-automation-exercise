@@ -15,9 +15,9 @@ export class StringUtils {
 
   static prettyJson<T>(target: T, options?: { sameline?: boolean }): string {
     let stringfied: string = StringUtils.parseJson(target);
-    const shouldAddNewline = options?.sameline ?? true;
+    const shouldAddNewline = options?.sameline ?? false;
 
-    if (shouldAddNewline) {
+    if (!shouldAddNewline) {
       stringfied = `${NEWLINE}${stringfied} `;
     }
 

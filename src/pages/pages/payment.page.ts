@@ -3,6 +3,7 @@ import { PaymentLocators } from "@locators/page/payment.locators";
 import { BasePage } from "@pages.base/base.page";
 import { Page } from "@playwright/test";
 
+/** Page Object for the payment page (card details form) and the order confirmation screen that follows it. */
 export class PaymentPage extends BasePage {
   readonly locators: PaymentLocators;
 
@@ -41,6 +42,11 @@ export class PaymentPage extends BasePage {
     await this.click(this.locators.paymentPayButton);
   }
 
+  /**
+   * Downloads the order invoice and saves it to `DOWNLOAD_FILEPATH` (`artifacts/downloads/`) under
+   * its server-suggested filename, returning the saved file's full path so callers can assert on
+   * its contents.
+   */
   async downloadInvoice(): Promise<string> {
     const downloadPromise = this.page.waitForEvent("download");
     await this.click(this.locators.downloadInvoiceButton);

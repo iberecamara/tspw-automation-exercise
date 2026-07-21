@@ -27,100 +27,100 @@ export class SharedSteps extends BaseSteps {
 
   // Actions
   async navigateHome<T extends BasePage>(pageObject: T): Promise<void> {
-    this.logger.debug(`Navigating to home page at '${Environment.BASE_URL}'.`);
+    this.logger.verbose(`Navigating to home page at '${Environment.BASE_URL}'.`);
 
     await test.step("Navigate to application home page", async () => {
       await pageObject.goToHome();
     });
 
-    this.logger.debug("Navigated to home page.");
+    this.logger.verbose("Navigated to home page.");
   }
 
   async clickHome(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Home' button in header`);
+    this.logger.verbose(`Clicking 'Home' button in header`);
 
     await test.step(`Click 'Home' button in header`, async () => {
       await header.clickHome();
     });
 
-    this.logger.debug(`Clicked 'Home' button in header`);
+    this.logger.verbose(`Clicked 'Home' button in header`);
   }
 
   async clickSignupLogin(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Signup / Login' button in header`);
+    this.logger.verbose(`Clicking 'Signup / Login' button in header`);
 
     await test.step(`Click 'Signup / Login' button in header`, async () => {
       await header.clickSignupLogin();
     });
 
-    this.logger.debug(`Clicked 'Signup / Login' button in header`);
+    this.logger.verbose(`Clicked 'Signup / Login' button in header`);
   }
 
   async clickDeleteAccount(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Delete Account' in header`);
+    this.logger.verbose(`Clicking 'Delete Account' in header`);
 
     await test.step(`Click 'Delete Account' in header`, async () => {
       await header.clickDeleteAccount();
     });
 
-    this.logger.debug(`Clicked 'Delete Account' in header`);
+    this.logger.verbose(`Clicked 'Delete Account' in header`);
   }
 
   async clickLogout(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Logout' in header`);
+    this.logger.verbose(`Clicking 'Logout' in header`);
 
     await test.step(`Click 'Logout' in header`, async () => {
       await header.clickLogout();
     });
 
-    this.logger.debug(`Clicked 'Logout' in header`);
+    this.logger.verbose(`Clicked 'Logout' in header`);
   }
 
   async clickContactUs(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Contact us' in header`);
+    this.logger.verbose(`Clicking 'Contact us' in header`);
 
     await test.step(`Click 'Contact us' in header`, async () => {
       await header.clickContactUs();
     });
 
-    this.logger.debug(`Clicked 'Contact us' in header`);
+    this.logger.verbose(`Clicked 'Contact us' in header`);
   }
 
   async clickTestCases(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Test Cases' in header`);
+    this.logger.verbose(`Clicking 'Test Cases' in header`);
 
     await test.step(`Click 'Test Cases' in header`, async () => {
       await header.clickTestCases();
     });
 
-    this.logger.debug(`Clicked 'Test Cases' in header`);
+    this.logger.verbose(`Clicked 'Test Cases' in header`);
   }
 
   async clickProducts(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Cicking 'Products' in header`);
+    this.logger.verbose(`Cicking 'Products' in header`);
 
     await test.step(`Click 'Products' in header`, async () => {
       await header.clickProducts();
     });
 
-    this.logger.debug(`Clicked 'Products' in header`);
+    this.logger.verbose(`Clicked 'Products' in header`);
   }
 
   async clickCart(header: HeaderComponent): Promise<void> {
-    this.logger.debug(`Clicking 'Cart' in header`);
+    this.logger.verbose(`Clicking 'Cart' in header`);
 
     await test.step(`Click 'Cart' in header`, async () => {
       await header.clickCart();
     });
 
-    this.logger.debug(`Clicked 'Cart' in header`);
+    this.logger.verbose(`Clicked 'Cart' in header`);
   }
 
   async scrolling<T extends BasePage>(
     pageObject: T,
     direction: "down" | "up",
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Scrolling to ${direction.toLowerCase() === "down" ? "bottom" : "top"} of page.`,
     );
 
@@ -128,7 +128,7 @@ export class SharedSteps extends BaseSteps {
       await pageObject.scroll(direction);
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Scrolled to ${direction.toLowerCase() === "down" ? "bottom" : "top"} of page.`,
     );
   }
@@ -137,47 +137,47 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | CartPage,
     email: string,
   ): Promise<void> {
-    this.logger.debug("Subscribing email in page");
-    this.logger.debug(`Using email '${email}'`);
+    this.logger.verbose("Subscribing email in page");
+    this.logger.verbose(`Using email '${email}'`);
 
     await test.step("Subscribing email in page", async () => {
       await pageObject.subscription.enterSubscriptionEmail(email);
       await pageObject.subscription.clickSubscribe();
     });
 
-    this.logger.debug("Subscribed email in page");
+    this.logger.verbose("Subscribed email in page");
   }
 
   async continueShopping(
     pageObject: HomePage | ProductsPage | ProductPage,
   ): Promise<void> {
-    this.logger.debug("Clicking Continue Shopping.");
+    this.logger.verbose("Clicking Continue Shopping.");
 
     await test.step("Click Continue Shopping", async () => {
       await pageObject.continueShoppingViewCart.clickContinueShopping();
     });
 
-    this.logger.debug("Clicked Continue Shopping.");
+    this.logger.verbose("Clicked Continue Shopping.");
   }
 
   async hoverProduct(
     pageObject: HomePage | ProductsPage,
     productName: string,
   ): Promise<void> {
-    this.logger.debug(`Hovering over product '${productName}'.`);
+    this.logger.verbose(`Hovering over product '${productName}'.`);
 
     await test.step(`Hover over product '${productName}'.`, async () => {
       await pageObject.products.hoverProduct(productName);
     });
 
-    this.logger.debug(`Hovered over product '${productName}'.`);
+    this.logger.verbose(`Hovered over product '${productName}'.`);
   }
 
   async addProductToCartFromHover(
     pageObject: HomePage | ProductsPage,
     productName: string,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Adding product '${productName}' to cart from hover overlay.`,
     );
 
@@ -185,7 +185,7 @@ export class SharedSteps extends BaseSteps {
       await pageObject.products.clickAddToCartFromHover(productName);
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Added product '${productName}' to cart from hover overlay.`,
     );
   }
@@ -194,7 +194,7 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | ProductsPage,
     products: ProductType[],
   ): Promise<void> {
-    this.logger.debug(`Adding ${products.length} products to cart.`);
+    this.logger.verbose(`Adding ${products.length} products to cart.`);
 
     await test.step(`Add ${products.length} products to cart`, async () => {
       for (const product of products) {
@@ -204,13 +204,13 @@ export class SharedSteps extends BaseSteps {
       }
     });
 
-    this.logger.debug(`Added ${products.length} products to cart.`);
+    this.logger.verbose(`Added ${products.length} products to cart.`);
   }
 
   async selectRandomProducts(products: ProductType[]): Promise<ProductType[]> {
     const quantity = faker.number.int({ min: 1, max: 3 });
     const selectedProducts: ProductType[] = [];
-    this.logger.debug(`Selecting ${quantity} products from the list.`);
+    this.logger.verbose(`Selecting ${quantity} products from the list.`);
 
     await test.step(`Select ${quantity} products from the list`, () => {
       const count = 1;
@@ -220,11 +220,11 @@ export class SharedSteps extends BaseSteps {
           indexLimit: 10,
         }),
       );
-      this.logger.debug(`Adding ${count} to each product quantity.`);
-      this.logger.debug(
+      this.logger.verbose(`Adding ${count} to each product quantity.`);
+      this.logger.verbose(
         `Adding ${count} times product price to each product total price.`,
       );
-      this.logger.debug(
+      this.logger.verbose(
         `Removing unecessary 'brand' field from each product to match validations.`,
       );
       for (const product of selectedProducts) {
@@ -234,7 +234,7 @@ export class SharedSteps extends BaseSteps {
       }
     });
 
-    this.logger.debug(`Selected ${quantity} products from the list.`);
+    this.logger.verbose(`Selected ${quantity} products from the list.`);
     return selectedProducts;
   }
 
@@ -242,26 +242,26 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | ProductsPage,
     productIndex: number,
   ): Promise<void> {
-    this.logger.debug(`Clicking 'View Product'`);
+    this.logger.verbose(`Clicking 'View Product'`);
 
     await test.step(`Click 'View Product'`, async () => {
       await pageObject.products.clickProductView(productIndex);
     });
 
-    this.logger.debug(`Clicked 'View Product'`);
+    this.logger.verbose(`Clicked 'View Product'`);
   }
 
   async getProducts(
     pageObject: ProductsPage | HomePage | BrandPage,
   ): Promise<ProductType[]> {
-    this.logger.debug("Retrieving all products details");
+    this.logger.verbose("Retrieving all products details");
     const products: ProductType[] = [];
 
     await test.step("Retrieve all products", async () => {
       products.push(...(await pageObject.products.getProducts()));
     });
 
-    this.logger.debug("Retrieved all products details");
+    this.logger.verbose("Retrieved all products details");
     return products;
   }
 
@@ -269,7 +269,7 @@ export class SharedSteps extends BaseSteps {
     pageObject: ProductsPage | HomePage | ProductPage,
     productName: string,
   ): Promise<ProductType> {
-    this.logger.debug(`Retrieving products details for '${productName}'.`);
+    this.logger.verbose(`Retrieving products details for '${productName}'.`);
     let product: ProductType = { name: EMPTY, price: 0 };
 
     await test.step(`Retrieve product details for '${productName}'`, async () => {
@@ -278,19 +278,19 @@ export class SharedSteps extends BaseSteps {
       });
     });
 
-    this.logger.debug(`Retried products details for '${productName}'.`);
+    this.logger.verbose(`Retried products details for '${productName}'.`);
     return product;
   }
 
   async getProductsCount(pageObject: ProductsPage | HomePage): Promise<number> {
-    this.logger.debug("Getting the number of Products displayed");
+    this.logger.verbose("Getting the number of Products displayed");
     let count: number = 0;
 
     await test.step("Getting the number of Products displayed", async () => {
       count = await pageObject.products.getProductsCount();
     });
 
-    this.logger.debug(`Found ${count} Products in page`);
+    this.logger.verbose(`Found ${count} Products in page`);
     return count;
   }
 
@@ -298,20 +298,20 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | CategoryPage,
     category: string,
   ): Promise<void> {
-    this.logger.debug(`Expanding Category ${category}`);
+    this.logger.verbose(`Expanding Category ${category}`);
 
     await test.step(`Expand Category ${category}`, async () => {
       await pageObject.categories.expandCategory(category);
     });
 
-    this.logger.debug(`Expanded Category ${category}`);
+    this.logger.verbose(`Expanded Category ${category}`);
   }
 
   async getSubCategories(
     pageObject: HomePage | CategoryPage,
     category: string,
   ): Promise<string[]> {
-    this.logger.debug(`Retrieving Category ${category} subcategories`);
+    this.logger.verbose(`Retrieving Category ${category} subcategories`);
     const subcategories: string[] = [];
 
     await test.step(`Retrieve Category ${category} subcategories`, async () => {
@@ -320,7 +320,7 @@ export class SharedSteps extends BaseSteps {
       );
     });
 
-    this.logger.debug(`Retrieved Category ${category} subcategories`);
+    this.logger.verbose(`Retrieved Category ${category} subcategories`);
     return subcategories;
   }
 
@@ -328,39 +328,39 @@ export class SharedSteps extends BaseSteps {
     pageObject: HomePage | CategoryPage,
     subCategory: string,
   ): Promise<void> {
-    this.logger.debug(`Selecting Sub Category ${subCategory}`);
+    this.logger.verbose(`Selecting Sub Category ${subCategory}`);
 
     await test.step(`Selecting Sub Category ${subCategory}`, async () => {
       await pageObject.categories.selectSubCategory(subCategory);
     });
 
-    this.logger.debug(`Selected Sub Category ${subCategory}`);
+    this.logger.verbose(`Selected Sub Category ${subCategory}`);
   }
 
   async selectBrand(
     pageObject: HomePage | BrandPage | ProductsPage,
     brand: string,
   ): Promise<void> {
-    this.logger.debug(`Selecting '${brand}' brand`);
+    this.logger.verbose(`Selecting '${brand}' brand`);
 
     await test.step(`Selecting ${brand} brand`, async () => {
       await pageObject.brands.selectBrand(brand);
     });
 
-    this.logger.debug(`Selected ${brand} brand`);
+    this.logger.verbose(`Selected ${brand} brand`);
   }
 
   async getBrands(
     pageObject: HomePage | ProductsPage | BrandPage,
   ): Promise<string[]> {
-    this.logger.debug(`Retrieving Brands`);
+    this.logger.verbose(`Retrieving Brands`);
     const brands: string[] = [];
 
     await test.step(`Retrieve Brands`, async () => {
       brands.push(...(await pageObject.brands.getBrands()));
     });
 
-    this.logger.debug(`Retrieved Brands`);
+    this.logger.verbose(`Retrieved Brands`);
     return brands;
   }
 
@@ -368,7 +368,7 @@ export class SharedSteps extends BaseSteps {
   async validateSubscriptionHeading(
     pageObject: HomePage | CartPage,
   ): Promise<void> {
-    this.logger.debug("Validating that page have the Subscription heading");
+    this.logger.verbose("Validating that page have the Subscription heading");
 
     await test.step("Validate that page have the Subscription heading", async () => {
       await expect
@@ -384,7 +384,7 @@ export class SharedSteps extends BaseSteps {
     count: number,
     expectedCount: number,
   ): Promise<void> {
-    this.logger.debug("Validating count of Products in page.");
+    this.logger.verbose("Validating count of Products in page.");
 
     await test.step("Validate that Products page have the expected amout of products", () => {
       expect
@@ -397,7 +397,7 @@ export class SharedSteps extends BaseSteps {
     products: ProductType[],
     expectedProducts: ProductType[],
   ): Promise<void> {
-    this.logger.debug("Validating that list of Products match by name.");
+    this.logger.verbose("Validating that list of Products match by name.");
 
     await test.step("Validate that list of Products match by name", () => {
       for (const expectedProduct of expectedProducts) {
@@ -416,7 +416,7 @@ export class SharedSteps extends BaseSteps {
   async validateSubscriptionMessage(
     pageObject: HomePage | CartPage,
   ): Promise<void> {
-    this.logger.debug("Validating that the Subscription message is displayed");
+    this.logger.verbose("Validating that the Subscription message is displayed");
 
     await test.step("Validate that the Subscription message is displayed", async () => {
       await expect
@@ -432,7 +432,7 @@ export class SharedSteps extends BaseSteps {
     header: HeaderComponent,
     user: UserType,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that 'Logged in as <username> ' text is displayed`,
     );
 
@@ -447,7 +447,7 @@ export class SharedSteps extends BaseSteps {
   }
 
   async validateTitle(sitePage: SitePages): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that application ${sitePage} page have the expected title`,
     );
 
@@ -462,7 +462,7 @@ export class SharedSteps extends BaseSteps {
   }
 
   async validateTitleDirectly(pageName: string, title: string): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that application ${pageName} page have the expected title`,
     );
 
@@ -479,7 +479,7 @@ export class SharedSteps extends BaseSteps {
   async validateCategorySection(
     pageObject: HomePage | CategoryPage,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that Category Section have the expected heading`,
     );
 
@@ -496,7 +496,7 @@ export class SharedSteps extends BaseSteps {
   async validateBrandSection(
     pageObject: HomePage | ProductsPage | BrandPage,
   ): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Validating that Brand Section have the expected heading`,
     );
 
@@ -511,7 +511,7 @@ export class SharedSteps extends BaseSteps {
   }
 
   async validateBrandPageHeading(brand: string): Promise<void> {
-    this.logger.debug(`Validating Brand heading for ${brand}.`);
+    this.logger.verbose(`Validating Brand heading for ${brand}.`);
     const headingText = `Brand - ${brand} Products`;
 
     await test.step(`Validate Brand heading for ${brand}.`, async () => {

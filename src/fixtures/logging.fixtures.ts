@@ -11,7 +11,7 @@ type LoggingFixtures = {
 };
 
 export const test = base.extend<LoggingFixtures>({
-  logger: async ({}, use, testInfo) => {
+  logger: async ({ }, use, testInfo) => {
     const log = TestAutomationLogger.getInstance(
       testInfo.workerIndex.toString(),
     );
@@ -33,14 +33,14 @@ export const test = base.extend<LoggingFixtures>({
       await use();
       logger.info(`Test finished: ${testInfo.title}`);
       logger.info(NEWLINE);
-      logger.info("*".repeat(Environment.LOG_LINE_LENGTH));
+      logger.info("#".repeat(Environment.LOG_LINE_LENGTH));
     },
     {
       auto: true,
     },
   ],
   logError: [
-    async ({}, use) => {
+    async ({ }, use) => {
       await use();
       if (test.info().errors.length > 0) {
         const logger = TestAutomationLogger.getInstance();

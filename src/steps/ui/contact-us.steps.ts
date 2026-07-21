@@ -15,7 +15,7 @@ export class ContactUsSteps extends BaseSteps {
 
   // Actions
   async enterContactFormData(formData: ContactUsType): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Using Contact Us data: ${StringUtils.prettyJson(formData)}`,
     );
 
@@ -30,7 +30,7 @@ export class ContactUsSteps extends BaseSteps {
   }
 
   async clickSubmit(options?: { accept: boolean }): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       `Clicking Submit button, will ${options?.accept ? "click Ok in" : "dismiss"} confirmation dialog`,
     );
 
@@ -38,24 +38,24 @@ export class ContactUsSteps extends BaseSteps {
       await this.contactUsPage.clickSubmit(options?.accept);
     });
 
-    this.logger.debug(
+    this.logger.verbose(
       `Clicked Submit button, and ${options?.accept ? "clicked Ok in" : "dismissed"} confirmation dialog`,
     );
   }
 
   async clickHome(): Promise<void> {
-    this.logger.debug("Clicking Home button");
+    this.logger.verbose("Clicking Home button");
 
     await test.step("Clicking Home button in Contact Us page", async () => {
       await this.contactUsPage.clickHome();
     });
 
-    this.logger.debug("Clicked Home button");
+    this.logger.verbose("Clicked Home button");
   }
 
   // Validations
   async validateGetInTouchText(): Promise<void> {
-    this.logger.debug("Validating Contact Us form heading text.");
+    this.logger.verbose("Validating Contact Us form heading text.");
 
     await test.step("Validate that Contact Us form have the expected text", async () => {
       await expect
@@ -68,7 +68,7 @@ export class ContactUsSteps extends BaseSteps {
   }
 
   async validateSubmitSuccessMessage(): Promise<void> {
-    this.logger.debug("Validating Contact Us form submit success message.");
+    this.logger.verbose("Validating Contact Us form submit success message.");
 
     await test.step("Validate that Contact Us form displays the submit success message", async () => {
       await expect

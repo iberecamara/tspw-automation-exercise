@@ -18,20 +18,20 @@ export class LoginApiSteps extends BaseSteps {
     email?: string;
     password?: string;
   }): Promise<CustomResponseType> {
-    this.logger.debug("Retrieving raw response from API - Verify Login.");
+    this.logger.verbose("Retrieving raw response from API - Verify Login.");
     let response = {} as CustomResponseType;
 
     await test.step("Retrieve raw response from API - Verify Login", async () => {
       response = await this.loginApi.verify(options);
     });
 
-    this.logger.debug("Retrieved raw response from API - Verify Login.");
+    this.logger.verbose("Retrieved raw response from API - Verify Login.");
     return response;
   }
 
   // Validations
   async validateUserExists(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating User Exists - Verify Login.");
+    this.logger.verbose("Validating User Exists - Verify Login.");
 
     await test.step("Validating User Exists - Verify Login", () => {
       expect
@@ -51,7 +51,7 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   async validateUserNotFound(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating User Not Found - Verify Login.");
+    this.logger.verbose("Validating User Not Found - Verify Login.");
 
     await test.step("Validating User Not Found - Verify Login", () => {
       expect
@@ -71,7 +71,7 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
-    this.logger.debug(
+    this.logger.verbose(
       "Validating Missing Parameter - Password - Verify Login.",
     );
 
@@ -94,7 +94,7 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.debug("Validating Method Not Allowed - DELETE - Verify Login.");
+    this.logger.verbose("Validating Method Not Allowed - DELETE - Verify Login.");
 
     await test.step("Validating Method Not Allowed - DELETE - Verify Login", () => {
       expect

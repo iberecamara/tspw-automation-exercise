@@ -7,10 +7,6 @@ node_modules/
 /playwright/.auth/
 # Test artifacts
 /artifacts/
-# Downloaded files should be excluded
-/src/files/download/**/*
-# Allow TypeScript files in files/download folder
-!/src/files/download/**/*.ts
 # Environment settings
 .env
 # Development playground test

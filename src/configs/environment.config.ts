@@ -33,7 +33,7 @@ interface EnvVars {
   // Logger variables
   LOG_CONSOLE: boolean;
   LOG_TYPE: "text" | "json";
-  LOG_LEVEL: "info" | "debug" | "warn" | "error" | "trace";
+  LOG_LEVEL: "info" | "debug" | "warn" | "error" | "verbose";
   LOG_TIMESTAMP_FORMAT: string;
   LOG_LINE_LENGTH: number;
 
@@ -67,7 +67,7 @@ const variables = {
   LOG_TYPE: Joi.string().empty("").valid("text", "json").default("text"),
   LOG_LEVEL: Joi.string()
     .empty("")
-    .valid("info", "debug", "warn", "error", "trace")
+    .valid("info", "debug", "warn", "error", "verbose")
     .default("info"),
   LOG_TIMESTAMP_FORMAT: Joi.string().empty("").default("YYYY-MM-DD HH:mm:ss"),
   LOG_LINE_LENGTH: Joi.number().integer().positive().empty("").default(100),
@@ -110,9 +110,9 @@ export class Environment {
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
-          height: envValues.VIEWPORT_HEIGHT,
-          width: envValues.VIEWPORT_WIDTH,
-        }
+        height: envValues.VIEWPORT_HEIGHT,
+        width: envValues.VIEWPORT_WIDTH,
+      }
       : null;
 
   static readonly APPLICATION: string = envValues.APPLICATION;
