@@ -1,8 +1,7 @@
 import { SPACE } from "@data/constants/string.constants";
 import { ProductType } from "@data/model/product.model";
-import { GenerateRandomUser } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
-import { ArraysUtils } from "@utils/arrays.utils";
+import { getRandomElement } from "@utils/arrays.utils";
 
 test.describe(
   "Cart validations - UI",
@@ -13,17 +12,27 @@ test.describe(
     test(
       "Add Products in Cart",
       { tag: ["@SAMPLE-0010", "@TC-UI-12"] },
-      async ({ homePage, productsPage, sharedSteps, cartSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickProducts(homePage.header);
-        await sharedSteps.validateTitle("Products");
+      async ({
+        homePage,
+        productsPage,
+        commonSteps,
+        cartSteps,
+        headerComponentSteps,
+        productListingComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickProducts(homePage.header);
+        await commonSteps.validateTitle("Products");
 
         const quantity = 1;
 
         const firstProductName = "Blue Top";
         const firstProductData: ProductType =
-          await sharedSteps.getProductDetails(productsPage, firstProductName);
+          await productListingComponentSteps.getProductDetails(
+            productsPage,
+            firstProductName,
+          );
         firstProductData.id = 1;
         firstProductData.quantity = quantity;
         firstProductData.category = {
@@ -34,7 +43,10 @@ test.describe(
           firstProductData.quantity * firstProductData.price;
         const secondProductName = "Men Tshirt";
         const secondProductData: ProductType =
-          await sharedSteps.getProductDetails(productsPage, secondProductName);
+          await productListingComponentSteps.getProductDetails(
+            productsPage,
+            secondProductName,
+          );
         secondProductData.id = 2;
         secondProductData.quantity = quantity;
         secondProductData.category = {
@@ -43,19 +55,25 @@ test.describe(
         };
         secondProductData.totalPrice =
           secondProductData.quantity * secondProductData.price;
-        await sharedSteps.hoverProduct(productsPage, firstProductName);
-        await sharedSteps.addProductToCartFromHover(
+        await productListingComponentSteps.hoverProduct(
           productsPage,
           firstProductName,
         );
-        await sharedSteps.continueShopping(productsPage);
-        await sharedSteps.hoverProduct(productsPage, secondProductName);
-        await sharedSteps.addProductToCartFromHover(
+        await productListingComponentSteps.addProductToCartFromHover(
+          productsPage,
+          firstProductName,
+        );
+        await productListingComponentSteps.continueShopping(productsPage);
+        await productListingComponentSteps.hoverProduct(
           productsPage,
           secondProductName,
         );
-        await sharedSteps.continueShopping(productsPage);
-        await sharedSteps.clickCart(productsPage.header);
+        await productListingComponentSteps.addProductToCartFromHover(
+          productsPage,
+          secondProductName,
+        );
+        await productListingComponentSteps.continueShopping(productsPage);
+        await headerComponentSteps.clickCart(productsPage.header);
         const items = await cartSteps.getCartProducts();
         await cartSteps.validateCartItems(items, [
           firstProductData,
@@ -70,16 +88,20 @@ test.describe(
       async ({
         homePage,
         productSteps,
-        sharedSteps,
+        commonSteps,
         cartSteps,
         productApiSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
         const products = (await productApiSteps.all()) as ProductType[];
-        const randomProduct = ArraysUtils.getRandomElement(products);
-        await sharedSteps.viewProduct(homePage, randomProduct.id ?? -1);
-        await sharedSteps.validateTitle("Product");
+        const randomProduct = getRandomElement(products);
+        await productListingComponentSteps.viewProduct(
+          homePage,
+          randomProduct.id ?? -1,
+        );
+        await commonSteps.validateTitle("Product");
         const quantity = 4;
         await productSteps.setProductQuantity(quantity);
         await productSteps.addToCart();
@@ -91,15 +113,25 @@ test.describe(
     test(
       "Remove Products from Cart",
       { tag: ["@SAMPLE-0018", "@TC-UI-17"] },
-      async ({ homePage, productApiSteps, sharedSteps, cartSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
+      async ({
+        homePage,
+        productApiSteps,
+        commonSteps,
+        cartSteps,
+        headerComponentSteps,
+        productListingComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.removeProducts(selectedProducts);
         const cartProducts = await cartSteps.getCartProducts();
         await cartSteps.validateCartItems(cartProducts, []);
@@ -113,60 +145,77 @@ test.describe(
         homePage,
         userApiSteps,
         productApiSteps,
-        sharedSteps,
+        commonSteps,
         productsPage,
         productsSteps,
         cartSteps,
         cartPage,
         signupLoginSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickProducts(homePage.header);
-        await sharedSteps.validateTitle("Products");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickProducts(homePage.header);
+        await commonSteps.validateTitle("Products");
         const apiProducts = (await productApiSteps.all()) as ProductType[];
-        const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
-        const searchTerm: string = selectedProduct.name.split(SPACE)[0];
+        const selectedProduct: ProductType = getRandomElement(apiProducts);
+        const searchTerm: string =
+          selectedProduct.name.split(SPACE)[0] ?? selectedProduct.name;
         await productsSteps.searchProducts(searchTerm);
         const products: ProductType[] =
-          await sharedSteps.getProducts(productsPage);
-        productsSteps.validateDisplayedProductsHaveSearchTerm(
+          await productListingComponentSteps.getProducts(productsPage);
+        await productsSteps.validateDisplayedProductsHaveSearchTerm(
           products,
           searchTerm,
         );
-        await sharedSteps.addProductsToCart(productsPage, products);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+        await productListingComponentSteps.addProductsToCart(
+          productsPage,
+          products,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         const cartProducts = await cartSteps.getCartProducts();
-        await sharedSteps.validateProductsByName(products, cartProducts);
-        await sharedSteps.clickSignupLogin(cartPage.header);
-        const user = GenerateRandomUser();
-        await userApiSteps.createAccount(user);
-        await signupLoginSteps.login(user);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+        await productListingComponentSteps.validateProductsByName(
+          products,
+          cartProducts,
+        );
+        await headerComponentSteps.clickSignupLogin(cartPage.header);
+        await userApiSteps.createAccount(unregisteredUser);
+        await signupLoginSteps.login(unregisteredUser);
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         const loggedCartProducts = await cartSteps.getCartProducts();
-        await sharedSteps.validateProductsByName(products, loggedCartProducts);
-        await userApiSteps.deleteAccount(user);
+        await productListingComponentSteps.validateProductsByName(
+          products,
+          loggedCartProducts,
+        );
       },
     );
 
     test(
       "Add to cart from Recommended items",
       { tag: ["@SAMPLE-0023", "@TC-UI-22"] },
-      async ({ homePage, homeSteps, sharedSteps, cartSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.scrolling(homePage, "down");
+      async ({
+        homePage,
+        homeSteps,
+        commonSteps,
+        cartSteps,
+        headerComponentSteps,
+        productListingComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await commonSteps.scrolling(homePage, "down");
         await homeSteps.validateRecommendedItems();
         const recommendedItems: ProductType[] =
           await homeSteps.getRecommendedItems();
-        const item: ProductType =
-          ArraysUtils.getRandomElement(recommendedItems);
+        const item: ProductType = getRandomElement(recommendedItems);
         await homeSteps.addRecommendedItem(item);
-        await sharedSteps.continueShopping(homePage);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+        await productListingComponentSteps.continueShopping(homePage);
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         const cartItems: ProductType[] = await cartSteps.getCartProducts();
         await cartSteps.validateCartItems(cartItems, [item], { partial: true });
       },

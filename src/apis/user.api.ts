@@ -1,4 +1,4 @@
-import { BaseApi } from "@api/base.api";
+import { BaseApi } from "@apis/base.api";
 import { Environment } from "@configs/environment.config";
 import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
@@ -7,32 +7,35 @@ import {
   CustomResponseType,
 } from "@data/types/custom-response.type";
 import { TestAutomationException } from "@exceptions/test-automation.exception";
-import { APIRequestContext, APIResponse } from "@playwright/test";
-import { StringUtils } from "@utils/string.utils";
+import { APIResponse } from "@playwright/test";
+import { prettyJson } from "@utils/string.utils";
 
 export class UserApi extends BaseApi {
-  readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    super();
-    this.request = request;
+  async createUser(user: UserType): Promise<CustomResponseType> {
+    this.validateUser(user);
+    const formData = this.toUserFormData(user);
+    const response: APIResponse = await this.request.post(
+      Environment.CREATE_ACCOUNT_API_URL,
+      { form: formData, failOnStatusCode: false },
+    );
+    const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
+    return {
+      statusCode: response.status(),
+      statusText: response.statusText(),
+      body: body,
+    };
   }
 
-  async createUser(user: UserType): Promise<CustomResponseType> {
-    if (!user.password) {
-      throw new TestAutomationException(
-        `User password cannot be undefined/null but was '${user.password}'.`,
-      );
-    }
-    if (!user.address.mobileNumber) {
-      throw new TestAutomationException(
-        `User mobile number cannot be undefined/null but was '${user.address.mobileNumber}'.`,
-      );
-    }
-    const formData = {
+  private toUserFormData(user: UserType): Record<string, string> {
+    return {
       name: user.name,
       email: user.email,
-      password: user.password,
+      password: user.password ?? EMPTY,
       title: user.address.title,
       birth_date: user.address.birthDate,
       birth_month: user.address.birthMonth,
@@ -46,19 +49,21 @@ export class UserApi extends BaseApi {
       zipcode: user.address.zipcode,
       state: user.address.state,
       city: user.address.city,
-      mobile_number: user.address.mobileNumber,
+      mobile_number: user.address.mobileNumber ?? EMPTY,
     };
-    const response: APIResponse = await this.request.post(
-      Environment.CREATE_ACCOUNT_API_URL,
-      { form: formData, failOnStatusCode: false },
-    );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
-    const body = (await response.json()) as CustomResponseBodyType;
-    return {
-      statusCode: response.status(),
-      statusText: response.statusText(),
-      body: body,
-    };
+  }
+
+  private validateUser(user: UserType): void {
+    if (!user.password) {
+      throw new TestAutomationException(
+        `User password cannot be undefined/null but was '${user.password}'.`,
+      );
+    }
+    if (!user.address.mobileNumber) {
+      throw new TestAutomationException(
+        `User mobile number cannot be undefined/null but was '${user.address.mobileNumber}'.`,
+      );
+    }
   }
 
   async deleteUser(
@@ -73,8 +78,12 @@ export class UserApi extends BaseApi {
       Environment.DELETE_ACCOUNT_API_URL,
       { form: formData },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     return {
       statusCode: response.status(),
       statusText: response.statusText(),
@@ -83,41 +92,18 @@ export class UserApi extends BaseApi {
   }
 
   async updateUser(updatedUser: UserType): Promise<CustomResponseType> {
-    if (!updatedUser.password) {
-      throw new TestAutomationException(
-        `User password cannot be undefined/null but was '${updatedUser.password}'.`,
-      );
-    }
-    if (!updatedUser.address.mobileNumber) {
-      throw new TestAutomationException(
-        `User moobile number cannot be undefined/null but was '${updatedUser.address.mobileNumber}'.`,
-      );
-    }
-    const formData = {
-      name: updatedUser.name,
-      email: updatedUser.email,
-      password: updatedUser.password,
-      title: updatedUser.address.title,
-      birth_date: updatedUser.address.birthDate,
-      birth_month: updatedUser.address.birthMonth,
-      birth_year: updatedUser.address.birthYear,
-      firstname: updatedUser.address.firstname,
-      lastname: updatedUser.address.lastname,
-      company: updatedUser.address.company,
-      address1: updatedUser.address.addressOne,
-      address2: updatedUser.address.addressTwo,
-      country: updatedUser.address.country,
-      zipcode: updatedUser.address.zipcode,
-      state: updatedUser.address.state,
-      city: updatedUser.address.city,
-      mobile_number: updatedUser.address.mobileNumber,
-    };
+    this.validateUser(updatedUser);
+    const formData = this.toUserFormData(updatedUser);
     const response: APIResponse = await this.request.put(
       Environment.UPDATE_ACCOUNT_API_URL,
       { form: formData, failOnStatusCode: false },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     return {
       statusCode: response.status(),
       statusText: response.statusText(),
@@ -131,8 +117,12 @@ export class UserApi extends BaseApi {
       Environment.GET_USER_BY_EMAIL_API_URL,
       { params: params },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     body.user = {
       id: body.user?.id ?? 0,
       name: body.user?.name ?? EMPTY,

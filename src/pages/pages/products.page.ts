@@ -1,12 +1,12 @@
-import { BrandsComponent } from "@components/brands.component";
+import { BrandsComponent, HasBrands } from "@components/brands.component";
 import { ContinueShoppingViewCartComponent } from "@components/continueshopping-viewcart.component";
 import { HeaderComponent } from "@components/header.component";
 import { ProductComponent } from "@components/product.component";
-import { ProductsLocators } from "@locators/page/products.locators";
 import { BasePage } from "@pages.base/base.page";
+import { ProductsLocators } from "@pages.base/locators/page/products.locators";
 import { expect, Page } from "@playwright/test";
 
-export class ProductsPage extends BasePage {
+export class ProductsPage extends BasePage implements HasBrands {
   readonly locators: ProductsLocators;
   readonly header: HeaderComponent;
   readonly products: ProductComponent;

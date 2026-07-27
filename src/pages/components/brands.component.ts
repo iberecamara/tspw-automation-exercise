@@ -1,7 +1,11 @@
 import { EMPTY } from "@data/constants/string.constants";
-import { BrandsComponentLocators } from "@locators/component/brands.locators";
+import { BrandsComponentLocators } from "@locators/component/brands.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { Page } from "@playwright/test";
+
+export interface HasBrands {
+  brands: BrandsComponent;
+}
 
 export class BrandsComponent extends BasePage {
   readonly locators: BrandsComponentLocators;

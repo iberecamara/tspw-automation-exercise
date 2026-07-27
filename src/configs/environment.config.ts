@@ -97,10 +97,10 @@ if (validationResult.error) {
 
 const envValues = validationResult.value as EnvVars;
 
-type Viewport = {
+interface Viewport {
   height: number;
   width: number;
-};
+}
 
 export class Environment {
   static readonly WORKERS: number = envValues.WORKERS;
@@ -110,9 +110,9 @@ export class Environment {
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
-        height: envValues.VIEWPORT_HEIGHT,
-        width: envValues.VIEWPORT_WIDTH,
-      }
+          height: envValues.VIEWPORT_HEIGHT,
+          width: envValues.VIEWPORT_WIDTH,
+        }
       : null;
 
   static readonly APPLICATION: string = envValues.APPLICATION;

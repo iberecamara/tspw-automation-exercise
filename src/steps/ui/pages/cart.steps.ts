@@ -1,9 +1,8 @@
 import { ProductType } from "@data/model/product.model";
-import { test } from "@fixtures/fixtures";
 import { CartPage } from "@pages/cart.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/base.steps";
-import { StringUtils } from "@utils/string.utils";
+import { BaseSteps } from "@steps/ui/common/base.steps";
+import { prettyJson } from "@utils/string.utils";
 
 export class CartSteps extends BaseSteps {
   readonly cartPage: CartPage;
@@ -15,55 +14,35 @@ export class CartSteps extends BaseSteps {
 
   // Actions
   async getCartProducts(): Promise<ProductType[]> {
-    this.logger.verbose("Retrieving all products details");
-    const products: ProductType[] = [];
-
-    await test.step("Retrieve all products", async () => {
-      products.push(...(await this.cartPage.cart.getCartItems()));
+    return await this.step("Retrieve all products from Cart", async () => {
+      return await this.cartPage.cart.getCartItems();
     });
-
-    this.logger.verbose("Retrieved all products details");
-    return products;
   }
 
   async removeProducts(products: ProductType[]): Promise<void> {
-    this.logger.verbose("Removing products from cart");
-
-    await test.step("Remove products from cart", async () => {
+    await this.step("Remove products from Cart", async () => {
       for (const product of products) {
         expect(
           product.id,
           `Cannot remove product '${product.name}' from cart: missing id.`,
         ).toBeDefined();
-        this.logger.verbose(
-          `Removing product: ${StringUtils.prettyJson(product)}`,
-        );
+        this.logger.verbose(`Removing product: ${prettyJson(product)}`);
         const productId = product.id ?? -1;
         await this.cartPage.cart.removeProduct(productId);
       }
     });
-
-    this.logger.verbose("Removed products from cart");
   }
 
   async proceedToCheckout(): Promise<void> {
-    this.logger.verbose("Clicking Proceed to Checkout");
-
-    await test.step("Click Proceed to Checkout", async () => {
+    await this.step("Click Proceed to Checkout", async () => {
       await this.cartPage.clickProceedToCheckoutButton();
     });
-
-    this.logger.verbose("Clicked Proceed to Checkout");
   }
 
   async registerUserFromCheckout(): Promise<void> {
-    this.logger.verbose("Clicking Register / Login");
-
-    await test.step("Click Register / Login", async () => {
+    await this.step("Click Register / Login", async () => {
       await this.cartPage.clickRegisterFromCheckoutLink();
     });
-
-    this.logger.verbose("Clicked Register / Login");
   }
 
   // Validations
@@ -75,15 +54,13 @@ export class CartSteps extends BaseSteps {
     this.logger.verbose(
       `Validating all (${cartItems.length}) products in cart match all (${addedItems.length}) expected products.`,
     );
-
-    await test.step("Validate all products length", () => {
+    await this.step("Cart items must match added items count", () => {
       expect
         .soft(cartItems, "Cart items must match added items count.")
         .toHaveLength(addedItems.length);
     });
-
     if (options?.partial === true) {
-      await test.step("Validate all products - partial product match", () => {
+      await this.step("Validate all products - partial product match", () => {
         for (const item of addedItems) {
           expect
             .soft(
@@ -96,7 +73,7 @@ export class CartSteps extends BaseSteps {
         }
       });
     } else {
-      await test.step("Validate all products length - full product match", () => {
+      await this.step("Cart items must match added items count", () => {
         expect
           .soft(cartItems, "Cart items must match added items.")
           .toEqual(expect.arrayContaining(addedItems));
@@ -105,9 +82,7 @@ export class CartSteps extends BaseSteps {
   }
 
   async validateProductQuantity(quantity: number): Promise<void> {
-    this.logger.verbose(`Validating product quantity in cart to be ${quantity}.`);
-
-    await test.step("Validate product quantity in cart", async () => {
+    await this.step("Validate product quantity in cart", async () => {
       const product = (await this.cartPage.cart.getCartItems()).at(0);
       expect
         .soft(

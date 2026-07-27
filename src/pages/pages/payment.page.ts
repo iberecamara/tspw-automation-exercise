@@ -1,6 +1,6 @@
 import { DOWNLOAD_FILEPATH } from "@files/download/download.filepath";
-import { PaymentLocators } from "@locators/page/payment.locators";
 import { BasePage } from "@pages.base/base.page";
+import { PaymentLocators } from "@pages.base/locators/page/payment.locators";
 import { Page } from "@playwright/test";
 
 /** Page Object for the payment page (card details form) and the order confirmation screen that follows it. */

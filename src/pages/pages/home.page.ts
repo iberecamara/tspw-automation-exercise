@@ -1,17 +1,23 @@
-import { BrandsComponent } from "@components/brands.component";
-import { CategoriesComponent } from "@components/categories.component";
+import { BrandsComponent, HasBrands } from "@components/brands.component";
+import {
+  CategoriesComponent,
+  HasCategories,
+} from "@components/categories.component";
 import { ContinueShoppingViewCartComponent } from "@components/continueshopping-viewcart.component";
 import { HeaderComponent } from "@components/header.component";
-import { ProductComponent } from "@components/product.component";
+import { HasProducts, ProductComponent } from "@components/product.component";
 import { SubscriptionComponent } from "@components/subscription.component";
 import { RUPEES } from "@data/constants/common.constants";
 import { EMPTY } from "@data/constants/string.constants";
 import { ProductType } from "@data/model/product.model";
-import { HomeLocators } from "@locators/page/home.locators";
 import { BasePage } from "@pages.base/base.page";
+import { HomeLocators } from "@pages.base/locators/page/home.locators";
 import { Locator, Page } from "@playwright/test";
 
-export class HomePage extends BasePage {
+export class HomePage
+  extends BasePage
+  implements HasBrands, HasProducts, HasCategories
+{
   readonly locators: HomeLocators;
   readonly header: HeaderComponent;
   readonly subscription: SubscriptionComponent;

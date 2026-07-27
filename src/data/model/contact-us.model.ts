@@ -9,7 +9,7 @@ export interface ContactUsType {
   file: string;
 }
 
-export function GenerateRandomContactUsData(options?: {
+export function generateRandomContactUsData(options?: {
   name?: string;
   email?: string;
   subject?: string;

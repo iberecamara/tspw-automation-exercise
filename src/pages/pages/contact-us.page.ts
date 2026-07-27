@@ -1,15 +1,18 @@
+import { HeaderComponent } from "@components/header.component";
 import { UPLOAD_FILEPATH } from "@data/constants/constants";
-import { ContactUsLocators } from "@locators/page/contact-us.locators";
 import { BasePage } from "@pages.base/base.page";
+import { ContactUsLocators } from "@pages.base/locators/page/contact-us.locators";
 import { Page } from "@playwright/test";
 import path from "path";
 
 export class ContactUsPage extends BasePage {
   readonly locators: ContactUsLocators;
+  readonly header: HeaderComponent;
 
   constructor(page: Page) {
     super(page);
     this.locators = new ContactUsLocators(page);
+    this.header = new HeaderComponent(page);
   }
 
   async enterName(name: string): Promise<void> {

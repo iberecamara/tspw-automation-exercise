@@ -32,10 +32,42 @@ export const DOWNLOADS_DIR = path.join(ARTIFACTS_DIR, "downloads");
 
 export const REPORTS_DIR = path.join(ARTIFACTS_DIR, "reports");
 export const ALLURE_DIR = path.join(REPORTS_DIR, "allure");
+
+/**
+ * Directory Playwright writes its per-test output into (traces, videos, screenshots) — this is
+ * Playwright's own `outputDir`, not to be confused with the HTML/JSON/Allure report directories
+ * below. Namespaced per shard via `SHARD_INDEX` (see docker-compose.yml / docker.compose.utils.ts)
+ * because Playwright clears and recreates `outputDir` at the start of every run. When sharded
+ * containers all shared one un-namespaced `PLAYWRIGHT_REPORTS_DIR`, a later-starting shard's
+ * startup cleanup could delete another shard's in-progress or already-written failure artifacts
+ * (videos, traces) before they were ever read — a race, not a Playwright bug. Un-sharded local
+ * runs (no SHARD_INDEX set) fall back to the plain, un-suffixed path.
+ */
+export const PLAYWRIGHT_REPORTS_DIR = path.join(
+  REPORTS_DIR,
+  "playwright",
+  process.env.SHARD_INDEX ? `shard-${process.env.SHARD_INDEX}` : "",
+);
+
+// HTML/JSON reports are always the final MERGED output — never sharded, never suffixed.
+// During a sharded run, each shard instead writes to BLOB_REPORTS_DIR (below); the merge step
+// (see `report:playwright:merge` in package.json) consumes those blobs and writes here.
 export const HTML_REPORTS_DIR = path.join(REPORTS_DIR, "html");
 export const JSON_REPORTS_DIR = path.join(REPORTS_DIR, "json");
 export const JSON_REPORTS_FILE = path.join(JSON_REPORTS_DIR, "report.json");
-export const PLAYWRIGHT_REPORTS_DIR = path.join(REPORTS_DIR, "playwright");
+
+/**
+ * Intermediate Playwright "blob" reports used only during sharded runs — one uniquely-named
+ * .zip per shard, written here concurrently by every shard container. The filename itself is
+ * derived automatically by Playwright from the --shard=N/M flag (see playwright.config.ts's
+ * blob reporter comment), so no manual per-shard subfolder or fileName is needed here; every
+ * shard safely shares this single directory. Consumed and then deleted by the merge step
+ * (report:playwright:merge + report:cleanup:shards) — never a final artifact itself.
+ */
+export const BLOB_REPORTS_DIR = path.join(REPORTS_DIR, "blob");
+export const BLOB_REPORTS_SHARD_DIR = process.env.SHARD_INDEX
+  ? path.join(BLOB_REPORTS_DIR, `shard-${process.env.SHARD_INDEX}`)
+  : BLOB_REPORTS_DIR;
 
 /** Raw Allure result files produced by the `allure-playwright` reporter during a run. */
 export const ALLURE_RESULTS_DIR = path.join(ALLURE_DIR, "allure-results");
@@ -80,4 +112,6 @@ export const PATHS = {
   JSON_REPORTS_DIR,
   JSON_REPORTS_FILE,
   PLAYWRIGHT_REPORTS_DIR,
+  BLOB_REPORTS_DIR,
+  BLOB_REPORTS_SHARD_DIR,
 } as const;

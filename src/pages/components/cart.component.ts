@@ -8,16 +8,16 @@ import {
 } from "@data/constants/constants";
 import { ProductCategoryType } from "@data/model/product-category.model";
 import { ProductType } from "@data/model/product.model";
-import { CartLocators } from "@locators/component/cart.locators";
+import { CartComponentLocators } from "@locators/component/cart.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { expect, Locator, Page } from "@playwright/test";
 
 export class CartComponent extends BasePage {
-  readonly locators: CartLocators;
+  readonly locators: CartComponentLocators;
 
   constructor(page: Page) {
     super(page);
-    this.locators = new CartLocators(page);
+    this.locators = new CartComponentLocators(page);
   }
 
   async getCartItems(): Promise<ProductType[]> {

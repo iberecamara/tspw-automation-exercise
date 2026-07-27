@@ -1,8 +1,8 @@
 import { Environment } from "@configs/environment.config";
 import { PATHS } from "@configs/paths";
-import { SECOND_IN_MILISSECONDS } from "@data/constants/common.constants";
+import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
 import { defineConfig, devices } from "@playwright/test";
-import { DateTimeUtils } from "@utils/datetime.utils";
+import { getDateTime } from "@utils/datetime.utils";
 import * as os from "node:os";
 import path from "node:path";
 
@@ -11,11 +11,15 @@ const globalLaunchOptions = {
   slowMo: Environment.SLOWMO,
 };
 
+// True when this run is one shard of a sharded execution (see docker-compose.yml's
+// tests-shard service and docker.compose.utils.ts, which set SHARD_INDEX per container).
+const isSharded = Boolean(process.env.SHARD_INDEX);
+
 export default defineConfig({
   testDir: "../tests/",
-  timeout: 90 * SECOND_IN_MILISSECONDS,
+  timeout: 90 * SECOND_IN_MILISECONDS,
   expect: {
-    timeout: 5 * SECOND_IN_MILISSECONDS,
+    timeout: 5 * SECOND_IN_MILISECONDS,
   },
   fullyParallel: true,
   retries: Environment.RETRIES,
@@ -23,8 +27,15 @@ export default defineConfig({
   globalTeardown: require.resolve(PATHS.GLOBAL_TEARDOWN_PATH),
   reporter: [
     ["line"],
-    ["html", { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR }],
-    ["json", { outputFile: PATHS.JSON_REPORTS_FILE }],
+    ...(isSharded
+      ? [["blob", { outputDir: PATHS.BLOB_REPORTS_SHARD_DIR }] as const]
+      : [
+          [
+            "html",
+            { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
+          ] as const,
+          ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
+        ]),
     [
       "allure-playwright",
       {
@@ -42,7 +53,7 @@ export default defineConfig({
           Application: Environment.APPLICATION,
           Environment: Environment.APPLICATION_ENVIRONMENT,
           Instance: Environment.BASE_URL,
-          "Date and Time": DateTimeUtils.getDateTime().datetime,
+          "Date and Time": getDateTime().datetime,
           Shards: Environment.SHARD_TOTAL,
         },
         resultsDir: PATHS.ALLURE_RESULTS_DIR,
@@ -53,9 +64,10 @@ export default defineConfig({
   ],
   outputDir: PATHS.PLAYWRIGHT_REPORTS_DIR,
   use: {
+    baseURL: Environment.BASE_URL,
     testIdAttribute: "data-qa",
     ignoreHTTPSErrors: true,
-    actionTimeout: 5 * SECOND_IN_MILISSECONDS,
+    actionTimeout: 5 * SECOND_IN_MILISECONDS,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     trace: "retain-on-failure",

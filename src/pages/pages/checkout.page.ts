@@ -1,8 +1,8 @@
 import { CartComponent } from "@components/cart.component";
 import { EMPTY } from "@data/constants/string.constants";
 import { ResumedAddressType } from "@data/model/address.model";
-import { CheckoutLocators } from "@locators/page/checkout.locators";
 import { BasePage } from "@pages.base/base.page";
+import { CheckoutLocators } from "@pages.base/locators/page/checkout.locators";
 import { Page } from "@playwright/test";
 
 export class CheckoutPage extends BasePage {

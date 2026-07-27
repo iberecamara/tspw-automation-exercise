@@ -1,7 +1,7 @@
 import { VALID_TITLES } from "@data/constants/constants";
 import { TestAutomationException } from "@exceptions/test-automation.exception";
-import { SignupLocators } from "@locators/page/signup.locators";
 import { BasePage } from "@pages.base/base.page";
+import { SignupLocators } from "@pages.base/locators/page/signup.locators";
 import { Locator, Page } from "@playwright/test";
 
 export class SignupPage extends BasePage {

@@ -1,16 +1,24 @@
 import { EMPTY, RUPEES } from "@data/constants/constants";
 import { ProductType } from "@data/model/product.model";
 import { TestAutomationException } from "@exceptions/test-automation.exception";
-import { ProductComponentLocators } from "@locators/component/product.locators";
+import { ProductComponentLocators } from "@locators/component/product.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { Locator, Page } from "@playwright/test";
+import { ContinueShoppingViewCartComponent } from "./continueshopping-viewcart.component";
+
+export interface HasProducts {
+  products: ProductComponent;
+}
 
 export class ProductComponent extends BasePage {
   readonly locators: ProductComponentLocators;
+  readonly continueShoppingViewCartComponent: ContinueShoppingViewCartComponent;
 
   constructor(page: Page) {
     super(page);
     this.locators = new ProductComponentLocators(page);
+    this.continueShoppingViewCartComponent =
+      new ContinueShoppingViewCartComponent(page);
   }
 
   async getProductsCount(): Promise<number> {

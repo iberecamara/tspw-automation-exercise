@@ -1,5 +1,5 @@
-import { SubscriptionLocators } from "@locators/page/subscription.locators";
 import { BasePage } from "@pages.base/base.page";
+import { SubscriptionLocators } from "@pages.base/locators/page/subscription.locators";
 import { Page } from "@playwright/test";
 
 export class SubscriptionComponent extends BasePage {

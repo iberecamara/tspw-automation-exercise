@@ -1,9 +1,9 @@
 import { Reporter } from "@playwright/test/reporter";
-import { AllureUtils } from "@utils/allure.utils";
+import { allureRemoveResults } from "@utils/allure.utils";
 
 class AllureCleanupReporter implements Reporter {
   onEnd() {
-    AllureUtils.allureRemoveResults();
+    allureRemoveResults();
   }
 }
 export default AllureCleanupReporter;

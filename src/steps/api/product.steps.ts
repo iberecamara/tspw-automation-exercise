@@ -1,9 +1,9 @@
-import { ProductApi } from "@api/product.api";
+import { ProductApi } from "@apis/product.api";
 import { EMPTY } from "@data/constants/string.constants";
 import { ProductType } from "@data/model/product.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
-import { test } from "@fixtures/fixtures";
-import { BaseSteps } from "@steps/base.steps";
+import { ProductResponseType } from "@data/types/product-response.type";
+import { BaseSteps } from "@steps/ui/common/base.steps";
 import { expect } from "playwright/test";
 
 export class ProductApiSteps extends BaseSteps {
@@ -20,62 +20,24 @@ export class ProductApiSteps extends BaseSteps {
     method?: "POST" | "GET";
     brand?: string;
   }): Promise<CustomResponseType | ProductType[]> {
-    if (options?.raw) {
-      this.logger.verbose("Retrieving raw response from API - Get All Products.");
-      let response = {} as CustomResponseType;
-
-      await test.step("Retrieve raw response from API - Get All Products", async () => {
-        response = (await this.productApi.all(options)) as CustomResponseType;
-      });
-
-      this.logger.verbose("Retrieved raw response from API - Get All Products.");
-      return response;
-    }
-    this.logger.verbose("Retrieving all products from API.");
-    const products: ProductType[] = [];
-
-    await test.step("Retrieve all products from API", async () => {
-      products.push(...((await this.productApi.all(options)) as ProductType[]));
+    const message = options?.raw
+      ? "Retrieve raw response from Get All Products endpoint"
+      : "Retrieve all products from Get All Products endpoint";
+    return await this.step(message, async () => {
+      return await this.productApi.all(options);
     });
-
-    this.logger.verbose(
-      `Retrieved ${products.length} product${products.length > 1 ? "s" : EMPTY} from API.`,
-    );
-    return products;
   }
 
   async search(options?: {
     raw?: boolean;
     search?: string;
   }): Promise<CustomResponseType | ProductType[]> {
-    if (options?.raw) {
-      this.logger.verbose("Retrieving raw response from API - Search Products.");
-      let response = {} as CustomResponseType;
-
-      await test.step("Retrieve raw response from API - Search Products", async () => {
-        response = (await this.productApi.search(
-          options,
-        )) as CustomResponseType;
-      });
-
-      this.logger.verbose("Retrieved raw response from API - Search Products.");
-      return response;
-    }
-    this.logger.verbose(
-      `Retrieving products from API matching search '${options?.search}'.`,
-    );
-    const products: ProductType[] = [];
-
-    await test.step("Retrieving products from API matching search", async () => {
-      products.push(
-        ...((await this.productApi.search(options)) as ProductType[]),
-      );
+    const message = options?.raw
+      ? "Retrieve raw response from Search Products endpoint"
+      : `Retrieve products from Search Products endpoint matching search '${options?.search}'.`;
+    return await this.step(message, async () => {
+      return await this.productApi.search(options);
     });
-
-    this.logger.verbose(
-      `Retrieved ${products.length} product${products.length > 1 ? "s" : EMPTY} from API matching search '${options?.search}'.`,
-    );
-    return products;
   }
 
   // Validations
@@ -83,9 +45,7 @@ export class ProductApiSteps extends BaseSteps {
     response: CustomResponseType,
     options?: { search?: string },
   ): Promise<void> {
-    this.logger.verbose("Validating raw response from API - Get All Products.");
-
-    await test.step("Validate raw response from API - Get All Products", () => {
+    await this.step("Validate raw response from API - Get All Brands", () => {
       expect
         .soft(
           response.statusCode,
@@ -118,80 +78,85 @@ export class ProductApiSteps extends BaseSteps {
         .toBeInstanceOf(Array);
       const { products = [] } = response.body;
       for (const product of products) {
-        expect
-          .soft(
-            product,
-            `Response body 'products' objects for Get All Products should have the expected properties`,
-          )
-          .toMatchObject({
-            id: expect.any(Number),
-            name: expect.any(String),
-            price: expect.any(String),
-            category: {
-              usertype: {
-                usertype: expect.any(String),
-              },
-              category: expect.any(String),
-            },
-            brand: expect.any(String),
-          });
-        const hasSearchTerm =
-          !options?.search ||
-          product.category?.category
-            .toLowerCase()
-            .includes(options.search.toLowerCase());
-        expect
-          .soft(
-            hasSearchTerm,
-            `Response body 'products' objects for Get All Products should have the expected search term '${options?.search ?? EMPTY}'`,
-          )
-          .toBe(true);
+        this.validateIndividualProduct(product, options);
       }
     });
   }
 
-  async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.verbose(
-      "Validating Method Not Allowed - POST - Get All Products.",
-    );
+  private validateIndividualProduct(
+    product: ProductResponseType,
+    options: { search?: string } | undefined,
+  ): void {
+    expect
+      .soft(
+        product,
+        `Response body 'products' objects for Get All Products should have the expected properties`,
+      )
+      .toMatchObject({
+        id: expect.any(Number),
+        name: expect.any(String),
+        price: expect.any(String),
+        category: {
+          usertype: {
+            usertype: expect.any(String),
+          },
+          category: expect.any(String),
+        },
+        brand: expect.any(String),
+      });
+    const hasSearchTerm =
+      !options?.search ||
+      product.category?.category
+        .toLowerCase()
+        .includes(options.search.toLowerCase());
+    expect
+      .soft(
+        hasSearchTerm,
+        `Response body 'products' objects for Get All Products should have the expected search term '${options?.search ?? EMPTY}'`,
+      )
+      .toBe(true);
+  }
 
-    await test.step("Validating Method Not Allowed - POST - Get All Products", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for POST into Get All Products should be 405",
-        )
-        .toBe(405);
-      const expectedMessage = "This request method is not supported.";
-      expect
-        .soft(
-          response.body.message,
-          `Message (from body) for POST into Get All Products should be '${expectedMessage}'`,
-        )
-        .toBe(expectedMessage);
-    });
+  async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
+    await this.step(
+      "Validate Method Not Allowed - POST - Get All Products endpoint",
+      () => {
+        expect
+          .soft(
+            response.body.responseCode,
+            "Response Code (from body) for POST into Get All Products should be 405",
+          )
+          .toBe(405);
+        const expectedMessage = "This request method is not supported.";
+        expect
+          .soft(
+            response.body.message,
+            `Message (from body) for POST into Get All Products should be '${expectedMessage}'`,
+          )
+          .toBe(expectedMessage);
+      },
+    );
   }
 
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
-    this.logger.verbose(
-      "Validating Missing Paramater - search_product - Search Products.",
+    await this.step(
+      "Validate Missing Parameter - search_product - Search Products endpoint",
+      () => {
+        expect
+          .soft(
+            response.body.responseCode,
+            `Response Code (from body) for POST without 'search_product' into Search Products should be 400`,
+          )
+          .toBe(400);
+        const expectedMessage =
+          "Bad request, search_product parameter is missing in POST request.";
+        expect
+          .soft(
+            response.body.message,
+            `Message (from body) for POST without 'search_product' into Search Products should be '${expectedMessage}'`,
+          )
+          .toBe(expectedMessage);
+      },
     );
-
-    await test.step("Validating Missing Paramater - search_product - Search Products", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          `Response Code (from body) for POST without 'search_product' into Search Products should be 400`,
-        )
-        .toBe(400);
-      const expectedMessage =
-        "Bad request, search_product parameter is missing in POST request.";
-      expect
-        .soft(
-          response.body.message,
-          `Message (from body) for POST without 'search_product' into Search Products should be '${expectedMessage}'`,
-        )
-        .toBe(expectedMessage);
-    });
   }
 }

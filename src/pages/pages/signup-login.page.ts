@@ -1,5 +1,5 @@
-import { SignupLoginLocators } from "@locators/page/signup-login.locators";
 import { BasePage } from "@pages.base/base.page";
+import { SignupLoginLocators } from "@pages.base/locators/page/signup-login.locators";
 import { Page } from "@playwright/test";
 
 export class SignupLoginPage extends BasePage {

@@ -1,7 +1,11 @@
 import { EMPTY } from "@data/constants/string.constants";
-import { CategoriesComponentLocators } from "@locators/component/categories.locators";
+import { CategoriesComponentLocators } from "@locators/component/categories.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { Locator, Page } from "@playwright/test";
+
+export interface HasCategories {
+  categories: CategoriesComponent;
+}
 
 export class CategoriesComponent extends BasePage {
   readonly locators: CategoriesComponentLocators;

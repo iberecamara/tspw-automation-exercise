@@ -1,4 +1,4 @@
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
+import { generateRandomUser, UserType } from "@data/model/user.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
 import { UserResponseType } from "@data/types/user-response.type";
 import { test } from "@fixtures/fixtures";
@@ -13,7 +13,7 @@ test.describe(
       "POST To Create/Register User Account",
       { tag: ["@SAMPLE-0038", "@TC-API-11"] },
       async ({ userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         const response: CustomResponseType =
           await userApiSteps.createAccount(user);
         await userApiSteps.validateCreateAccount(response);
@@ -25,7 +25,7 @@ test.describe(
       "DELETE METHOD To Delete User Account",
       { tag: ["@SAMPLE-0039", "@TC-API-12"] },
       async ({ userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         await userApiSteps.createAccount(user);
         const response: CustomResponseType =
           await userApiSteps.deleteAccount(user);
@@ -37,9 +37,9 @@ test.describe(
       "PUT METHOD To Update User Account",
       { tag: ["@SAMPLE-0040", "@TC-API-13"] },
       async ({ userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         await userApiSteps.createAccount(user);
-        const updatedUser: UserType = GenerateRandomUser({
+        const updatedUser: UserType = generateRandomUser({
           name: user.name,
           email: user.email,
           password: user.password,
@@ -60,7 +60,7 @@ test.describe(
       "GET user account detail by email",
       { tag: ["@SAMPLE-0041", "@TC-API-14"] },
       async ({ userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         await userApiSteps.createAccount(user);
         const response: CustomResponseType = await userApiSteps.getUserByEmail(
           user.email,

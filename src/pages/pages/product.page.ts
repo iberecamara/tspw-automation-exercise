@@ -11,8 +11,8 @@ import {
 } from "@data/constants/constants";
 import { ProductCategoryType } from "@data/model/product-category.model";
 import { ProductType } from "@data/model/product.model";
-import { ProductLocators } from "@locators/page/product.locators";
 import { BasePage } from "@pages.base/base.page";
+import { ProductLocators } from "@pages.base/locators/page/product.locators";
 import { Page } from "@playwright/test";
 
 export class ProductPage extends BasePage {

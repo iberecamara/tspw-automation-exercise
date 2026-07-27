@@ -1,5 +1,10 @@
-import { NumberUtils } from "@utils/number.utils";
-import { StringUtils } from "@utils/string.utils";
+import {
+  getRandomCreditCardCvc,
+  getRandomCreditCardExpirationMonth,
+  getRandomCreditCardExpirationYear,
+  getRandomCreditCardNumber,
+} from "@utils/number.utils";
+import { generateRandomName } from "@utils/string.utils";
 
 export interface CreditCardDetailsType {
   name: string;
@@ -9,26 +14,24 @@ export interface CreditCardDetailsType {
   expirationYear: number;
 }
 
-export type CreateRandomCardOptions = {
+export interface CreateRandomCardOptions {
   name?: string;
   number?: number;
   cvc?: number;
   expirationMonth?: number;
   expirationYear?: number;
-};
+}
 
-export function GenerateRandomCard(
+export function generateRandomCard(
   options?: CreateRandomCardOptions,
 ): CreditCardDetailsType {
-  const name: string = options?.name ?? StringUtils.generateRandomName();
-  const number: number =
-    options?.number ?? NumberUtils.getRandomCreditCardNumber();
-  const cvc: number = options?.cvc ?? NumberUtils.getRandomCreditCardCvc();
+  const name: string = options?.name ?? generateRandomName();
+  const number: number = options?.number ?? getRandomCreditCardNumber();
+  const cvc: number = options?.cvc ?? getRandomCreditCardCvc();
   const expirationMonth: number =
-    options?.expirationMonth ??
-    NumberUtils.getRandomCreditCardExpirationMonth();
+    options?.expirationMonth ?? getRandomCreditCardExpirationMonth();
   const expirationYear: number =
-    options?.expirationYear ?? NumberUtils.getRandomCreditCardExpirationYear();
+    options?.expirationYear ?? getRandomCreditCardExpirationYear();
   return {
     name,
     number,

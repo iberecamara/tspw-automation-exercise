@@ -1,10 +1,8 @@
-export const BUTTON: string = "button";
-export const YES: string = "yes";
-export const NO: string = "no";
-export const CREATED: string = "created";
-export const DELETED: string = "deleted";
-export const SECOND_IN_MILISSECONDS: number = 1000;
-export const RUPEES: string = "Rs. ";
+export const BUTTON = "button";
+export const YES = "yes";
+export const NO = "no";
+export const SECOND_IN_MILISECONDS = 1000;
+export const RUPEES = "Rs. ";
 export const CATEGORY_DELIMITER = " > ";
 export const PRODUCT_PREFIX = "product-";
 export const CATEGORY_PREFIX = "Category: ";

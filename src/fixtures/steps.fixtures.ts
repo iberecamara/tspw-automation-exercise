@@ -1,27 +1,32 @@
-import { test as apis } from "@fixtures/api.fixtures";
+import { test as apis } from "@fixtures/apis.fixtures";
 import { test as logging } from "@fixtures/logging.fixtures";
 import { test as pages } from "@fixtures/pages.fixtures";
 import { BrandApiSteps } from "@steps/api/brand.steps";
 import { LoginApiSteps } from "@steps/api/login.steps";
 import { ProductApiSteps } from "@steps/api/product.steps";
 import { UserApiSteps } from "@steps/api/user.steps";
-import { AccountCreatedDeletedSteps } from "@steps/ui/account-created-deleted.steps";
-import { BrandSteps } from "@steps/ui/brand.steps";
-import { CartSteps } from "@steps/ui/cart.steps";
-import { CategorySteps } from "@steps/ui/category.steps";
-import { CheckoutSteps } from "@steps/ui/checkout.steps";
-import { ContactUsSteps } from "@steps/ui/contact-us.steps";
-import { HomeSteps } from "@steps/ui/home.steps";
-import { PaymentSteps } from "@steps/ui/payment.steps";
-import { ProductSteps } from "@steps/ui/product.steps";
-import { ProductsSteps } from "@steps/ui/products.steps";
-import { SharedSteps } from "@steps/ui/shared.steps";
-import { SignupLoginSteps } from "@steps/ui/signup-login.steps";
-import { SignupSteps } from "@steps/ui/signup.steps";
-import { TestCasesSteps } from "@steps/ui/test-cases.steps";
+import { CommonSteps } from "@steps/ui/common/shared.steps";
+import { BrandComponentSteps } from "@steps/ui/components/brand.component.steps";
+import { CategoryComponentSteps } from "@steps/ui/components/category.component.steps";
+import { HeaderComponentSteps } from "@steps/ui/components/header.component.steps";
+import { ProductListingComponentSteps } from "@steps/ui/components/product-listing.component.steps";
+import { SubscriptionComponentSteps } from "@steps/ui/components/subscription.component.steps";
+import { AccountCreatedDeletedSteps } from "@steps/ui/pages/account-created-deleted.steps";
+import { BrandSteps } from "@steps/ui/pages/brand.steps";
+import { CartSteps } from "@steps/ui/pages/cart.steps";
+import { CategorySteps } from "@steps/ui/pages/category.steps";
+import { CheckoutSteps } from "@steps/ui/pages/checkout.steps";
+import { ContactUsSteps } from "@steps/ui/pages/contact-us.steps";
+import { HomeSteps } from "@steps/ui/pages/home.steps";
+import { PaymentSteps } from "@steps/ui/pages/payment.steps";
+import { ProductSteps } from "@steps/ui/pages/product.steps";
+import { ProductsSteps } from "@steps/ui/pages/products.steps";
+import { SignupLoginSteps } from "@steps/ui/pages/signup-login.steps";
+import { SignupSteps } from "@steps/ui/pages/signup.steps";
+import { TestCasesSteps } from "@steps/ui/pages/test-cases.steps";
 import { mergeTests } from "playwright/test";
 
-type StepsFixtures = {
+interface StepsFixtures {
   // API
   userApiSteps: UserApiSteps;
   productApiSteps: ProductApiSteps;
@@ -29,6 +34,7 @@ type StepsFixtures = {
   loginApiSteps: LoginApiSteps;
 
   // UI
+  commonSteps: CommonSteps;
   homeSteps: HomeSteps;
   signupLoginSteps: SignupLoginSteps;
   signupSteps: SignupSteps;
@@ -37,13 +43,18 @@ type StepsFixtures = {
   testCaseSteps: TestCasesSteps;
   productsSteps: ProductsSteps;
   productSteps: ProductSteps;
-  sharedSteps: SharedSteps;
   cartSteps: CartSteps;
   checkoutSteps: CheckoutSteps;
   paymentSteps: PaymentSteps;
   categorySteps: CategorySteps;
   brandSteps: BrandSteps;
-};
+
+  headerComponentSteps: HeaderComponentSteps;
+  categoryComponentSteps: CategoryComponentSteps;
+  brandComponentSteps: BrandComponentSteps;
+  productListingComponentSteps: ProductListingComponentSteps;
+  subscriptionComponentSteps: SubscriptionComponentSteps;
+}
 
 const merged = mergeTests(apis, pages, logging);
 
@@ -62,7 +73,10 @@ export const test = merged.extend<StepsFixtures>({
     await use(new LoginApiSteps(loginApi));
   },
 
-  // UI
+  // UI - Page steps
+  commonSteps: async ({ page }, use) => {
+    await use(new CommonSteps(page));
+  },
   homeSteps: async ({ homePage }, use) => {
     await use(new HomeSteps(homePage));
   },
@@ -87,9 +101,6 @@ export const test = merged.extend<StepsFixtures>({
   productSteps: async ({ productPage }, use) => {
     await use(new ProductSteps(productPage));
   },
-  sharedSteps: async ({ page }, use) => {
-    await use(new SharedSteps(page));
-  },
   cartSteps: async ({ cartPage }, use) => {
     await use(new CartSteps(cartPage));
   },
@@ -104,5 +115,22 @@ export const test = merged.extend<StepsFixtures>({
   },
   brandSteps: async ({ brandPage }, use) => {
     await use(new BrandSteps(brandPage));
+  },
+
+  // UI - Component steps
+  headerComponentSteps: async ({ page }, use) => {
+    await use(new HeaderComponentSteps(page));
+  },
+  categoryComponentSteps: async ({}, use) => {
+    await use(new CategoryComponentSteps());
+  },
+  brandComponentSteps: async ({ page }, use) => {
+    await use(new BrandComponentSteps(page));
+  },
+  productListingComponentSteps: async ({}, use) => {
+    await use(new ProductListingComponentSteps());
+  },
+  subscriptionComponentSteps: async ({}, use) => {
+    await use(new SubscriptionComponentSteps());
   },
 });

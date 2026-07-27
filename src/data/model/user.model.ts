@@ -1,6 +1,6 @@
 import { VALID_COUNTRIES, VALID_TITLES } from "@data/constants/constants";
 import { faker } from "@faker-js/faker";
-import { ArraysUtils } from "@utils/arrays.utils";
+import { getRandomElement } from "@utils/arrays.utils";
 import { AddressType } from "./address.model";
 
 export interface UserType {
@@ -11,7 +11,7 @@ export interface UserType {
   address: AddressType;
 }
 
-export function GenerateRandomUser(options?: {
+export function generateRandomUser(options?: {
   name?: string;
   email?: string;
   password?: string;
@@ -31,7 +31,7 @@ export function GenerateRandomUser(options?: {
         .toLocaleLowerCase(),
     password: options?.password ?? faker.internet.password(),
     address: {
-      title: ArraysUtils.getRandomElement(VALID_TITLES),
+      title: getRandomElement(VALID_TITLES),
       birthDate: dob.getUTCDate().toString(),
       birthMonth: (dob.getUTCMonth() + 1).toString(),
       birthYear: dob.getUTCFullYear().toString(),
@@ -40,7 +40,7 @@ export function GenerateRandomUser(options?: {
       company: faker.company.name(),
       addressOne: faker.location.streetAddress(),
       addressTwo: faker.location.secondaryAddress(),
-      country: ArraysUtils.getRandomElement(VALID_COUNTRIES),
+      country: getRandomElement(VALID_COUNTRIES),
       state: faker.location.state(),
       city: faker.location.city(),
       zipcode: faker.location.zipCode(),

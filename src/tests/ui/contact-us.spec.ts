@@ -1,4 +1,4 @@
-import { GenerateRandomContactUsData } from "@data/model/contact-us.model";
+import { generateRandomContactUsData } from "@data/model/contact-us.model";
 import { test } from "@fixtures/fixtures";
 
 test.describe(
@@ -10,19 +10,25 @@ test.describe(
     test(
       "Contact Us Form",
       { tag: ["@SAMPLE-0009", "@TC-UI-6"] },
-      async ({ homePage, contactUsSteps, sharedSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickContactUs(homePage.header);
-        await sharedSteps.validateTitle("Contact Us");
+      async ({
+        homePage,
+        contactUsPage,
+        contactUsSteps,
+        commonSteps,
+        headerComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickContactUs(homePage.header);
+        await commonSteps.validateTitle("Contact Us");
         await contactUsSteps.validateGetInTouchText();
         await contactUsSteps.enterContactFormData(
-          GenerateRandomContactUsData({ file: "sample_file.pdf" }),
+          generateRandomContactUsData({ file: "sample_file.pdf" }),
         );
         await contactUsSteps.clickSubmit({ accept: true });
         await contactUsSteps.validateSubmitSuccessMessage();
-        await contactUsSteps.clickHome();
-        await sharedSteps.validateTitle("Home");
+        await headerComponentSteps.clickHome(contactUsPage.header);
+        await commonSteps.validateTitle("Home");
       },
     );
   },
