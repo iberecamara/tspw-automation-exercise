@@ -1,4 +1,4 @@
-import { BaseApi } from "@api/base.api";
+import { BaseApi } from "@apis/base.api";
 import { Environment } from "@configs/environment.config";
 import { RUPEES } from "@data/constants/common.constants";
 import { EMPTY } from "@data/constants/string.constants";
@@ -8,17 +8,10 @@ import {
   CustomResponseType,
 } from "@data/types/custom-response.type";
 import { ProductResponseType } from "@data/types/product-response.type";
-import { APIRequestContext, APIResponse } from "@playwright/test";
-import { StringUtils } from "@utils/string.utils";
+import { APIResponse } from "@playwright/test";
+import { prettyJson } from "@utils/string.utils";
 
 export class ProductApi extends BaseApi {
-  readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    super();
-    this.request = request;
-  }
-
   async all(options?: {
     raw?: boolean;
     method?: "POST" | "GET";
@@ -30,8 +23,12 @@ export class ProductApi extends BaseApi {
       Environment.PRODUCT_LIST_API_URL,
       { method: method },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     if (options?.raw) {
       return {
         statusCode: response.status(),
@@ -78,8 +75,12 @@ export class ProductApi extends BaseApi {
       Environment.PRODUCT_SEARCH_API_URL,
       { form: formData },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     if (options?.raw) {
       return {
         statusCode: response.status(),

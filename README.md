@@ -334,6 +334,19 @@ All commands run through `npx playwright test` under the hood, with the configur
 | `npm run test:api` | Run only tests tagged `@api` |
 | `npm run test:pwui:api` | `@api` tests in UI mode |
 
+### Running in Docker
+
+You can run the full test suite in Docker containers (via Docker Compose), either with or without sharding:
+
+| Command | Description |
+|---|---|
+| `npm run docker:build` | Rebuild the Docker image (`tspw-automation-exercise:latest`) |
+| `npm run docker:test` | Run the full test suite in a single Docker container (without shards) and generate the Allure report |
+| `npm run docker:single` | Run the single Docker container without generating/merging reports |
+| `npm run docker:test:sharded` | Run the test suite split across 4 parallel Docker containers (sharded) and merge Allure reports |
+| `npm run docker:shards` | Run only the 4 parallel Docker containers without merging reports |
+| `npm run docker:merge` | Run report export (`report:allure:export`) in Docker |
+
 You can pass any additional Playwright CLI flags after `--`, e.g.:
 
 ```bash

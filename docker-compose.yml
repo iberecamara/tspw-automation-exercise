@@ -18,44 +18,26 @@ x-shard: &shard
   # namespace their output per shard/worker (see logger.utils.ts's getShardSuffix), so this is
   # safe to share without one shard's output overwriting another's.
   #
-  # NOTE: if ./artifacts doesn't already exist on the host, Docker will create it on first run —
-  # as root, since dockerd itself runs as root — which defeats the point of the `user:` override
-  # above. Run `mkdir -p artifacts` yourself before the first `docker compose up` to avoid this.
+  # NOTE: every npm script that invokes `docker compose` (docker:build, docker:single,
+  # docker:merge, docker:test:sharded) creates ./artifacts itself first, as the current host
+  # user, via a plain Node mkdirSync call — before Docker ever touches the path. This avoids
+  # Docker creating it as root on first run (which would defeat the `user:` override above).
+  # Always invoke Docker through one of those npm scripts rather than calling `docker compose`
+  # directly, so this guard actually runs.
   volumes:
     - ./artifacts:/app/artifacts
 
 services:
-  # Each shard runs one quarter of the suite, in parallel (mirrors
-  # .github/workflows/playwright.yml's 4-way shard matrix). SHARD_INDEX/SHARD_TOTAL are read by
-  # the framework to tag log files, and `--shard` is Playwright's own flag for splitting the
-  # suite across processes.
-  tests-shard-1:
+  tests:
     <<: *shard
-    environment:
-      SHARD_INDEX: "1"
-      SHARD_TOTAL: "4"
-    command: npm test -- --shard=1/4
+    command: npm test
 
-  tests-shard-2:
+  # Template service used by scripts/run-sharded.sh — not meant to be run directly with `up`.
+  # SHARD_INDEX/SHARD_TOTAL are injected per-invocation by the script via `-e`.
+  tests-shard:
     <<: *shard
-    environment:
-      SHARD_INDEX: "2"
-      SHARD_TOTAL: "4"
-    command: npm test -- --shard=2/4
-
-  tests-shard-3:
-    <<: *shard
-    environment:
-      SHARD_INDEX: "3"
-      SHARD_TOTAL: "4"
-    command: npm test -- --shard=3/4
-
-  tests-shard-4:
-    <<: *shard
-    environment:
-      SHARD_INDEX: "4"
-      SHARD_TOTAL: "4"
-    command: npm test -- --shard=4/4
+    profiles: ["sharded"]   # keeps it out of a bare `docker compose up`
+    command: sh -c 'npm test -- --shard=$$SHARD_INDEX/$$SHARD_TOTAL'
 
   # Combines every shard's raw Allure results into one single-file report. Invoked as its own
   # explicit step (see package.json's docker:test:sharded script) rather than via `depends_on`:
@@ -70,4 +52,6 @@ services:
       - .env
     volumes:
       - ./artifacts:/app/artifacts
-    command: npm run report:allure:export
+    command: npm run report:merge
+
+

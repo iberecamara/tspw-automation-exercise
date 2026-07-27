@@ -1,10 +1,9 @@
 import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
-import { test } from "@fixtures/fixtures";
 import { SignupPage } from "@pages/signup.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/base.steps";
-import { StringUtils } from "@utils/string.utils";
+import { BaseSteps } from "@steps/ui/common/base.steps";
+import { prettyJson } from "@utils/string.utils";
 
 export class SignupSteps extends BaseSteps {
   readonly signupPage: SignupPage;
@@ -16,9 +15,8 @@ export class SignupSteps extends BaseSteps {
 
   // Actions
   async enterSignupData(user: UserType): Promise<void> {
-    this.logger.verbose(`Using signup data: ${StringUtils.prettyJson(user)}`);
-
-    await test.step("Enter user data for Signup", async () => {
+    this.logger.verbose(`Using signup data: ${prettyJson(user)}`);
+    await this.step("Enter user data for Signup", async () => {
       await this.signupPage.chooseTitle(user.address.title);
       await this.signupPage.enterPassword(user.password ?? EMPTY);
       await this.signupPage.selectDobDay(user.address.birthDate);
@@ -42,26 +40,30 @@ export class SignupSteps extends BaseSteps {
   }
 
   async clickCreateAccount(): Promise<void> {
-    this.logger.verbose("Clicking Signup page Create Account link.");
-
-    await test.step("Click Create Account in Signup page", async () => {
+    await this.step("Click Create Account in Signup page", async () => {
       await this.signupPage.clickCreateAccount();
     });
-
-    this.logger.verbose("Clicked Signup page Create Account link.");
   }
 
   // Validations
   async validateEnterAccountInformationText(): Promise<void> {
-    this.logger.verbose("Validating Signup page data entry heading text.");
-
-    await test.step("Validate that Signup page have the expected text", async () => {
-      await expect
-        .soft(
-          this.signupPage.locators.enterAccountInformationHeader,
-          `Signup page 'Enter Account Information' should be visible`,
-        )
-        .toBeVisible();
-    });
+    await this.step(
+      "Validate that Signup page have the expected text",
+      async () => {
+        const headingText = "Enter Account Information";
+        await expect
+          .soft(
+            this.signupPage.locators.enterAccountInformationHeader,
+            `Signup form heading text should be visible`,
+          )
+          .toBeVisible();
+        await expect
+          .soft(
+            this.signupPage.locators.enterAccountInformationHeader,
+            `Signup form heading text should be '${headingText}'`,
+          )
+          .toHaveText(headingText);
+      },
+    );
   }
 }

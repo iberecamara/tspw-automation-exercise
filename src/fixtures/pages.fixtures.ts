@@ -26,7 +26,7 @@ function createPageFixture<PageClass>(
   };
 }
 
-type PageFixtures = {
+interface PageFixtures {
   adblocker: void;
   homePage: HomePage;
   signupLoginPage: SignupLoginPage;
@@ -41,7 +41,7 @@ type PageFixtures = {
   paymentPage: PaymentPage;
   categoryPage: CategoryPage;
   brandPage: BrandPage;
-};
+}
 
 export const test = base.extend<PageFixtures>({
   adblocker: [

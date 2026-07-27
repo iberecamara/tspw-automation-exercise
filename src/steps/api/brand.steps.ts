@@ -1,9 +1,7 @@
-import { BrandApi } from "@api/brand.api";
-import { EMPTY } from "@data/constants/string.constants";
+import { BrandApi } from "@apis/brand.api";
 import { BrandType } from "@data/model/brand.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
-import { test } from "@fixtures/fixtures";
-import { BaseSteps } from "@steps/base.steps";
+import { BaseSteps } from "@steps/ui/common/base.steps";
 import { expect } from "playwright/test";
 
 export class BrandApiSteps extends BaseSteps {
@@ -20,97 +18,83 @@ export class BrandApiSteps extends BaseSteps {
     method?: "PUT" | "GET";
     brand?: string;
   }): Promise<CustomResponseType | BrandType[]> {
-    if (options?.raw) {
-      this.logger.verbose("Retrieving raw response from API - Get All Brands.");
-      let response = {} as CustomResponseType;
-
-      await test.step("Retrieve raw response from API - Get All Brands", async () => {
-        response = (await this.brandApi.all(options)) as CustomResponseType;
-      });
-
-      this.logger.verbose("Retrieved raw response from API - Get All Brands.");
-      return response;
-    }
-    this.logger.verbose("Retrieving all brands from API.");
-    const brands: BrandType[] = [];
-
-    await test.step("Retrieve all brands from API.", async () => {
-      brands.push(...((await this.brandApi.all(options)) as BrandType[]));
+    const message = options?.raw
+      ? "Retrieve raw response from Get All Brands endpoint"
+      : "Retrieve All Brands from Get All Brands endpoint";
+    return await this.step(message, async () => {
+      return this.brandApi.all(options);
     });
-
-    this.logger.verbose(
-      `Retrieved ${brands.length} brands${brands.length > 1 ? "s" : EMPTY} from API.`,
-    );
-    return brands;
   }
 
   // Validations
   async validateGetAllBrands(response: CustomResponseType): Promise<void> {
-    this.logger.verbose("Validating raw response from API - Get All Brands.");
-
-    await test.step("Validate raw response from API - Get All Brands", () => {
-      expect
-        .soft(
-          response.statusCode,
-          "Status Code (from response) for Get All Brands should be 200",
-        )
-        .toBe(200);
-      expect
-        .soft(
-          response.statusText,
-          `Status Text (from response) for Get All Brands should be 'OK'`,
-        )
-        .toBe("OK");
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Get All Brands should be 200",
-        )
-        .toBe(200);
-      expect
-        .soft(
-          response.body,
-          `Response body for Get All Brands should be have a 'brands' field`,
-        )
-        .toHaveProperty("brands");
-      expect
-        .soft(
-          response.body.brands,
-          `Response body 'brands' field for Get All Brands should be an array`,
-        )
-        .toBeInstanceOf(Array);
-      const { brands = [] } = response.body;
-      for (const product of brands) {
+    await this.step(
+      "Validate raw response from Get All Brands endpoint",
+      () => {
         expect
           .soft(
-            product,
-            `Response body 'brands' objects for Get All Brands should have the expected properties`,
+            response.statusCode,
+            "Status Code (from response) for Get All Brands should be 200",
           )
-          .toMatchObject({
-            id: expect.any(Number),
-            brand: expect.any(String),
-          });
-      }
-    });
+          .toBe(200);
+        expect
+          .soft(
+            response.statusText,
+            `Status Text (from response) for Get All Brands should be 'OK'`,
+          )
+          .toBe("OK");
+        expect
+          .soft(
+            response.body.responseCode,
+            "Response Code (from body) for Get All Brands should be 200",
+          )
+          .toBe(200);
+        expect
+          .soft(
+            response.body,
+            `Response body for Get All Brands should be have a 'brands' field`,
+          )
+          .toHaveProperty("brands");
+        expect
+          .soft(
+            response.body.brands,
+            `Response body 'brands' field for Get All Brands should be an array`,
+          )
+          .toBeInstanceOf(Array);
+        const { brands = [] } = response.body;
+        for (const product of brands) {
+          expect
+            .soft(
+              product,
+              `Response body 'brands' objects for Get All Brands should have the expected properties`,
+            )
+            .toMatchObject({
+              id: expect.any(Number),
+              brand: expect.any(String),
+            });
+        }
+      },
+    );
   }
 
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.verbose("Validating Method Not Allowed - PUT - Get All Brands.");
-
-    await test.step("Validating Method Not Allowed - PUT - Get All Brands", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for PUT into Get All Brands should be 405",
-        )
-        .toBe(405);
-      const expectedMessage = "This request method is not supported.";
-      expect
-        .soft(
-          response.body.message,
-          `Message (from body) for PUT into Get All Brands should be '${expectedMessage}'`,
-        )
-        .toBe(expectedMessage);
-    });
+    await this.step(
+      "Validate Method Not Allowed - PUT - Get All Brands endpoint",
+      () => {
+        expect
+          .soft(
+            response.body.responseCode,
+            "Response Code (from body) for PUT into Get All Brands should be 405",
+          )
+          .toBe(405);
+        const expectedMessage = "This request method is not supported.";
+        expect
+          .soft(
+            response.body.message,
+            `Message (from body) for PUT into Get All Brands should be '${expectedMessage}'`,
+          )
+          .toBe(expectedMessage);
+      },
+    );
   }
 }

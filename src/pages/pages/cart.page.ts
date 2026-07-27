@@ -1,8 +1,8 @@
 import { CartComponent } from "@components/cart.component";
 import { HeaderComponent } from "@components/header.component";
 import { SubscriptionComponent } from "@components/subscription.component";
-import { CartLocators } from "@locators/page/cart.locators";
 import { BasePage } from "@pages.base/base.page";
+import { CartLocators } from "@pages.base/locators/page/cart.locators";
 import { Page } from "@playwright/test";
 
 export class CartPage extends BasePage {

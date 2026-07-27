@@ -1,5 +1,4 @@
-import { Environment } from "@configs/environment.config";
-import { SECOND_IN_MILISSECONDS } from "@data/constants/common.constants";
+import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
 import { Locator, Page } from "@playwright/test";
 
 export class BasePage {
@@ -14,8 +13,8 @@ export class BasePage {
     timeout?: number;
     waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
   }): Promise<void> {
-    await this.page.goto(Environment.BASE_URL, {
-      timeout: 30 * SECOND_IN_MILISSECONDS,
+    await this.page.goto("/", {
+      timeout: 30 * SECOND_IN_MILISECONDS,
       ...options,
     });
   }
@@ -27,14 +26,13 @@ export class BasePage {
       clickCount?: number;
       delay?: number;
       force?: boolean;
-      modifiers?: Array<"Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift">;
+      modifiers?: ("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")[];
       position?: { x: number; y: number };
       steps?: number;
       timeout?: number;
       trial?: boolean;
     },
   ): Promise<void> {
-    await locator.waitFor({ state: "visible" });
     await locator.click(options);
   }
 
@@ -80,7 +78,7 @@ export class BasePage {
     locator: Locator,
     options?: {
       force?: boolean;
-      modifiers?: Array<"Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift">;
+      modifiers?: ("Alt" | "Control" | "ControlOrMeta" | "Meta" | "Shift")[];
       position?: { x: number; y: number };
       timeout: number;
       trial?: boolean;

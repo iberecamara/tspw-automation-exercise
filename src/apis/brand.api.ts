@@ -1,21 +1,14 @@
-import { BaseApi } from "@api/base.api";
+import { BaseApi } from "@apis/base.api";
 import { Environment } from "@configs/environment.config";
 import { BrandType } from "@data/model/brand.model";
 import {
   CustomResponseBodyType,
   CustomResponseType,
 } from "@data/types/custom-response.type";
-import { APIRequestContext, APIResponse } from "@playwright/test";
-import { StringUtils } from "@utils/string.utils";
+import { APIResponse } from "@playwright/test";
+import { prettyJson } from "@utils/string.utils";
 
 export class BrandApi extends BaseApi {
-  readonly request: APIRequestContext;
-
-  constructor(request: APIRequestContext) {
-    super();
-    this.request = request;
-  }
-
   async all(options?: {
     raw?: boolean;
     method?: "PUT" | "GET";
@@ -27,8 +20,12 @@ export class BrandApi extends BaseApi {
       Environment.BRAND_LIST_API_URL,
       { method: method },
     );
-    this.logger.debug(`Response: ${StringUtils.prettyJson(response)}`);
     const body = (await response.json()) as CustomResponseBodyType;
+    this.logger.debug(
+      `Response [${response.status()} ${response.url()}]: ${
+        body ? prettyJson(body) : "<no JSON body>"
+      }`,
+    );
     if (options?.raw) {
       return {
         statusCode: response.status(),

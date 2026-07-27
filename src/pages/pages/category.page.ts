@@ -1,9 +1,12 @@
-import { CategoriesComponent } from "@components/categories.component";
-import { CategoryLocators } from "@locators/page/category.locators";
+import {
+  CategoriesComponent,
+  HasCategories,
+} from "@components/categories.component";
 import { BasePage } from "@pages.base/base.page";
+import { CategoryLocators } from "@pages.base/locators/page/category.locators";
 import { Page } from "@playwright/test";
 
-export class CategoryPage extends BasePage {
+export class CategoryPage extends BasePage implements HasCategories {
   readonly locators: CategoryLocators;
   readonly categories: CategoriesComponent;
 

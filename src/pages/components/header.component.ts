@@ -1,4 +1,4 @@
-import { HeaderComponentLocators } from "@locators/component/header.locators";
+import { HeaderComponentLocators } from "@locators/component/header.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { Page } from "@playwright/test";
 

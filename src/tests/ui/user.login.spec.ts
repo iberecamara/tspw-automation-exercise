@@ -1,5 +1,3 @@
-import { DELETED } from "@data/constants/common.constants";
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
 
 test.describe(
@@ -8,30 +6,25 @@ test.describe(
     tag: ["@user-login", "@ui"],
   },
   () => {
-    let user: UserType;
-
-    test.beforeEach("Create valid user via API", async ({ userApiSteps }) => {
-      user = GenerateRandomUser();
-      await userApiSteps.createAccount(user);
-    });
-
     test(
       "Login User with correct email and password",
       { tag: ["@SAMPLE-0001", "@TC-UI-2", "@valid-user"] },
       async ({
+        registeredUser,
         signupLoginSteps,
-        accountCreatedDeletedSteps,
         homePage,
-        sharedSteps,
+        commonSteps,
+        headerComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateLoginToAccountText();
-        await signupLoginSteps.login(user);
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
+        await signupLoginSteps.login(registeredUser);
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          registeredUser,
+        );
       },
     );
 
@@ -46,34 +39,44 @@ test.describe(
           "@invalid-user",
         ],
       },
-      async ({ signupLoginSteps, userApiSteps, homePage, sharedSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+      async ({
+        registeredUser,
+        signupLoginSteps,
+        homePage,
+        commonSteps,
+        headerComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateLoginToAccountText();
-        const email = user.email;
-        user.email = `invalid_${user.email}`;
-        await signupLoginSteps.login(user);
+        const email = registeredUser.email;
+        registeredUser.email = `invalid_${registeredUser.email}`;
+        await signupLoginSteps.login(registeredUser);
         await signupLoginSteps.validateInvalidCredentialsMessage();
-        user.email = email;
-        await userApiSteps.deleteAccount(user);
+        registeredUser.email = email;
       },
     );
 
     test(
       "Login User with incorrect password",
       { tag: ["@SAMPLE-0003", "@TC-UI-3", "@TC-UI-3.2", "@invalid-password"] },
-      async ({ signupLoginSteps, userApiSteps, homePage, sharedSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+      async ({
+        registeredUser,
+        signupLoginSteps,
+        homePage,
+        commonSteps,
+        headerComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateLoginToAccountText();
-        const password = user.password;
-        user.password = `invalid_${user.password}`;
-        await signupLoginSteps.login(user);
+        const password = registeredUser.password;
+        registeredUser.password = `invalid_${registeredUser.password}`;
+        await signupLoginSteps.login(registeredUser);
         await signupLoginSteps.validateInvalidCredentialsMessage();
-        user.password = password;
-        await userApiSteps.deleteAccount(user);
+        registeredUser.password = password;
       },
     );
   },

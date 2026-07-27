@@ -1,4 +1,4 @@
-import { ContinueShoppingViewCartComponentLocators } from "@locators/component/continueshopping-viewcart.locators";
+import { ContinueShoppingViewCartComponentLocators } from "@locators/component/continueshopping-viewcart.component.locators";
 import { BasePage } from "@pages.base/base.page";
 import { expect, Page } from "@playwright/test";
 

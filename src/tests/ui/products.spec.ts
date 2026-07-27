@@ -1,8 +1,7 @@
 import { ProductType } from "@data/model/product.model";
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
-import { ArraysUtils } from "@utils/arrays.utils";
-import { StringUtils } from "@utils/string.utils";
+import { getRandomElement } from "@utils/arrays.utils";
+import { generateRandomText, prettyJson } from "@utils/string.utils";
 
 test.describe(
   "Products page validations - UI",
@@ -18,15 +17,20 @@ test.describe(
         productsSteps,
         productsPage,
         productSteps,
-        sharedSteps,
+        commonSteps,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickProducts(homePage.header);
-        await sharedSteps.validateTitle("Products");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickProducts(homePage.header);
+        await commonSteps.validateTitle("Products");
         const count = await productsSteps.getProductsCount();
         const expectedCount = 34;
-        await sharedSteps.validateProductsCount(count, expectedCount);
+        await productListingComponentSteps.validateProductsCount(
+          count,
+          expectedCount,
+        );
         const firstProduct: ProductType = {
           id: 1,
           name: "Blue Top",
@@ -39,7 +43,10 @@ test.describe(
           condition: "New",
           brand: "Polo",
         };
-        await sharedSteps.viewProduct(productsPage, firstProduct.id ?? -1);
+        await productListingComponentSteps.viewProduct(
+          productsPage,
+          firstProduct.id ?? -1,
+        );
         const productDetails: ProductType = await productSteps.productDetails();
         await productSteps.validateProductDetails(firstProduct, productDetails);
       },
@@ -48,16 +55,23 @@ test.describe(
     test(
       "Search Product",
       { tag: ["@SAMPLE-0008", "@TC-UI-9", "@search-products"] },
-      async ({ homePage, productsSteps, productsPage, sharedSteps }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickProducts(homePage.header);
-        await sharedSteps.validateTitle("Products");
+      async ({
+        homePage,
+        productsSteps,
+        productsPage,
+        commonSteps,
+        headerComponentSteps,
+        productListingComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickProducts(homePage.header);
+        await commonSteps.validateTitle("Products");
         const searchTerm = "blue";
         await productsSteps.searchProducts(searchTerm);
         const products: ProductType[] =
-          await sharedSteps.getProducts(productsPage);
-        productsSteps.validateDisplayedProductsHaveSearchTerm(
+          await productListingComponentSteps.getProducts(productsPage);
+        await productsSteps.validateDisplayedProductsHaveSearchTerm(
           products,
           searchTerm,
         );
@@ -71,22 +85,27 @@ test.describe(
         homePage,
         productSteps,
         productsPage,
-        sharedSteps,
+        commonSteps,
         productApiSteps,
         logger,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickProducts(homePage.header);
-        await sharedSteps.validateTitle("Products");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickProducts(homePage.header);
+        await commonSteps.validateTitle("Products");
         const apiProducts = (await productApiSteps.all()) as ProductType[];
-        const selectedProduct = ArraysUtils.getRandomElement(apiProducts);
-        logger.info(StringUtils.prettyJson(selectedProduct));
-        await sharedSteps.viewProduct(productsPage, selectedProduct.id ?? -1);
-        const user: UserType = GenerateRandomUser();
-        const review: string = StringUtils.generateRandomText({ words: 10 });
-        await productSteps.enterReviewName(user.name);
-        await productSteps.enterReviewEmail(user.email);
+        const selectedProduct = getRandomElement(apiProducts);
+        logger.info(prettyJson(selectedProduct));
+        await productListingComponentSteps.viewProduct(
+          productsPage,
+          selectedProduct.id ?? -1,
+        );
+        const review: string = generateRandomText({ words: 10 });
+        await productSteps.enterReviewName(unregisteredUser.name);
+        await productSteps.enterReviewEmail(unregisteredUser.email);
         await productSteps.enterReviewText(review);
         await productSteps.submitReview();
         await productSteps.validateReviewSuccessMessage();

@@ -7,6 +7,4 @@ export type SitePages =
   | "Contact Us"
   | "Signup / Login";
 
-export type SitePagesTitles = {
-  [K in SitePages]: string;
-};
+export type SitePagesTitles = Record<SitePages, string>;

@@ -29,8 +29,28 @@ env:
   SHARDS_TOTAL: 4
 
 jobs:
+  static-checks:
+    name: Type check, lint, and format check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Run type check, lint, and format check
+        run: npm run codestandards
   test:
     name: Test (shard ${{ matrix.shardIndex }}/4)
+    needs: static-checks
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:

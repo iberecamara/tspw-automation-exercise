@@ -1,6 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
-export class CartLocators {
+export class CartComponentLocators {
   readonly cartItemsTable: Locator;
   readonly cartItemsTableProducts: Locator;
   readonly productName: (locator: Locator) => Locator;

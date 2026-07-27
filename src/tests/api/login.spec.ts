@@ -1,4 +1,4 @@
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
+import { generateRandomUser, UserType } from "@data/model/user.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
 import { test } from "@fixtures/fixtures";
 
@@ -12,7 +12,7 @@ test.describe(
       "POST To Verify Login with valid details",
       { tag: ["@SAMPLE-0034", "@TC-API-7"] },
       async ({ loginApiSteps, userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         await userApiSteps.createAccount(user);
         const response: CustomResponseType = await loginApiSteps.verify({
           method: "POST",
@@ -28,7 +28,7 @@ test.describe(
       "POST To Verify Login without email parameter",
       { tag: ["@SAMPLE-0035", "@TC-API-8"] },
       async ({ loginApiSteps, userApiSteps }) => {
-        const user: UserType = GenerateRandomUser();
+        const user: UserType = generateRandomUser();
         await userApiSteps.createAccount(user);
         const response: CustomResponseType = await loginApiSteps.verify({
           method: "POST",

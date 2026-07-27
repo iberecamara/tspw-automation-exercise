@@ -1,7 +1,5 @@
-import { CREATED, DELETED } from "@data/constants/common.constants";
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
-import { StringUtils } from "@utils/string.utils";
+import { capitalize } from "@utils/string.utils";
 
 test.describe(
   "User registration validations - UI",
@@ -13,31 +11,28 @@ test.describe(
       "Register user",
       { tag: ["@SAMPLE-0013", "@TC-UI-1"] },
       async ({
+        unregisteredUser,
         signupLoginSteps,
         signupSteps,
         accountCreatedDeletedSteps,
         homePage,
-        sharedSteps,
+        commonSteps,
+        headerComponentSteps,
       }) => {
-        const user: UserType = GenerateRandomUser();
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateNewUserSignupText();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(unregisteredUser);
         await signupLoginSteps.clickSignup();
         await signupSteps.validateEnterAccountInformationText();
-        await signupSteps.enterSignupData(user);
+        await signupSteps.enterSignupData(unregisteredUser);
         await signupSteps.clickCreateAccount();
-        await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(CREATED),
-        );
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
+        await accountCreatedDeletedSteps.validateAccountActionText("created");
+        await accountCreatedDeletedSteps.clickContinue(capitalize("created"));
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
         );
       },
     );
@@ -45,17 +40,22 @@ test.describe(
     test(
       "Register User with existing email",
       { tag: ["@SAMPLE-0014", "@TC-UI-5", "@user-register-error"] },
-      async ({ signupLoginSteps, userApiSteps, homePage, sharedSteps }) => {
-        const user: UserType = GenerateRandomUser();
-        await userApiSteps.createAccount(user);
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+      async ({
+        registeredUser,
+        signupLoginSteps,
+        userApiSteps,
+        homePage,
+        commonSteps,
+        headerComponentSteps,
+      }) => {
+        await userApiSteps.createAccount(registeredUser);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateNewUserSignupText();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(registeredUser);
         await signupLoginSteps.clickSignup();
         await signupLoginSteps.validateEmailAlreadyExistsMessage();
-        await userApiSteps.deleteAccount(user);
       },
     );
   },

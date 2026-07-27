@@ -1,7 +1,6 @@
-import { LoginApi } from "@api/login.api";
+import { LoginApi } from "@apis/login.api";
 import { CustomResponseType } from "@data/types/custom-response.type";
-import { test } from "@fixtures/fixtures";
-import { BaseSteps } from "@steps/base.steps";
+import { BaseSteps } from "@steps/ui/common/base.steps";
 import { expect } from "playwright/test";
 
 export class LoginApiSteps extends BaseSteps {
@@ -18,22 +17,17 @@ export class LoginApiSteps extends BaseSteps {
     email?: string;
     password?: string;
   }): Promise<CustomResponseType> {
-    this.logger.verbose("Retrieving raw response from API - Verify Login.");
-    let response = {} as CustomResponseType;
-
-    await test.step("Retrieve raw response from API - Verify Login", async () => {
-      response = await this.loginApi.verify(options);
-    });
-
-    this.logger.verbose("Retrieved raw response from API - Verify Login.");
-    return response;
+    return await this.step(
+      "Retrieve raw response from Verify Login endpoint",
+      async () => {
+        return await this.loginApi.verify(options);
+      },
+    );
   }
 
   // Validations
   async validateUserExists(response: CustomResponseType): Promise<void> {
-    this.logger.verbose("Validating User Exists - Verify Login.");
-
-    await test.step("Validating User Exists - Verify Login", () => {
+    await this.step("Validate User Exists - Verify Login endpoint", () => {
       expect
         .soft(
           response.body.responseCode,
@@ -51,9 +45,7 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   async validateUserNotFound(response: CustomResponseType): Promise<void> {
-    this.logger.verbose("Validating User Not Found - Verify Login.");
-
-    await test.step("Validating User Not Found - Verify Login", () => {
+    await this.step("Validate User Not Found - Verify Login endpoint", () => {
       expect
         .soft(
           response.body.responseCode,
@@ -71,45 +63,45 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
-    this.logger.verbose(
-      "Validating Missing Parameter - Password - Verify Login.",
+    await this.step(
+      "Validate Missing Parameter - Password - Verify Login endpoint",
+      () => {
+        expect
+          .soft(
+            response.body.responseCode,
+            "Response Code (from body) for Missing Parameter - Password - Verify Login should be 400",
+          )
+          .toBe(400);
+        const expectedMessage =
+          "Bad request, email or password parameter is missing in POST request.";
+        expect
+          .soft(
+            response.body.message,
+            `Message (from body) ffor Missing Parameter - Password - Verify Login should be '${expectedMessage}'`,
+          )
+          .toBe(expectedMessage);
+      },
     );
-
-    await test.step("Validating Missing Parameter - Password - Verify Login", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Missing Parameter - Password - Verify Login should be 400",
-        )
-        .toBe(400);
-      const expectedMessage =
-        "Bad request, email or password parameter is missing in POST request.";
-      expect
-        .soft(
-          response.body.message,
-          `Message (from body) ffor Missing Parameter - Password - Verify Login should be '${expectedMessage}'`,
-        )
-        .toBe(expectedMessage);
-    });
   }
 
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
-    this.logger.verbose("Validating Method Not Allowed - DELETE - Verify Login.");
-
-    await test.step("Validating Method Not Allowed - DELETE - Verify Login", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for DELETE into Verify Login should be 405",
-        )
-        .toBe(405);
-      const expectedMessage = "This request method is not supported.";
-      expect
-        .soft(
-          response.body.message,
-          `Message (from body) for DELETE into Verify Login should be '${expectedMessage}'`,
-        )
-        .toBe(expectedMessage);
-    });
+    await this.step(
+      "Validate Method Not Allowed - DELETE - Verify Login endpoint",
+      () => {
+        expect
+          .soft(
+            response.body.responseCode,
+            "Response Code (from body) for DELETE into Verify Login should be 405",
+          )
+          .toBe(405);
+        const expectedMessage = "This request method is not supported.";
+        expect
+          .soft(
+            response.body.message,
+            `Message (from body) for DELETE into Verify Login should be '${expectedMessage}'`,
+          )
+          .toBe(expectedMessage);
+      },
+    );
   }
 }

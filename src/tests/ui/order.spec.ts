@@ -1,14 +1,12 @@
-import { CREATED, DELETED } from "@data/constants/common.constants";
 import {
   CreditCardDetailsType,
-  GenerateRandomCard,
+  generateRandomCard,
 } from "@data/model/credit-card-details.model";
 import { ProductType } from "@data/model/product.model";
-import { GenerateRandomUser, UserType } from "@data/model/user.model";
 import { test } from "@fixtures/fixtures";
-import { FileUtils } from "@utils/file.utils";
-import { NumberUtils } from "@utils/number.utils";
-import { StringUtils } from "@utils/string.utils";
+import { readFile } from "@utils/file.utils";
+import { getRandomNumber } from "@utils/number.utils";
+import { capitalize, generateRandomText } from "@utils/string.utils";
 
 test.describe(
   "Orders validations - UI",
@@ -25,56 +23,63 @@ test.describe(
         paymentSteps,
         cartSteps,
         signupLoginSteps,
-        sharedSteps,
+        commonSteps,
         accountCreatedDeletedSteps,
         signupSteps,
         checkoutSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.proceedToCheckout();
         await cartSteps.registerUserFromCheckout();
-        const user: UserType = GenerateRandomUser();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(unregisteredUser);
         await signupLoginSteps.clickSignup();
-        await signupSteps.enterSignupData(user);
+        await signupSteps.enterSignupData(unregisteredUser);
         await signupSteps.clickCreateAccount();
-        await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(CREATED),
+        await accountCreatedDeletedSteps.validateAccountActionText("created");
+        await accountCreatedDeletedSteps.clickContinue(capitalize("created"));
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
         );
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
-        await sharedSteps.clickCart(homePage.header);
+        await headerComponentSteps.clickCart(homePage.header);
         await cartSteps.proceedToCheckout();
         const checkoutCartItems = await checkoutSteps.getCartProducts();
         await checkoutSteps.validateCartItems(
           checkoutCartItems,
           selectedProducts,
         );
-        await checkoutSteps.validateCheckoutAddress(user, "delivery");
-        await checkoutSteps.validateCheckoutAddress(user, "billing");
-        const checkoutComment = StringUtils.generateRandomText({
-          words: NumberUtils.getRandomNumber({ min: 3, max: 10 }),
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "delivery",
+        );
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "billing",
+        );
+        const checkoutComment = generateRandomText({
+          words: getRandomNumber({ min: 3, max: 10 }),
         });
         await checkoutSteps.enterComment(checkoutComment);
         await checkoutSteps.placeOrder();
-        const cardDetails: CreditCardDetailsType = GenerateRandomCard({
-          name: user.name,
+        const cardDetails: CreditCardDetailsType = generateRandomCard({
+          name: unregisteredUser.name,
         });
         await paymentSteps.enterCardDetails(cardDetails);
         await paymentSteps.payAndConfirmOrder();
         await paymentSteps.validateOrderPlaced();
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
-        );
       },
     );
 
@@ -87,56 +92,63 @@ test.describe(
         paymentSteps,
         cartSteps,
         signupLoginSteps,
-        sharedSteps,
+        commonSteps,
         accountCreatedDeletedSteps,
         signupSteps,
         checkoutSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        const user: UserType = GenerateRandomUser();
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateNewUserSignupText();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(unregisteredUser);
         await signupLoginSteps.clickSignup();
         await signupSteps.validateEnterAccountInformationText();
-        await signupSteps.enterSignupData(user);
+        await signupSteps.enterSignupData(unregisteredUser);
         await signupSteps.clickCreateAccount();
-        await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(CREATED),
+        await accountCreatedDeletedSteps.validateAccountActionText("created");
+        await accountCreatedDeletedSteps.clickContinue(capitalize("created"));
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
         );
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.proceedToCheckout();
         const checkoutCartItems = await checkoutSteps.getCartProducts();
         await checkoutSteps.validateCartItems(
           checkoutCartItems,
           selectedProducts,
         );
-        await checkoutSteps.validateCheckoutAddress(user, "delivery");
-        await checkoutSteps.validateCheckoutAddress(user, "billing");
-        const checkoutComment = StringUtils.generateRandomText({
-          words: NumberUtils.getRandomNumber({ min: 3, max: 10 }),
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "delivery",
+        );
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "billing",
+        );
+        const checkoutComment = generateRandomText({
+          words: getRandomNumber({ min: 3, max: 10 }),
         });
         await checkoutSteps.enterComment(checkoutComment);
         await checkoutSteps.placeOrder();
-        const cardDetails: CreditCardDetailsType = GenerateRandomCard({
-          name: user.name,
+        const cardDetails: CreditCardDetailsType = generateRandomCard({
+          name: unregisteredUser.name,
         });
         await paymentSteps.enterCardDetails(cardDetails);
         await paymentSteps.payAndConfirmOrder();
         await paymentSteps.validateOrderPlaced();
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
-        );
       },
     );
 
@@ -150,47 +162,55 @@ test.describe(
         paymentSteps,
         cartSteps,
         signupLoginSteps,
-        sharedSteps,
-        accountCreatedDeletedSteps,
+        commonSteps,
         checkoutSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        const user: UserType = GenerateRandomUser();
-        await userApiSteps.createAccount(user);
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
-        await signupLoginSteps.login(user);
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
+        await userApiSteps.createAccount(unregisteredUser);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
+        await signupLoginSteps.login(unregisteredUser);
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
+        );
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.proceedToCheckout();
         const checkoutCartItems = await checkoutSteps.getCartProducts();
         await checkoutSteps.validateCartItems(
           checkoutCartItems,
           selectedProducts,
         );
-        await checkoutSteps.validateCheckoutAddress(user, "delivery");
-        await checkoutSteps.validateCheckoutAddress(user, "billing");
-        const checkoutComment = StringUtils.generateRandomText({
-          words: NumberUtils.getRandomNumber({ min: 3, max: 10 }),
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "delivery",
+        );
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "billing",
+        );
+        const checkoutComment = generateRandomText({
+          words: getRandomNumber({ min: 3, max: 10 }),
         });
         await checkoutSteps.enterComment(checkoutComment);
         await checkoutSteps.placeOrder();
-        const cardDetails: CreditCardDetailsType = GenerateRandomCard({
-          name: user.name,
+        const cardDetails: CreditCardDetailsType = generateRandomCard({
+          name: unregisteredUser.name,
         });
         await paymentSteps.enterCardDetails(cardDetails);
         await paymentSteps.payAndConfirmOrder();
         await paymentSteps.validateOrderPlaced();
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
-        );
       },
     );
 
@@ -202,44 +222,51 @@ test.describe(
         homePage,
         cartSteps,
         signupLoginSteps,
-        sharedSteps,
+        commonSteps,
         accountCreatedDeletedSteps,
         signupSteps,
         checkoutSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        const user: UserType = GenerateRandomUser();
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.clickSignupLogin(homePage.header);
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await headerComponentSteps.clickSignupLogin(homePage.header);
         await signupLoginSteps.validateNewUserSignupText();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(unregisteredUser);
         await signupLoginSteps.clickSignup();
         await signupSteps.validateEnterAccountInformationText();
-        await signupSteps.enterSignupData(user);
+        await signupSteps.enterSignupData(unregisteredUser);
         await signupSteps.clickCreateAccount();
-        await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(CREATED),
+        await accountCreatedDeletedSteps.validateAccountActionText("created");
+        await accountCreatedDeletedSteps.clickContinue(capitalize("created"));
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
         );
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.proceedToCheckout();
         const checkoutCartItems = await checkoutSteps.getCartProducts();
         await checkoutSteps.validateCartItems(
           checkoutCartItems,
           selectedProducts,
         );
-        await checkoutSteps.validateCheckoutAddress(user, "delivery");
-        await checkoutSteps.validateCheckoutAddress(user, "billing");
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "delivery",
+        );
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "billing",
         );
       },
     );
@@ -253,32 +280,38 @@ test.describe(
         paymentSteps,
         cartSteps,
         signupLoginSteps,
-        sharedSteps,
+        commonSteps,
         accountCreatedDeletedSteps,
         signupSteps,
         checkoutSteps,
+        unregisteredUser,
+        headerComponentSteps,
+        productListingComponentSteps,
       }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
         const products = (await productApiSteps.all()) as ProductType[];
         const selectedProducts =
-          await sharedSteps.selectRandomProducts(products);
-        await sharedSteps.addProductsToCart(homePage, selectedProducts);
-        await sharedSteps.clickCart(homePage.header);
-        await sharedSteps.validateTitle("Cart");
+          await productListingComponentSteps.selectRandomProducts(products);
+        await productListingComponentSteps.addProductsToCart(
+          homePage,
+          selectedProducts,
+        );
+        await headerComponentSteps.clickCart(homePage.header);
+        await commonSteps.validateTitle("Cart");
         await cartSteps.proceedToCheckout();
         await cartSteps.registerUserFromCheckout();
-        const user: UserType = GenerateRandomUser();
-        await signupLoginSteps.enterSignupData(user);
+        await signupLoginSteps.enterSignupData(unregisteredUser);
         await signupLoginSteps.clickSignup();
-        await signupSteps.enterSignupData(user);
+        await signupSteps.enterSignupData(unregisteredUser);
         await signupSteps.clickCreateAccount();
-        await accountCreatedDeletedSteps.validateAccountActionText(CREATED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(CREATED),
+        await accountCreatedDeletedSteps.validateAccountActionText("created");
+        await accountCreatedDeletedSteps.clickContinue(capitalize("created"));
+        await headerComponentSteps.validateUserLoggedText(
+          homePage.header,
+          unregisteredUser,
         );
-        await sharedSteps.validateUserLoggedText(homePage.header, user);
-        await sharedSteps.clickCart(homePage.header);
+        await headerComponentSteps.clickCart(homePage.header);
         await cartSteps.proceedToCheckout();
         const checkoutCartItems = await checkoutSteps.getCartProducts();
         const cartTotalPrice = checkoutCartItems.reduce(
@@ -289,31 +322,32 @@ test.describe(
           checkoutCartItems,
           selectedProducts,
         );
-        await checkoutSteps.validateCheckoutAddress(user, "delivery");
-        await checkoutSteps.validateCheckoutAddress(user, "billing");
-        const checkoutComment = StringUtils.generateRandomText({
-          words: NumberUtils.getRandomNumber({ min: 3, max: 10 }),
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "delivery",
+        );
+        await checkoutSteps.validateCheckoutAddress(
+          unregisteredUser,
+          "billing",
+        );
+        const checkoutComment = generateRandomText({
+          words: getRandomNumber({ min: 3, max: 10 }),
         });
         await checkoutSteps.enterComment(checkoutComment);
         await checkoutSteps.placeOrder();
-        const cardDetails: CreditCardDetailsType = GenerateRandomCard({
-          name: user.name,
+        const cardDetails: CreditCardDetailsType = generateRandomCard({
+          name: unregisteredUser.name,
         });
         await paymentSteps.enterCardDetails(cardDetails);
         await paymentSteps.payAndConfirmOrder();
         await paymentSteps.validateOrderPlaced();
         const filepath: string = await paymentSteps.downloadInvoice();
         await paymentSteps.continue();
-        const fileContents: string[] = FileUtils.readFile(filepath);
+        const fileContents: string[] = readFile(filepath);
         await paymentSteps.validateInvoiceFileContents(
           fileContents,
-          user,
+          unregisteredUser,
           cartTotalPrice,
-        );
-        await sharedSteps.clickDeleteAccount(homePage.header);
-        await accountCreatedDeletedSteps.validateAccountActionText(DELETED);
-        await accountCreatedDeletedSteps.clickContinue(
-          StringUtils.capitalize(DELETED),
         );
       },
     );

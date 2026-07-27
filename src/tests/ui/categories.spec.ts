@@ -1,5 +1,5 @@
 import { test } from "@fixtures/fixtures";
-import { ArraysUtils } from "@utils/arrays.utils";
+import { getRandomElement } from "@utils/arrays.utils";
 
 test.describe(
   "Categories validations - UI",
@@ -10,29 +10,41 @@ test.describe(
     test(
       "View Category Products",
       { tag: ["@SAMPLE-0019", "@TC-UI-18"] },
-      async ({ homePage, sharedSteps, categorySteps, categoryPage }) => {
-        await sharedSteps.navigateHome(homePage);
-        await sharedSteps.validateTitle("Home");
-        await sharedSteps.validateCategorySection(homePage);
+      async ({
+        homePage,
+        commonSteps,
+        categorySteps,
+        categoryPage,
+        categoryComponentSteps,
+      }) => {
+        await commonSteps.navigateHome(homePage);
+        await commonSteps.validateTitle("Home");
+        await categoryComponentSteps.validateCategorySection(homePage);
         let category = "Women";
-        await sharedSteps.expandCategory(homePage, category);
-        let subcategories = await sharedSteps.getSubCategories(
+        await categoryComponentSteps.expandCategory(homePage, category);
+        let subcategories = await categoryComponentSteps.getSubCategories(
           homePage,
           category,
         );
-        let subcategory = ArraysUtils.getRandomElement(subcategories);
-        await sharedSteps.selectSubCategory(homePage, subcategory);
-        await sharedSteps.validateTitleDirectly(
+        let subcategory = getRandomElement(subcategories);
+        await categoryComponentSteps.selectSubCategory(homePage, subcategory);
+        await commonSteps.validateTitleDirectly(
           "Category",
           `Automation Exercise - ${subcategory} Products`,
         );
         await categorySteps.validateCategoryPageHeading(category, subcategory);
         category = "Men";
-        await sharedSteps.expandCategory(homePage, category);
-        subcategories = await sharedSteps.getSubCategories(homePage, category);
-        subcategory = ArraysUtils.getRandomElement(subcategories);
-        await sharedSteps.selectSubCategory(categoryPage, subcategory);
-        await sharedSteps.validateTitleDirectly(
+        await categoryComponentSteps.expandCategory(homePage, category);
+        subcategories = await categoryComponentSteps.getSubCategories(
+          homePage,
+          category,
+        );
+        subcategory = getRandomElement(subcategories);
+        await categoryComponentSteps.selectSubCategory(
+          categoryPage,
+          subcategory,
+        );
+        await commonSteps.validateTitleDirectly(
           "Category",
           `Automation Exercise - ${subcategory} Products`,
         );
