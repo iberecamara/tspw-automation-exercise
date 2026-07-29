@@ -21,7 +21,8 @@ import { Locator, Page } from "@playwright/test";
  */
 export class HomePage
   extends BasePage
-  implements HasBrands, HasProducts, HasCategories {
+  implements HasBrands, HasProducts, HasCategories
+{
   readonly locators: HomeLocators;
   readonly header: HeaderComponent;
   readonly subscription: SubscriptionComponent;

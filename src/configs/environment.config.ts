@@ -129,9 +129,9 @@ export class Environment {
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
-        height: envValues.VIEWPORT_HEIGHT,
-        width: envValues.VIEWPORT_WIDTH,
-      }
+          height: envValues.VIEWPORT_HEIGHT,
+          width: envValues.VIEWPORT_WIDTH,
+        }
       : null;
 
   static readonly APPLICATION: string = envValues.APPLICATION;

@@ -127,16 +127,16 @@ export const test = merged.extend<StepsFixtures>({
   headerComponentSteps: async ({ page }, use) => {
     await use(new HeaderComponentSteps(page));
   },
-  categoryComponentSteps: async ({ }, use) => {
+  categoryComponentSteps: async ({}, use) => {
     await use(new CategoryComponentSteps());
   },
   brandComponentSteps: async ({ page }, use) => {
     await use(new BrandComponentSteps(page));
   },
-  productListingComponentSteps: async ({ }, use) => {
+  productListingComponentSteps: async ({}, use) => {
     await use(new ProductListingComponentSteps());
   },
-  subscriptionComponentSteps: async ({ }, use) => {
+  subscriptionComponentSteps: async ({}, use) => {
     await use(new SubscriptionComponentSteps());
   },
 });

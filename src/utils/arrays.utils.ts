@@ -23,15 +23,21 @@ export function getRandomElements<T>(
   }
 
   if (amount > array.length) {
-    throw new TestAutomationException("Amount cannot be greater than the array length");
+    throw new TestAutomationException(
+      "Amount cannot be greater than the array length",
+    );
   }
 
   if (options?.indexLimit && options?.indexLimit > array.length) {
-    throw new TestAutomationException("Index limit cannot be greater than the array length");
+    throw new TestAutomationException(
+      "Index limit cannot be greater than the array length",
+    );
   }
 
   if (options?.indexLimit && options?.indexLimit < amount) {
-    throw new TestAutomationException("Amount cannot be lower than the index limit");
+    throw new TestAutomationException(
+      "Amount cannot be lower than the index limit",
+    );
   }
 
   if (options?.indexLimit) {
