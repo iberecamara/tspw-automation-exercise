@@ -12,6 +12,7 @@ export default defineConfig([
       "node_modules/**",
       "**/node_modules/**",
       "src/tests/dev/dev.spec.ts",
+      "artifacts/**",
     ],
   },
   {
