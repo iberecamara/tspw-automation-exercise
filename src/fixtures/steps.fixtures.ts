@@ -5,7 +5,7 @@ import { BrandApiSteps } from "@steps/api/brand.steps";
 import { LoginApiSteps } from "@steps/api/login.steps";
 import { ProductApiSteps } from "@steps/api/product.steps";
 import { UserApiSteps } from "@steps/api/user.steps";
-import { CommonSteps } from "@steps/ui/common/shared.steps";
+import { CommonSteps } from "@steps/ui/common/common.steps";
 import { BrandComponentSteps } from "@steps/ui/components/brand.component.steps";
 import { CategoryComponentSteps } from "@steps/ui/components/category.component.steps";
 import { HeaderComponentSteps } from "@steps/ui/components/header.component.steps";
@@ -26,6 +26,10 @@ import { SignupSteps } from "@steps/ui/pages/signup.steps";
 import { TestCasesSteps } from "@steps/ui/pages/test-cases.steps";
 import { mergeTests } from "playwright/test";
 
+/**
+ * One fixture per Steps class — both UI (page-driving and component-driving) and API — each
+ * built from the corresponding page/component/API-client fixture below.
+ */
 interface StepsFixtures {
   // API
   userApiSteps: UserApiSteps;
@@ -56,8 +60,10 @@ interface StepsFixtures {
   subscriptionComponentSteps: SubscriptionComponentSteps;
 }
 
+/** Base fixture set every Steps fixture below is built on top of (API clients, pages, logging). */
 const merged = mergeTests(apis, pages, logging);
 
+/** Extends the merged base with one fixture per Steps class, ready to `mergeTests()` with the rest. */
 export const test = merged.extend<StepsFixtures>({
   // API
   userApiSteps: async ({ userApi }, use) => {
@@ -121,16 +127,16 @@ export const test = merged.extend<StepsFixtures>({
   headerComponentSteps: async ({ page }, use) => {
     await use(new HeaderComponentSteps(page));
   },
-  categoryComponentSteps: async ({}, use) => {
+  categoryComponentSteps: async ({ }, use) => {
     await use(new CategoryComponentSteps());
   },
   brandComponentSteps: async ({ page }, use) => {
     await use(new BrandComponentSteps(page));
   },
-  productListingComponentSteps: async ({}, use) => {
+  productListingComponentSteps: async ({ }, use) => {
     await use(new ProductListingComponentSteps());
   },
-  subscriptionComponentSteps: async ({}, use) => {
+  subscriptionComponentSteps: async ({ }, use) => {
     await use(new SubscriptionComponentSteps());
   },
 });

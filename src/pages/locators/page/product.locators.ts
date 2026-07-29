@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for a single product's detail page. */
 export class ProductLocators {
   readonly productDetailContainer: Locator;
   readonly productQuantityInput: Locator;

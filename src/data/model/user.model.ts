@@ -3,14 +3,27 @@ import { faker } from "@faker-js/faker";
 import { getRandomElement } from "@utils/arrays.utils";
 import { AddressType } from "./address.model";
 
+/** A user account, as used across UI and API tests. */
 export interface UserType {
+  /** Account ID, populated once the account exists (e.g. after fetching it via {@link UserApi.getUser}). */
   id?: number;
   name: string;
   email: string;
+  /** Plaintext password. Required by {@link UserApi.createUser}/{@link UserApi.updateUser}, but optional here since a user may be constructed before a password is known/needed. */
   password?: string;
   address: AddressType;
 }
 
+/**
+ * Generates a random, internally consistent {@link UserType} — a randomly generated name/email
+ * unless overridden, a random birthdate-derived address title, and a fully populated
+ * {@link AddressType} with random values for every other field.
+ *
+ * @param options.name - Overrides the generated display name.
+ * @param options.email - Overrides the generated email.
+ * @param options.password - Overrides the generated password.
+ * @returns A new, randomly generated user.
+ */
 export function generateRandomUser(options?: {
   name?: string;
   email?: string;

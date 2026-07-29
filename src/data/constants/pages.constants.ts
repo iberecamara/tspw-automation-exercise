@@ -1,5 +1,6 @@
 import { SitePagesTitles } from "@data/types/site-pages.type";
 
+/** Expected `<title>` text for every page the framework navigates to, used by `CommonSteps.validateTitle` to assert the browser landed on the right page. */
 export const PAGES_TITLES: SitePagesTitles = {
   Home: "Automation Exercise",
   Cart: "Automation Exercise - Checkout",

@@ -12,6 +12,11 @@ import { CartComponentLocators } from "@locators/component/cart.component.locato
 import { BasePage } from "@pages.base/base.page";
 import { expect, Locator, Page } from "@playwright/test";
 
+/**
+ * The reusable cart-items table fragment, composed into `HomePage`, `ProductsPage`,
+ * `ProductPage`, `CartPage`, and `CheckoutPage`. Not to be confused with `CartPage`, the
+ * standalone cart page these are all embedded within or link to.
+ */
 export class CartComponent extends BasePage {
   readonly locators: CartComponentLocators;
 
@@ -20,6 +25,12 @@ export class CartComponent extends BasePage {
     this.locators = new CartComponentLocators(page);
   }
 
+  /**
+   * Reads every row of the cart-items table.
+   *
+   * @returns Every product currently in the cart, fully parsed (id, name, category, price,
+   * quantity, total price), in table order.
+   */
   async getCartItems(): Promise<ProductType[]> {
     const cartItems: ProductType[] = [];
     const itemLocators: Locator[] =
@@ -31,6 +42,11 @@ export class CartComponent extends BasePage {
     return cartItems;
   }
 
+  /**
+   * Parses a single cart-items table row into a {@link ProductType}, converting the id/price/
+   * category display text into structured values (e.g. `"product-42"` → `42`,
+   * `"Category: Women > Tops"` → `{ usertype: { usertype: "Women" }, category: "Tops" }`).
+   */
   private async parseProduct(locator: Locator): Promise<ProductType> {
     const id = (await locator.getAttribute(ID)) ?? EMPTY;
     const name =
@@ -62,6 +78,12 @@ export class CartComponent extends BasePage {
     };
   }
 
+  /**
+   * Removes a product from the cart and waits for its row to be detached from the DOM,
+   * confirming the removal actually took effect.
+   *
+   * @param index - 1-based row position of the product to remove.
+   */
   async removeProduct(index: number): Promise<void> {
     const locator = this.locators.removeProductFromCartButton(index);
     await this.click(locator);

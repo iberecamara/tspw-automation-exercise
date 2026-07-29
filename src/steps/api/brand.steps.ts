@@ -1,9 +1,10 @@
 import { BrandApi } from "@apis/brand.api";
 import { BrandType } from "@data/model/brand.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving {@link BrandApi}. */
 export class BrandApiSteps extends BaseSteps {
   readonly brandApi: BrandApi;
 
@@ -13,6 +14,8 @@ export class BrandApiSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Fetches every brand via the API. See {@link BrandApi.all} for the `options` this forwards. */
   async getAllBrands(options?: {
     raw?: boolean;
     method?: "PUT" | "GET";
@@ -27,6 +30,8 @@ export class BrandApiSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates a raw "get all brands" response has status `200`, a `200` body response code, and a `brands` array whose every entry matches `{ id: number, brand: string }`. */
   async validateGetAllBrands(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate raw response from Get All Brands endpoint",
@@ -77,6 +82,7 @@ export class BrandApiSteps extends BaseSteps {
     );
   }
 
+  /** Validates a response for an unsupported HTTP method (`PUT`) against the brands endpoint has the API's `405 - method not supported` body. */
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate Method Not Allowed - PUT - Get All Brands endpoint",

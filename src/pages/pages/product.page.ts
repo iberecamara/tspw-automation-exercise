@@ -15,6 +15,7 @@ import { BasePage } from "@pages.base/base.page";
 import { ProductLocators } from "@pages.base/locators/page/product.locators";
 import { Page } from "@playwright/test";
 
+/** A single product's detail page — full details, quantity/add-to-cart controls, and the write-a-review form. */
 export class ProductPage extends BasePage {
   readonly locators: ProductLocators;
   readonly products: ProductComponent;
@@ -27,6 +28,12 @@ export class ProductPage extends BasePage {
     this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
   }
 
+  /**
+   * Reads the product's full details from the page, parsing category/availability/condition/
+   * brand text out of their `"<Prefix>: <value>"` display format.
+   *
+   * @returns The product's id, name, category, price, availability, condition, and brand.
+   */
   async getProductDetails(): Promise<ProductType> {
     const id = (await this.locators.productId.getAttribute("value")) ?? EMPTY;
     const name = (await this.locators.productName.textContent()) ?? EMPTY;
@@ -58,26 +65,32 @@ export class ProductPage extends BasePage {
     };
   }
 
+  /** Fills the quantity input. */
   async setQuantity(quantity: number): Promise<void> {
     await this.fill(this.locators.productQuantityInput, quantity.toString());
   }
 
+  /** Clicks "Add to cart". */
   async clickAddToCart(): Promise<void> {
     await this.click(this.locators.addToCartButton);
   }
 
+  /** Fills the review form's "Your Name" field. */
   async enterReviewName(name: string): Promise<void> {
     await this.fill(this.locators.writeReviewName, name);
   }
 
+  /** Fills the review form's "Email Address" field. */
   async enterReviewEmail(email: string): Promise<void> {
     await this.fill(this.locators.writeReviewEmail, email);
   }
 
+  /** Fills the review form's message field. */
   async enterReviewText(text: string): Promise<void> {
     await this.fill(this.locators.writeReviewText, text);
   }
 
+  /** Submits the write-a-review form. */
   async submitReview(): Promise<void> {
     await this.click(this.locators.submitReviewButton);
   }

@@ -13,8 +13,16 @@ import { SignupPage } from "@pages/signup.page";
 import { TestCasesPage } from "@pages/test-cases.page";
 import { test as base, Page } from "@playwright/test";
 
+/** Constructor signature every page object class satisfies: takes a Playwright `Page`. */
 type PageConstructor<PageClass> = new (page: Page) => PageClass;
 
+/**
+ * Builds a Playwright fixture function that instantiates the given page object class with the
+ * test's `page`, avoiding one near-identical fixture body per page object.
+ *
+ * @param pageConstructor - The page object class to instantiate (e.g. `HomePage`).
+ * @returns A fixture function suitable for `test.extend()`.
+ */
 function createPageFixture<PageClass>(
   pageConstructor: PageConstructor<PageClass>,
 ) {
@@ -26,6 +34,7 @@ function createPageFixture<PageClass>(
   };
 }
 
+/** An auto-running ad-blocker route interceptor, plus one fixture per page object class. */
 interface PageFixtures {
   adblocker: void;
   homePage: HomePage;
@@ -43,6 +52,10 @@ interface PageFixtures {
   brandPage: BrandPage;
 }
 
+/**
+ * Extends the base Playwright `test` with one fixture per page object class, plus an
+ * auto-running `adblocker` fixture that aborts Google Ads requests for every test.
+ */
 export const test = base.extend<PageFixtures>({
   adblocker: [
     async ({ page }, use) => {

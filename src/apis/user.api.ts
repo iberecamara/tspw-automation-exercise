@@ -10,7 +10,15 @@ import { TestAutomationException } from "@exceptions/test-automation.exception";
 import { APIResponse } from "@playwright/test";
 import { prettyJson } from "@utils/string.utils";
 
+/** API client for `automationexercise.com/api`'s user (account) endpoints. */
 export class UserApi extends BaseApi {
+  /**
+   * Creates a user account via `POST {@link Environment.CREATE_ACCOUNT_API_URL}`.
+   *
+   * @param user - The user to create. Must have `password` and `address.mobileNumber` set.
+   * @returns The raw HTTP status/text plus the parsed JSON response body.
+   * @throws {TestAutomationException} If `user.password` or `user.address.mobileNumber` is unset.
+   */
   async createUser(user: UserType): Promise<CustomResponseType> {
     this.validateUser(user);
     const formData = this.toUserFormData(user);
@@ -31,6 +39,7 @@ export class UserApi extends BaseApi {
     };
   }
 
+  /** Maps a {@link UserType} to the flat, snake_case form-data shape the API expects. */
   private toUserFormData(user: UserType): Record<string, string> {
     return {
       name: user.name,
@@ -53,6 +62,12 @@ export class UserApi extends BaseApi {
     };
   }
 
+  /**
+   * Guards {@link createUser}/{@link updateUser} against submitting a user with required fields
+   * missing that the API doesn't itself validate.
+   *
+   * @throws {TestAutomationException} If `user.password` or `user.address.mobileNumber` is unset.
+   */
   private validateUser(user: UserType): void {
     if (!user.password) {
       throw new TestAutomationException(
@@ -66,6 +81,13 @@ export class UserApi extends BaseApi {
     }
   }
 
+  /**
+   * Deletes a user account via `DELETE {@link Environment.DELETE_ACCOUNT_API_URL}`.
+   *
+   * @param email - Email of the account to delete.
+   * @param password - Password of the account to delete.
+   * @returns The raw HTTP status/text plus the parsed JSON response body.
+   */
   async deleteUser(
     email: string,
     password: string,
@@ -91,6 +113,15 @@ export class UserApi extends BaseApi {
     };
   }
 
+  /**
+   * Updates an existing user account via `PUT {@link Environment.UPDATE_ACCOUNT_API_URL}`.
+   *
+   * @param updatedUser - The user's new field values. Must have `password` and
+   * `address.mobileNumber` set (identifies the account to update by `email`).
+   * @returns The raw HTTP status/text plus the parsed JSON response body.
+   * @throws {TestAutomationException} If `updatedUser.password` or
+   * `updatedUser.address.mobileNumber` is unset.
+   */
   async updateUser(updatedUser: UserType): Promise<CustomResponseType> {
     this.validateUser(updatedUser);
     const formData = this.toUserFormData(updatedUser);
@@ -111,6 +142,15 @@ export class UserApi extends BaseApi {
     };
   }
 
+  /**
+   * Fetches a user account by email via `GET {@link Environment.GET_USER_BY_EMAIL_API_URL}`.
+   * Every field of `body.user` is defaulted (empty string / `id: 0` / `title: "Mr."`) so callers
+   * never have to null-check individual fields when the API omits them.
+   *
+   * @param email - Email of the account to fetch.
+   * @returns The raw HTTP status/text plus the parsed JSON response body, with `body.user`
+   * fully populated (defaulted where the API returned nothing).
+   */
   async getUser(email: string): Promise<CustomResponseType> {
     const params = { email: email };
     const response: APIResponse = await this.request.get(

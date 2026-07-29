@@ -10,6 +10,21 @@ import * as fs from "fs";
 import { execSync } from "node:child_process";
 import * as path from "path";
 
+/**
+ * Generates, opens, and prunes Allure reports.
+ *
+ * {@link allureRemoveResults} is the only function exported for programmatic use elsewhere in
+ * the codebase (called by `AllureCleanupReporter`); `generate`/`open`/`exportSingleFile`/`all`
+ * are only reachable through this module's CLI dispatch (`npm run report:allure:*`), not as
+ * importable functions.
+ */
+
+/**
+ * Removes raw Allure result files (and their attachments) whose test status matches
+ * `Environment.ALLURE_REPORT_REMOVE_STATUS`, so the generated report only surfaces actionable
+ * results (e.g. hiding `passed`/`skipped` entries). No-ops if `ALLURE_REPORT_REMOVE_STATUS` is
+ * unset, or if the results directory doesn't exist yet.
+ */
 export function allureRemoveResults(): void {
   const resultsDir = ALLURE_RESULTS_DIR;
   if (!fs.existsSync(resultsDir)) {

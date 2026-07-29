@@ -2,9 +2,10 @@ import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
 import { SignupPage } from "@pages/signup.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { prettyJson } from "@utils/string.utils";
 
+/** Readable, logged steps driving {@link SignupPage}. */
 export class SignupSteps extends BaseSteps {
   readonly signupPage: SignupPage;
 
@@ -14,6 +15,13 @@ export class SignupSteps extends BaseSteps {
   }
 
   // Actions
+
+  /**
+   * Fills the full account details form from a {@link UserType} (title, password, date of
+   * birth, address). Always opts in to both the newsletter and special-offers checkboxes,
+   * regardless of `user`'s own fields (there's currently no per-user control over those two
+   * checkboxes through this step).
+   */
   async enterSignupData(user: UserType): Promise<void> {
     this.logger.verbose(`Using signup data: ${prettyJson(user)}`);
     await this.step("Enter user data for Signup", async () => {
@@ -39,6 +47,7 @@ export class SignupSteps extends BaseSteps {
     });
   }
 
+  /** Clicks "Create Account". */
   async clickCreateAccount(): Promise<void> {
     await this.step("Click Create Account in Signup page", async () => {
       await this.signupPage.clickCreateAccount();
@@ -46,6 +55,8 @@ export class SignupSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates the "Enter Account Information" form heading is displayed with the expected text. */
   async validateEnterAccountInformationText(): Promise<void> {
     await this.step(
       "Validate that Signup page have the expected text",

@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the reusable product grid/listing fragment, used by `ProductComponent`. */
 export class ProductComponentLocators {
   readonly productsContainer: Locator;
   readonly productViewLink: (index: number) => Locator;

@@ -1,5 +1,17 @@
+import { TestAutomationException } from "@exceptions/test-automation.exception";
 import { faker } from "@faker-js/faker";
 
+/**
+ * Picks a given quantity of distinct, random elements from an array, without replacement.
+ *
+ * @param array - The array to pick from.
+ * @param options.quantity - How many elements to pick. Defaults to `1`.
+ * @param options.indexLimit - If set, only picks from the first `indexLimit` elements of `array`.
+ * @param options.exclude - Elements to never pick, even if present in `array`.
+ * @returns An array of `quantity` distinct elements, in random order.
+ * @throws {TestAutomationException} If `array` is empty, if `quantity`/`indexLimit` are inconsistent with the
+ * array's length, or if there aren't enough non-excluded elements to satisfy `quantity`.
+ */
 export function getRandomElements<T>(
   array: T[],
   options?: { quantity?: number; indexLimit?: number; exclude?: T[] },
@@ -7,19 +19,19 @@ export function getRandomElements<T>(
   const amount = options?.quantity ?? 1;
 
   if (array.length === 0) {
-    throw new Error("Array cannot be empty");
+    throw new TestAutomationException("Array cannot be empty");
   }
 
   if (amount > array.length) {
-    throw new Error("Amount cannot be greater than the array length");
+    throw new TestAutomationException("Amount cannot be greater than the array length");
   }
 
   if (options?.indexLimit && options?.indexLimit > array.length) {
-    throw new Error("Index limit cannot be greater than the array length");
+    throw new TestAutomationException("Index limit cannot be greater than the array length");
   }
 
   if (options?.indexLimit && options?.indexLimit < amount) {
-    throw new Error("Amount cannot be lower than the index limit");
+    throw new TestAutomationException("Amount cannot be lower than the index limit");
   }
 
   if (options?.indexLimit) {
@@ -31,7 +43,7 @@ export function getRandomElements<T>(
       (element) => !options?.exclude?.includes(element),
     );
     if (amount > available.length) {
-      throw new Error(
+      throw new TestAutomationException(
         "Requested amount exceeds available non-excluded elements",
       );
     }
@@ -45,7 +57,7 @@ export function getRandomElements<T>(
     const element = array[randomIndex];
 
     if (element === undefined) {
-      throw new Error(
+      throw new TestAutomationException(
         `Unexpected undefined element at index ${randomIndex} while selecting random elements.`,
       );
     }
@@ -59,6 +71,15 @@ export function getRandomElements<T>(
   return elements;
 }
 
+/**
+ * Picks a single random element from an array. Thin convenience wrapper around
+ * {@link getRandomElements} for the common single-element case.
+ *
+ * @param array - The array to pick from.
+ * @param options.exclude - Elements to never pick, even if present in `array`.
+ * @returns A single random element from `array`.
+ * @throws {TestAutomationException} If `array` is empty or every element is excluded.
+ */
 export function getRandomElement<T>(
   array: T[],
   options?: { exclude?: T[] },
@@ -68,7 +89,7 @@ export function getRandomElement<T>(
   });
 
   if (element === undefined) {
-    throw new Error(
+    throw new TestAutomationException(
       "getRandomElements() unexpectedly returned an empty array.",
     );
   }

@@ -1,7 +1,8 @@
 import { CategoryPage } from "@pages/category.page";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving {@link CategoryPage}. */
 export class CategorySteps extends BaseSteps {
   readonly categoryPage: CategoryPage;
 
@@ -10,6 +11,10 @@ export class CategorySteps extends BaseSteps {
     this.categoryPage = categoryPage;
   }
 
+  /**
+   * Validates the category/sub-category page heading is displayed with the expected
+   * `"<Category> - <Subcategory> Products"` text.
+   */
   async validateCategoryPageHeading(
     category: string,
     subcategory: string,

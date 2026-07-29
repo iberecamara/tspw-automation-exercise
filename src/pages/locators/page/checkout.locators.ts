@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the checkout page. */
 export class CheckoutLocators {
   readonly deliveryAddressContainer: Locator;
   readonly deliveryAddressHeading: Locator;

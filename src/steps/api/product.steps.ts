@@ -3,9 +3,10 @@ import { EMPTY } from "@data/constants/string.constants";
 import { ProductType } from "@data/model/product.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
 import { ProductResponseType } from "@data/types/product-response.type";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving {@link ProductApi}. */
 export class ProductApiSteps extends BaseSteps {
   readonly productApi: ProductApi;
 
@@ -15,6 +16,8 @@ export class ProductApiSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Fetches every product via the API. See {@link ProductApi.all} for the `options` this forwards. */
   async all(options?: {
     raw?: boolean;
     method?: "POST" | "GET";
@@ -28,6 +31,7 @@ export class ProductApiSteps extends BaseSteps {
     });
   }
 
+  /** Searches products via the API. See {@link ProductApi.search} for the `options` this forwards. */
   async search(options?: {
     raw?: boolean;
     search?: string;
@@ -41,6 +45,15 @@ export class ProductApiSteps extends BaseSteps {
   }
 
   // Validations
+
+  /**
+   * Validates a raw "get all products" response has status `200`, a `200` body response code,
+   * and a `products` array whose every entry is individually validated by
+   * {@link validateIndividualProduct}.
+   *
+   * @param options.search - If set, also validates every product's category contains this term
+   * (used when this response actually came from a search rather than the full listing).
+   */
   async validateGetAllProducts(
     response: CustomResponseType,
     options?: { search?: string },
@@ -83,6 +96,11 @@ export class ProductApiSteps extends BaseSteps {
     });
   }
 
+  /**
+   * Validates a single raw product entry matches the expected shape (`id`, `name`, `price`,
+   * `category`, `brand`), and, if `options.search` is set, that its category contains the
+   * search term.
+   */
   private validateIndividualProduct(
     product: ProductResponseType,
     options: { search?: string } | undefined,
@@ -117,6 +135,7 @@ export class ProductApiSteps extends BaseSteps {
       .toBe(true);
   }
 
+  /** Validates a response for an unsupported HTTP method (`POST`) against the products endpoint has the API's `405 - method not supported` body. */
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate Method Not Allowed - POST - Get All Products endpoint",
@@ -138,6 +157,7 @@ export class ProductApiSteps extends BaseSteps {
     );
   }
 
+  /** Validates a response for a search request missing the `search_product` parameter has the API's `400 - "...parameter is missing..."` body. */
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate Missing Parameter - search_product - Search Products endpoint",

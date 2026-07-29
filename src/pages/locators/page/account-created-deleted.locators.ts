@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the account-created / account-deleted confirmation page. */
 export class AccountCreatedDeletedLocators {
   readonly accountCreatedText: Locator;
   readonly accountDeletedText: Locator;

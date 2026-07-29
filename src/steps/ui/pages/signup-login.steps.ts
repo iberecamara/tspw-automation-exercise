@@ -2,8 +2,9 @@ import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
 import { SignupLoginPage } from "@pages/signup-login.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 
+/** Readable, logged steps driving {@link SignupLoginPage}. */
 export class SignupLoginSteps extends BaseSteps {
   readonly signupLoginPage: SignupLoginPage;
 
@@ -13,6 +14,8 @@ export class SignupLoginSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Fills the login section's email/password and clicks "Login". */
   async login(user: UserType): Promise<void> {
     this.logger.verbose(
       `Entering Login data. Login: '${user.name}' | Email: '${user.email}'`,
@@ -24,6 +27,7 @@ export class SignupLoginSteps extends BaseSteps {
     });
   }
 
+  /** Fills the signup section's name/email fields. */
   async enterSignupData(user: UserType): Promise<void> {
     this.logger.verbose(
       `Entering Signup data. Login: '${user.name}' | Email: '${user.email}'`,
@@ -34,6 +38,7 @@ export class SignupLoginSteps extends BaseSteps {
     });
   }
 
+  /** Clicks "Signup". */
   async clickSignup(): Promise<void> {
     await this.step("Click Signup", async () => {
       await this.signupLoginPage.clickSignup();
@@ -41,6 +46,8 @@ export class SignupLoginSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates the "Login to your account" section heading is displayed with the expected text. */
   async validateLoginToAccountText(): Promise<void> {
     await this.step(
       "Validate that Signup / Login page have the expected text in the Login section",
@@ -62,6 +69,7 @@ export class SignupLoginSteps extends BaseSteps {
     );
   }
 
+  /** Validates the "New User Signup!" section heading is displayed with the expected text. */
   async validateNewUserSignupText(): Promise<void> {
     await this.step(
       "Validate that Signup / Login page have the expected text in the Signup section",
@@ -83,6 +91,7 @@ export class SignupLoginSteps extends BaseSteps {
     );
   }
 
+  /** Validates the "Your email or password is incorrect!" login error is displayed with the expected text. */
   async validateInvalidCredentialsMessage(): Promise<void> {
     await this.step(
       "Validate that Signup / Login page have the expected text for invalid credentials in the Login section",
@@ -104,6 +113,7 @@ export class SignupLoginSteps extends BaseSteps {
     );
   }
 
+  /** Validates the "Email Address already exist!" signup error is displayed with the expected text. */
   async validateEmailAlreadyExistsMessage(): Promise<void> {
     await this.step(
       "Validate that Signup / Login page have the expected text for existing email in the Signup section",

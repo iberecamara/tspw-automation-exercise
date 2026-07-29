@@ -1,10 +1,18 @@
 import { CartPage } from "@pages/cart.page";
 import { HomePage } from "@pages/home.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 
+/**
+ * Readable, logged steps driving the subscription box, reached through whichever page object
+ * composes it (currently {@link HomePage} or {@link CartPage}) rather than a bare
+ * `SubscriptionComponent` parameter, since a page's own `subscription` property is needed to
+ * reach both the component and its locators.
+ */
 export class SubscriptionComponentSteps extends BaseSteps {
   // Actions
+
+  /** Fills the subscription email input and clicks "Subscribe". */
   async subscribeEmail(
     pageObject: HomePage | CartPage,
     email: string,
@@ -17,6 +25,8 @@ export class SubscriptionComponentSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates the "Subscription" heading is displayed with the expected text. */
   async validateSubscriptionHeading(
     pageObject: HomePage | CartPage,
   ): Promise<void> {
@@ -40,6 +50,7 @@ export class SubscriptionComponentSteps extends BaseSteps {
     );
   }
 
+  /** Validates the "You have been successfully subscribed!" confirmation message is displayed with the expected text. */
   async validateSubscriptionMessage(
     pageObject: HomePage | CartPage,
   ): Promise<void> {

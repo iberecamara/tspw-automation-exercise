@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the payment/credit-card page. */
 export class PaymentLocators {
   readonly paymentHeading: Locator;
   readonly paymentForm: Locator;

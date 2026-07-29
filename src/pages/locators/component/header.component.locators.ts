@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the site-wide header/navbar, used by `HeaderComponent`. */
 export class HeaderComponentLocators {
   readonly homeButton: Locator;
   readonly signupLoginButton: Locator;

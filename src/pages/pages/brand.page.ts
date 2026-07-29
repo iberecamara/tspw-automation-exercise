@@ -4,6 +4,7 @@ import { BasePage } from "@pages.base/base.page";
 import { BrandLocators } from "@pages.base/locators/page/brand.locators";
 import { Page } from "@playwright/test";
 
+/** The brand-filtered products listing page, reached by clicking a brand in the {@link BrandsComponent} sidebar. */
 export class BrandPage extends BasePage implements HasBrands, HasProducts {
   readonly locators: BrandLocators;
   readonly brands: BrandsComponent;

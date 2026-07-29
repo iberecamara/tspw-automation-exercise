@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the home page. */
 export class HomeLocators {
   readonly productsContainer: Locator;
   readonly productViewLink: (index: number) => Locator;

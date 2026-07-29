@@ -1,9 +1,10 @@
 import { ProductType } from "@data/model/product.model";
 import { CartPage } from "@pages/cart.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { prettyJson } from "@utils/string.utils";
 
+/** Readable, logged steps driving {@link CartPage} (and, through it, the shared `CartComponent`). */
 export class CartSteps extends BaseSteps {
   readonly cartPage: CartPage;
 
@@ -13,12 +14,20 @@ export class CartSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Retrieves every product currently in the cart. */
   async getCartProducts(): Promise<ProductType[]> {
     return await this.step("Retrieve all products from Cart", async () => {
       return await this.cartPage.cart.getCartItems();
     });
   }
 
+  /**
+   * Removes each given product from the cart by id.
+   *
+   * @throws A hard `expect` failure (not `expect.soft`) if any product is missing an `id`,
+   * since removal can't proceed for that product.
+   */
   async removeProducts(products: ProductType[]): Promise<void> {
     await this.step("Remove products from Cart", async () => {
       for (const product of products) {
@@ -33,12 +42,14 @@ export class CartSteps extends BaseSteps {
     });
   }
 
+  /** Clicks "Proceed to Checkout". */
   async proceedToCheckout(): Promise<void> {
     await this.step("Click Proceed to Checkout", async () => {
       await this.cartPage.clickProceedToCheckoutButton();
     });
   }
 
+  /** Clicks "Register / Login" from the "Proceed to Checkout" modal. */
   async registerUserFromCheckout(): Promise<void> {
     await this.step("Click Register / Login", async () => {
       await this.cartPage.clickRegisterFromCheckoutLink();
@@ -46,6 +57,16 @@ export class CartSteps extends BaseSteps {
   }
 
   // Validations
+
+  /**
+   * Validates the cart's actual items match an expected set.
+   *
+   * @param cartItems - The items actually read from the cart.
+   * @param addedItems - The items expected to be in the cart.
+   * @param options.partial - If `true`, only checks that a product with each expected item's
+   * name is present (ignoring other fields like price/quantity), in addition to the item count
+   * matching. If falsy (default), requires every field of every item to match exactly.
+   */
   async validateCartItems(
     cartItems: ProductType[],
     addedItems: ProductType[],
@@ -81,6 +102,7 @@ export class CartSteps extends BaseSteps {
     }
   }
 
+  /** Validates the first product in the cart has the expected quantity. */
   async validateProductQuantity(quantity: number): Promise<void> {
     await this.step("Validate product quantity in cart", async () => {
       const product = (await this.cartPage.cart.getCartItems()).at(0);

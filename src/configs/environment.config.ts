@@ -2,6 +2,18 @@ import { Status } from "allure-js-commons";
 import { config } from "dotenv";
 import Joi from "joi";
 
+/**
+ * Loads and validates the framework's environment configuration.
+ *
+ * On import, this module:
+ * 1. Defaults `APPLICATION_ENVIRONMENT` to `"dev"` if unset.
+ * 2. Loads `.env`, then `.env.<APPLICATION_ENVIRONMENT>` on top of it (later values override
+ *    earlier ones), via `dotenv`.
+ * 3. Validates every variable against the Joi schema below — an invalid or missing required
+ *    variable throws immediately, rather than failing silently later.
+ * 4. Exposes the validated values as the static {@link Environment} class.
+ */
+
 // Defaults APPLICATION_ENVIRONMENT to dev for .env file processing
 if (!process.env.APPLICATION_ENVIRONMENT) {
   process.env.APPLICATION_ENVIRONMENT = "dev";
@@ -12,6 +24,7 @@ config({
   override: true,
 });
 
+/** Shape of every environment variable this framework reads, after Joi validation/defaulting. */
 interface EnvVars {
   // Playwright variables
   WORKERS: number;
@@ -60,7 +73,7 @@ const variables = {
 
   // Sharding variables (set by CI when the suite is split across Playwright shards)
   SHARD_INDEX: Joi.string().allow("").empty("").default(""),
-  SHARD_TOTAL: Joi.string().allow("").empty("").default(""),
+  SHARD_TOTAL: Joi.string().allow("").empty("").default("1"),
 
   // Logger variables
   LOG_CONSOLE: Joi.boolean().empty("").default(false),
@@ -97,11 +110,17 @@ if (validationResult.error) {
 
 const envValues = validationResult.value as EnvVars;
 
+/** Browser viewport dimensions, derived from `VIEWPORT_HEIGHT`/`VIEWPORT_WIDTH`. */
 interface Viewport {
   height: number;
   width: number;
 }
 
+/**
+ * Validated, typed access to every environment variable this framework reads, exposed as static
+ * readonly fields grouped by concern (Playwright, application, sharding, logging, misc), plus a
+ * handful of values derived from them (e.g. the `*_API_URL` endpoints, built from `BASE_URL`).
+ */
 export class Environment {
   static readonly WORKERS: number = envValues.WORKERS;
   static readonly RETRIES: number = envValues.RETRIES;
@@ -110,9 +129,9 @@ export class Environment {
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
-          height: envValues.VIEWPORT_HEIGHT,
-          width: envValues.VIEWPORT_WIDTH,
-        }
+        height: envValues.VIEWPORT_HEIGHT,
+        width: envValues.VIEWPORT_WIDTH,
+      }
       : null;
 
   static readonly APPLICATION: string = envValues.APPLICATION;
@@ -140,7 +159,9 @@ export class Environment {
   static readonly LOG_LINE_LENGTH: number = envValues.LOG_LINE_LENGTH;
 
   static readonly JIRA_BOARD: string = envValues.JIRA_BOARD ?? "";
+  /** The Jira board key formatted as a Playwright tag prefix, e.g. `@SAMPLE`. */
   static readonly PROJECT_TAG: string = `@${Environment.JIRA_BOARD}`;
+  /** Builds a full Jira-style test tag from a ticket number, e.g. `SET_JIRA_TAG(7)` → `@SAMPLE-7`. */
   static readonly SET_JIRA_TAG: (id: number) => string = (
     id: number,
   ): string => {

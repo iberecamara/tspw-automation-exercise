@@ -4,14 +4,25 @@ import { test as base, TestInfo } from "@playwright/test";
 import { TestAutomationLogger } from "@utils/logger.utils";
 import { prettyJson } from "@utils/string.utils";
 
+/**
+ * The per-worker logger fixture, plus a side-effect-only auto-fixtures. `autologger` is typed `void` (rather than `undefined`) deliberately — TypeScript allows a
+ * `void`-typed fixture's `use()` to be called with no argument, which `undefined` doesn't;
+ * see the scoped ESLint override for `src/fixtures/*.fixtures.ts` in `eslint.config.mjs`.
+ */
 interface LoggingFixtures {
   logger: TestAutomationLogger;
   autologger: void;
-  logError: void;
 }
 
+/**
+ * Extends the base Playwright `test` with:
+ * - `logger` — the worker-scoped `TestAutomationLogger` singleton.
+ * - `autologger` (auto-running) — wraps every test with `*`/`#` boundary-marker log lines plus
+ *   its title/tags/annotations, which `TestAutomationLogger.splitGeneratedLogs()` later uses to
+ *   split each worker's raw log into one file per test.
+ */
 export const test = base.extend<LoggingFixtures>({
-  logger: async ({}, use, testInfo) => {
+  logger: async ({ }, use, testInfo) => {
     const log = TestAutomationLogger.getInstance(
       testInfo.workerIndex.toString(),
     );
@@ -36,21 +47,6 @@ export const test = base.extend<LoggingFixtures>({
       );
       logger.info(NEWLINE);
       logger.info("#".repeat(Environment.LOG_LINE_LENGTH));
-    },
-    {
-      auto: true,
-    },
-  ],
-  logError: [
-    async ({ logger }, use) => {
-      await use();
-      if (test.info().errors.length > 0) {
-        for (const error of test.info().errors) {
-          if (error.message) {
-            logger.error(`${error.message}${NEWLINE.repeat(2)}`);
-          }
-        }
-      }
     },
     {
       auto: true,

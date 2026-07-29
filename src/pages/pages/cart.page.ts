@@ -5,6 +5,7 @@ import { BasePage } from "@pages.base/base.page";
 import { CartLocators } from "@pages.base/locators/page/cart.locators";
 import { Page } from "@playwright/test";
 
+/** The standalone shopping cart page. Note: distinct from `CartComponent`, the reusable cart-items table this page composes but which also appears embedded on several other pages. */
 export class CartPage extends BasePage {
   readonly locators: CartLocators;
   readonly header: HeaderComponent;
@@ -19,10 +20,12 @@ export class CartPage extends BasePage {
     this.cart = new CartComponent(page);
   }
 
+  /** Clicks "Proceed To Checkout". */
   async clickProceedToCheckoutButton(): Promise<void> {
     await this.click(this.locators.proceedToCheckoutButton);
   }
 
+  /** Clicks "Register" in the "Proceed To Checkout" modal shown when not logged in. */
   async clickRegisterFromCheckoutLink(): Promise<void> {
     await this.click(this.locators.registerFromCheckoutLink);
   }

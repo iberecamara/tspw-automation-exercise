@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the shared brands sidebar, used by `BrandsComponent`. */
 export class BrandsComponentLocators {
   readonly brandsHeading: Locator;
   readonly brandsContainer: Locator;

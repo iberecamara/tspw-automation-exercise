@@ -12,18 +12,22 @@ export class PaymentPage extends BasePage {
     this.locators = new PaymentLocators(page);
   }
 
+  /** Fills the "Name on Card" field. */
   async enterNameOnCard(name: string): Promise<void> {
     await this.fill(this.locators.paymentNameOnCard, name);
   }
 
+  /** Fills the card number field. */
   async enterCardNumber(cardNumber: number): Promise<void> {
     await this.fill(this.locators.paymentCardNumber, cardNumber.toString());
   }
 
+  /** Fills the CVC field. */
   async enterCardCvc(cardCvc: number): Promise<void> {
     await this.fill(this.locators.paymentCardCvc, cardCvc.toString());
   }
 
+  /** Fills the expiration month field. */
   async enterCardExpirationMonth(cardExpirationMonth: number): Promise<void> {
     await this.fill(
       this.locators.paymentCardExpirationMonth,
@@ -31,6 +35,7 @@ export class PaymentPage extends BasePage {
     );
   }
 
+  /** Fills the expiration year field. */
   async enterCardExpirationYear(cardExpirationYear: number): Promise<void> {
     await this.fill(
       this.locators.paymentCardExpirationYear,
@@ -38,6 +43,7 @@ export class PaymentPage extends BasePage {
     );
   }
 
+  /** Clicks "Pay and Confirm Order". */
   async clickPayAndConfirmOrder(): Promise<void> {
     await this.click(this.locators.paymentPayButton);
   }
@@ -56,6 +62,7 @@ export class PaymentPage extends BasePage {
     return filepath;
   }
 
+  /** Clicks "Continue" on the order confirmation screen, returning to the home page. */
   async clickContinue(): Promise<void> {
     await this.click(this.locators.continueButton);
   }

@@ -1,5 +1,16 @@
 import { EMPTY } from "@data/constants/string.constants";
 
+/**
+ * Returns the current date/time (UTC), zero-padded, as three related string representations.
+ *
+ * @param options.fileFormat - If `true` (and `onlyNumbers` is falsy), separates `date` and
+ * `time` with `_` and replaces `:` with `-` in `datetime`, producing a filesystem-safe string
+ * (e.g. `2026-07-25_14-30-05`) instead of the default `2026-07-25 14:30:05`.
+ * @param options.onlyNumbers - If `true`, strips all `-`/`:` separators from `datetime`, e.g.
+ * `20260725143005`. Takes precedence over `fileFormat`.
+ * @returns `date` (`YYYY-MM-DD`), `time` (`HH:mm:ss`), and `datetime` (combined, formatted per
+ * the options above).
+ */
 export function getDateTime(options?: {
   fileFormat?: boolean;
   onlyNumbers?: boolean;

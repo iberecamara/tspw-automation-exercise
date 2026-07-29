@@ -4,9 +4,10 @@ import { ProductType } from "@data/model/product.model";
 import { UserType } from "@data/model/user.model";
 import { CheckoutPage } from "@pages/checkout.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { capitalize, prettyJson } from "@utils/string.utils";
 
+/** Readable, logged steps driving {@link CheckoutPage}. */
 export class CheckoutSteps extends BaseSteps {
   readonly checkoutPage: CheckoutPage;
 
@@ -16,12 +17,15 @@ export class CheckoutSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Retrieves every product currently in the cart, via the checkout page's embedded cart table. */
   async getCartProducts(): Promise<ProductType[]> {
     return await this.step("Retrieve all products from Cart", async () => {
       return await this.checkoutPage.cart.getCartItems();
     });
   }
 
+  /** Retrieves the delivery or billing address summary. */
   async getAddress(
     addressType: "delivery" | "billing",
   ): Promise<ResumedAddressType> {
@@ -30,6 +34,7 @@ export class CheckoutSteps extends BaseSteps {
     });
   }
 
+  /** Fills the optional order comment. */
   async enterComment(comment: string): Promise<void> {
     this.logger.verbose(`Entering Checkout comment: '${comment}'.`);
     await this.step("Enter  Checkout comment", async () => {
@@ -37,6 +42,7 @@ export class CheckoutSteps extends BaseSteps {
     });
   }
 
+  /** Clicks "Place Order". */
   async placeOrder(): Promise<void> {
     await this.step("Place order", async () => {
       await this.checkoutPage.placeOrder();
@@ -44,6 +50,15 @@ export class CheckoutSteps extends BaseSteps {
   }
 
   // Validations
+
+  /**
+   * Validates the delivery or billing address summary matches a user's address, field by field
+   * (title, name, company, street address, complement, city/state/zipcode, country, phone).
+   *
+   * @remarks Signup stores multi-line address text with newline characters, while checkout
+   * displays it with spaces instead; `user.address.addressOne` is normalized (`\n` → ` `) before
+   * comparison to account for that difference.
+   */
   async validateCheckoutAddress(
     user: UserType,
     addressType: "delivery" | "billing",
@@ -132,6 +147,7 @@ export class CheckoutSteps extends BaseSteps {
     );
   }
 
+  /** Validates the cart's actual items strictly match an expected set (see `CartSteps.validateCartItems` for the equivalent with a `partial` option). */
   async validateCartItems(cartItems: ProductType[], addedItems: ProductType[]) {
     this.logger.verbose("Validating all products in cart.");
     this.logger.verbose(`Cart Items: ${prettyJson(cartItems)}`);

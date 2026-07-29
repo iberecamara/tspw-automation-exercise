@@ -3,9 +3,14 @@ import { PATHS } from "@configs/paths";
 import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
 import { defineConfig, devices } from "@playwright/test";
 import { getDateTime } from "@utils/datetime.utils";
+import { capitalize } from "@utils/string.utils";
 import * as os from "node:os";
 import path from "node:path";
 
+/**
+ * Launch options shared by every project (`headless`/`slowMo`, both environment-driven), reused
+ * both in the top-level `use.launchOptions` and layered into each project's own `launchOptions`.
+ */
 const globalLaunchOptions = {
   headless: Environment.HEADLESS,
   slowMo: Environment.SLOWMO,
@@ -15,6 +20,13 @@ const globalLaunchOptions = {
 // tests-shard service and docker.compose.utils.ts, which set SHARD_INDEX per container).
 const isSharded = Boolean(process.env.SHARD_INDEX);
 
+/**
+ * The framework's Playwright configuration: test directory, timeouts, retries/workers (all
+ * environment-driven via {@link Environment}), the HTML/JSON/Allure reporter stack plus the
+ * custom Allure-cleanup reporter, `baseURL` (so tests can navigate with relative paths), and the
+ * single Chromium project (see the README's Project Structure section for the framework's
+ * browser-coverage scope).
+ */
 export default defineConfig({
   testDir: "../tests/",
   timeout: 90 * SECOND_IN_MILISECONDS,
@@ -30,12 +42,12 @@ export default defineConfig({
     ...(isSharded
       ? [["blob", { outputDir: PATHS.BLOB_REPORTS_SHARD_DIR }] as const]
       : [
-          [
-            "html",
-            { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
-          ] as const,
-          ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
-        ]),
+        [
+          "html",
+          { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
+        ] as const,
+        ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
+      ]),
     [
       "allure-playwright",
       {
@@ -51,10 +63,11 @@ export default defineConfig({
           Flavor: "Vanilla",
           Suite: "Web + API",
           Application: Environment.APPLICATION,
-          Environment: Environment.APPLICATION_ENVIRONMENT,
+          Environment: capitalize(Environment.APPLICATION_ENVIRONMENT),
           Instance: Environment.BASE_URL,
           "Date and Time": getDateTime().datetime,
-          Shards: Environment.SHARD_TOTAL,
+          "Sharded?": isSharded ? "Yes" : "No",
+          ...(isSharded ? { Shards: Environment.SHARD_TOTAL } : {}),
         },
         resultsDir: PATHS.ALLURE_RESULTS_DIR,
         details: true,

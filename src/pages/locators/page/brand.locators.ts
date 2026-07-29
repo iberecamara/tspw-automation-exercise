@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for a brand-filtered products listing page. */
 export class BrandLocators {
   readonly brandHeading: Locator;
 

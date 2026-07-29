@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the Contact Us form page. */
 export class ContactUsLocators {
   readonly getInTouchText: Locator;
   readonly nameInput: Locator;

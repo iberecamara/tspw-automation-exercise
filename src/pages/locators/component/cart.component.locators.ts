@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the reusable cart-items table fragment, used by `CartComponent` (composed into `HomePage`, `ProductsPage`, `ProductPage`, `CartPage`, and `CheckoutPage`). Note: distinct from, and not to be confused with, `locators/page/cart.locators.ts`'s identically named `CartLocators`, which covers the standalone cart page instead. */
 export class CartComponentLocators {
   readonly cartItemsTable: Locator;
   readonly cartItemsTableProducts: Locator;

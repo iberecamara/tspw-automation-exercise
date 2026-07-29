@@ -1,9 +1,10 @@
 import { ContactUsType } from "@data/model/contact-us.model";
 import { ContactUsPage } from "@pages/contact-us.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { prettyJson } from "@utils/string.utils";
 
+/** Readable, logged steps driving {@link ContactUsPage}. */
 export class ContactUsSteps extends BaseSteps {
   readonly contactUsPage: ContactUsPage;
 
@@ -13,6 +14,8 @@ export class ContactUsSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Fills every field of the Contact Us form (name, email, subject, message, file attachment). */
   async enterContactFormData(formData: ContactUsType): Promise<void> {
     this.logger.verbose(`Using Contact Us data: ${prettyJson(formData)}`);
     await this.step("Enter Contact Us data", async () => {
@@ -25,6 +28,12 @@ export class ContactUsSteps extends BaseSteps {
     });
   }
 
+  /**
+   * Clicks "Submit".
+   *
+   * @param options.accept - If `true`, accepts the browser's native confirmation dialog that
+   * appears on submit; if falsy, dismisses it.
+   */
   async clickSubmit(options?: { accept: boolean }): Promise<void> {
     await this.step(
       `Clicking Submit button and ${options?.accept ? "confirming" : "dismissing"} confirmation dialog`,
@@ -35,6 +44,8 @@ export class ContactUsSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates the "Get In Touch" form heading is displayed with the expected text. */
   async validateGetInTouchText(): Promise<void> {
     await this.step(
       "Validate that Contact Us form have the expected text",
@@ -56,6 +67,7 @@ export class ContactUsSteps extends BaseSteps {
     );
   }
 
+  /** Validates the submit-success message is displayed with the expected text. */
   async validateSubmitSuccessMessage(): Promise<void> {
     await this.step(
       "Validate that Contact Us form displays the submit success message",

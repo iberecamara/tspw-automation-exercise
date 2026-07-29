@@ -1,8 +1,9 @@
 import { LoginApi } from "@apis/login.api";
 import { CustomResponseType } from "@data/types/custom-response.type";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving {@link LoginApi}. */
 export class LoginApiSteps extends BaseSteps {
   readonly loginApi: LoginApi;
 
@@ -12,6 +13,8 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Verifies a login via the API. See {@link LoginApi.verify} for the `options` this forwards. */
   async verify(options?: {
     method?: "POST" | "DELETE";
     email?: string;
@@ -26,6 +29,8 @@ export class LoginApiSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates a response for an existing user's credentials has the API's `200 - "User exists!"` body. */
   async validateUserExists(response: CustomResponseType): Promise<void> {
     await this.step("Validate User Exists - Verify Login endpoint", () => {
       expect
@@ -44,6 +49,7 @@ export class LoginApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates a response for non-existent credentials has the API's `404 - "User not found!"` body. */
   async validateUserNotFound(response: CustomResponseType): Promise<void> {
     await this.step("Validate User Not Found - Verify Login endpoint", () => {
       expect
@@ -62,6 +68,7 @@ export class LoginApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates a response for a request missing the email/password parameter has the API's `400 - "...parameter is missing..."` body. */
   async validateMissingParameter(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate Missing Parameter - Password - Verify Login endpoint",
@@ -84,6 +91,7 @@ export class LoginApiSteps extends BaseSteps {
     );
   }
 
+  /** Validates a response for an unsupported HTTP method (`DELETE`) against the login endpoint has the API's `405 - method not supported` body. */
   async validateMethodNotAllowed(response: CustomResponseType): Promise<void> {
     await this.step(
       "Validate Method Not Allowed - DELETE - Verify Login endpoint",

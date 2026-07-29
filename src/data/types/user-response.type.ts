@@ -1,3 +1,8 @@
+/**
+ * Shape of a user entry as returned raw by `{@link Environment.GET_USER_BY_EMAIL_API_URL}` —
+ * snake_case field names and a flat address, unlike the framework's own {@link UserType}/
+ * {@link AddressType}, which {@link UserApi.getUser} maps into before returning.
+ */
 export interface UserResponseType {
   id?: number;
   name: string;

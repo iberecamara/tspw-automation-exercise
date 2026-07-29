@@ -8,7 +8,23 @@ import {
 import { APIResponse } from "@playwright/test";
 import { prettyJson } from "@utils/string.utils";
 
+/** API client for `automationexercise.com/api`'s brand listing endpoint. */
 export class BrandApi extends BaseApi {
+  /**
+   * Fetches every brand via `{@link Environment.BRAND_LIST_API_URL}`.
+   *
+   * @param options.raw - If `true`, returns the raw HTTP status/text plus parsed JSON body
+   * instead of a parsed `BrandType[]`. Useful for asserting on error/edge-case responses (e.g.
+   * wrong HTTP method) rather than the happy-path brand list.
+   * @param options.method - HTTP method to use. Defaults to `"GET"` (the API also accepts other
+   * methods, but only `GET` is expected to succeed — used with `raw: true` to assert on the
+   * resulting error response).
+   * @param options.brand - Currently unused by this method; reserved for parity with
+   * {@link ProductApi.all}'s brand-filtering option.
+   * @returns Either the raw response ({@link CustomResponseType}, if `raw` is `true`) or every
+   * brand, parsed into {@link BrandType}. Returns an empty array if the response wasn't
+   * successful or contained no products.
+   */
   async all(options?: {
     raw?: boolean;
     method?: "PUT" | "GET";

@@ -3,8 +3,9 @@ import { PAGES_TITLES } from "@data/constants/constants";
 import { SitePages } from "@data/types/site-pages.type";
 import { BasePage } from "@pages.base/base.page";
 import { expect, Page } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 
+/** Navigation and validation steps reused across many spec files (home navigation, scrolling, page-title assertions), rather than belonging to any single page. */
 export class CommonSteps extends BaseSteps {
   readonly page: Page;
 
@@ -14,6 +15,12 @@ export class CommonSteps extends BaseSteps {
   }
 
   // Actions
+
+  /**
+   * Navigates any page object to the application's home page.
+   *
+   * @param pageObject - Any page object (used only for its `goToHome()`, inherited from `BasePage`).
+   */
   async navigateHome<T extends BasePage>(pageObject: T): Promise<void> {
     this.logger.verbose(
       `Navigating to home page at '${Environment.BASE_URL}'.`,
@@ -23,6 +30,12 @@ export class CommonSteps extends BaseSteps {
     });
   }
 
+  /**
+   * Smoothly scrolls the page from one end to the other.
+   *
+   * @param pageObject - Any page object (used only for its `scroll()`, inherited from `BasePage`).
+   * @param direction - `"down"` scrolls to the bottom; `"up"` scrolls to the top.
+   */
   async scrolling<T extends BasePage>(
     pageObject: T,
     direction: "down" | "up",
@@ -36,6 +49,12 @@ export class CommonSteps extends BaseSteps {
   }
 
   // Validations
+
+  /**
+   * Validates the browser tab's title matches the expected title for a known site page.
+   *
+   * @param sitePage - Which page's expected title (from {@link PAGES_TITLES}) to assert against.
+   */
   async validateTitle(sitePage: SitePages): Promise<void> {
     await this.step(
       `Validate that application ${sitePage} page have the expected title`,
@@ -50,6 +69,13 @@ export class CommonSteps extends BaseSteps {
     );
   }
 
+  /**
+   * Validates the browser tab's title matches an explicitly given title, for pages not covered
+   * by {@link SitePages}/{@link PAGES_TITLES}.
+   *
+   * @param pageName - Readable page name, used only in the step/log/failure-message text.
+   * @param title - The exact expected title.
+   */
   async validateTitleDirectly(pageName: string, title: string): Promise<void> {
     await this.step(
       `Validate that application ${pageName} page have the expected title`,

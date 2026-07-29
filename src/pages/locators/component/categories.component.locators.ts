@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the shared categories accordion sidebar, used by `CategoriesComponent`. */
 export class CategoriesComponentLocators {
   readonly categoriesHeading: Locator;
   readonly categoriesAccordian: Locator;

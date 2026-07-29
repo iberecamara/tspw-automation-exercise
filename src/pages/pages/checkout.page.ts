@@ -5,6 +5,7 @@ import { BasePage } from "@pages.base/base.page";
 import { CheckoutLocators } from "@pages.base/locators/page/checkout.locators";
 import { Page } from "@playwright/test";
 
+/** The checkout page — order review (delivery/billing address summaries, an optional order comment) reached from the cart before payment. */
 export class CheckoutPage extends BasePage {
   readonly locators: CheckoutLocators;
   readonly cart: CartComponent;
@@ -15,6 +16,12 @@ export class CheckoutPage extends BasePage {
     this.cart = new CartComponent(page);
   }
 
+  /**
+   * Reads the delivery or billing address summary block.
+   *
+   * @param addressType - Which address summary to read.
+   * @returns The address, as a single condensed block (see {@link ResumedAddressType}).
+   */
   async getAddress(
     addressType: "delivery" | "billing",
   ): Promise<ResumedAddressType> {
@@ -48,10 +55,16 @@ export class CheckoutPage extends BasePage {
     };
   }
 
+  /**
+   * Fills the optional order comment textarea.
+   *
+   * @param comment - The comment text to enter.
+   */
   async enterComment(comment: string): Promise<void> {
     await this.fill(this.locators.messageTextArea, comment);
   }
 
+  /** Clicks "Place Order", proceeding to the payment page. */
   async placeOrder(): Promise<void> {
     await this.click(this.locators.placeOrderButton);
   }

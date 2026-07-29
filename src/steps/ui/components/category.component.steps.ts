@@ -1,9 +1,12 @@
 import { HasCategories } from "@components/categories.component";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving the categories accordion sidebar, reached through any page object implementing {@link HasCategories}. */
 export class CategoryComponentSteps extends BaseSteps {
   // Actions
+
+  /** Expands a top-level category, revealing its sub-categories. */
   async expandCategory(
     pageObject: HasCategories,
     category: string,
@@ -13,6 +16,7 @@ export class CategoryComponentSteps extends BaseSteps {
     });
   }
 
+  /** Retrieves every sub-category name listed under an (already expanded) top-level category. */
   async getSubCategories(
     pageObject: HasCategories,
     category: string,
@@ -25,6 +29,7 @@ export class CategoryComponentSteps extends BaseSteps {
     );
   }
 
+  /** Clicks a sub-category, navigating to that sub-category's filtered listing. */
   async selectSubCategory(
     pageObject: HasCategories,
     subCategory: string,
@@ -35,6 +40,8 @@ export class CategoryComponentSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates the "Category" sidebar heading is displayed with the expected text. */
   async validateCategorySection(pageObject: HasCategories): Promise<void> {
     await this.step(
       "Validate that Category Section have the expected heading",

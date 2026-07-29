@@ -3,9 +3,10 @@ import { CreditCardDetailsType } from "@data/model/credit-card-details.model";
 import { UserType } from "@data/model/user.model";
 import { PaymentPage } from "@pages/payment.page";
 import { expect } from "@playwright/test";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { prettyJson } from "@utils/string.utils";
 
+/** Readable, logged steps driving {@link PaymentPage}. */
 export class PaymentSteps extends BaseSteps {
   readonly paymentPage: PaymentPage;
 
@@ -15,6 +16,8 @@ export class PaymentSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Fills every field of the credit card form. */
   async enterCardDetails(cardDetails: CreditCardDetailsType): Promise<void> {
     this.logger.verbose(
       `Entering Credit Card details: ${prettyJson(cardDetails)}`,
@@ -32,18 +35,21 @@ export class PaymentSteps extends BaseSteps {
     });
   }
 
+  /** Clicks "Pay and Confirm Order". */
   async payAndConfirmOrder(): Promise<void> {
     await this.step("Click Pay and Confirm Order", async () => {
       await this.paymentPage.clickPayAndConfirmOrder();
     });
   }
 
+  /** Downloads the order invoice, returning the saved file's path. */
   async downloadInvoice(): Promise<string> {
     return await this.step("Click Download Invoice", async () => {
       return await this.paymentPage.downloadInvoice();
     });
   }
 
+  /** Clicks "Continue" on the order confirmation screen. */
   async continue(): Promise<void> {
     await this.step("Click Continue", async () => {
       await this.paymentPage.clickContinue();
@@ -51,6 +57,8 @@ export class PaymentSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates both the "Order Placed!" and "Congratulations! Your order has been confirmed!" confirmation messages are displayed. */
   async validateOrderPlaced(): Promise<void> {
     await this.step("Validate Payment page Order Placed message", async () => {
       await expect
@@ -73,6 +81,12 @@ export class PaymentSteps extends BaseSteps {
     );
   }
 
+  /**
+   * Validates the downloaded invoice's contents mention the user's name and the order total.
+   *
+   * @param fileContents - The invoice file's lines, as read by `FileUtils.readFile` (only the
+   * first line is currently checked).
+   */
   async validateInvoiceFileContents(
     fileContents: string[],
     user: UserType,

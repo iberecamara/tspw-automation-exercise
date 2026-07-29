@@ -3,11 +3,11 @@ import { EMPTY } from "@data/constants/string.constants";
 import { UserType } from "@data/model/user.model";
 import { CustomResponseType } from "@data/types/custom-response.type";
 import { UserResponseType } from "@data/types/user-response.type";
-import { BaseSteps } from "@steps/ui/common/base.steps";
+import { BaseSteps } from "@steps/base.steps";
 import { prettyJson } from "@utils/string.utils";
-
 import { expect } from "playwright/test";
 
+/** Readable, logged steps driving {@link UserApi}. */
 export class UserApiSteps extends BaseSteps {
   readonly userApi: UserApi;
 
@@ -17,6 +17,8 @@ export class UserApiSteps extends BaseSteps {
   }
 
   // Actions
+
+  /** Creates a user account via the API. */
   async createAccount(user: UserType): Promise<CustomResponseType> {
     this.logger.verbose(`Create user via API: ${prettyJson(user)}`);
     return await this.step(
@@ -27,6 +29,7 @@ export class UserApiSteps extends BaseSteps {
     );
   }
 
+  /** Deletes a user account via the API. */
   async deleteAccount(user: UserType): Promise<CustomResponseType> {
     return await this.step(
       "Delete user in Delete Account endpoint",
@@ -39,6 +42,7 @@ export class UserApiSteps extends BaseSteps {
     );
   }
 
+  /** Updates an existing user account via the API. */
   async updateAccount(updatedUser: UserType): Promise<CustomResponseType> {
     this.logger.verbose(`Update user via API: ${prettyJson(updatedUser)}`);
     return await this.step(
@@ -49,6 +53,7 @@ export class UserApiSteps extends BaseSteps {
     );
   }
 
+  /** Fetches a user account by email via the API. */
   async getUserByEmail(email: string): Promise<CustomResponseType> {
     return await this.step(
       "Retrieve user in Get User by Email endpoint",
@@ -59,6 +64,8 @@ export class UserApiSteps extends BaseSteps {
   }
 
   // Validations
+
+  /** Validates a create-account response has status `201` and the expected success message. */
   async validateCreateAccount(response: CustomResponseType): Promise<void> {
     await this.step("Validate Create User response", () => {
       expect
@@ -77,6 +84,7 @@ export class UserApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates a delete-account response has status `200` and the expected success message. */
   async validateDeleteAccount(response: CustomResponseType): Promise<void> {
     await this.step("Validate Delete User response", () => {
       expect
@@ -95,6 +103,7 @@ export class UserApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates an update-account response has status `200` and the expected success message. */
   async validateUpdateUserResponse(
     response: CustomResponseType,
   ): Promise<void> {
@@ -115,6 +124,7 @@ export class UserApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates every field of `updatedUser` matches the corresponding (snake_case) field of a user re-fetched from the API after the update. */
   async validateUpdatedUser(
     updatedUser: UserType,
     retrievedUser: UserResponseType,
@@ -213,6 +223,7 @@ export class UserApiSteps extends BaseSteps {
     });
   }
 
+  /** Validates a "get user by email" response has status `200`, includes a `user` object, and every field of it matches the corresponding field of an expected {@link UserType}. */
   async validateGetUser(
     response: CustomResponseType,
     user: UserType,

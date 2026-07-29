@@ -7,7 +7,20 @@ import {
 import { APIResponse } from "@playwright/test";
 import { prettyJson } from "@utils/string.utils";
 
+/** API client for `automationexercise.com/api`'s login-verification endpoint. */
 export class LoginApi extends BaseApi {
+  /**
+   * Verifies a login via `{@link Environment.VERIFY_LOGIN_API_URL}`.
+   *
+   * @param options.method - HTTP method to use. Defaults to `"GET"`.
+   * @param options.email - Email to verify.
+   * @param options.password - Password to verify.
+   * @remarks The request body is built from three independent checks (not else-if branches), so
+   * only `email` set sends just `{ email }`, only `password` set sends just `{ password }`, both
+   * set sends `{ email, password }`, and neither set sends an empty body — letting tests assert
+   * on the API's distinct error responses for each incomplete combination.
+   * @returns The raw HTTP status/text plus the parsed JSON response body.
+   */
   async verify(options?: {
     method?: "POST" | "DELETE";
     email?: string;

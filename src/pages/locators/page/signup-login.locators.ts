@@ -1,5 +1,6 @@
 import { Locator, Page } from "@playwright/test";
 
+/** Raw `Locator` definitions for the combined signup/login page. */
 export class SignupLoginLocators {
   readonly loginSectionHeader: Locator;
   readonly loginEmailInput: Locator;
