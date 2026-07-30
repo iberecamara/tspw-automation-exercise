@@ -8,12 +8,10 @@ export class TestCasesLocators {
 
   constructor(page: Page) {
     this.page = page;
-    this.mainContainer = page
-      .locator(".container")
-      .filter({
-        hasText: "Test Cases",
-        hasNotText: "Test Cases Below is the list",
-      });
+    this.mainContainer = page.locator(".container").filter({
+      hasText: "Test Cases",
+      hasNotText: "Test Cases Below is the list",
+    });
     this.feedbackContainer = page
       .locator(".panel-group")
       .filter({ hasText: "Feedback for Us" });
