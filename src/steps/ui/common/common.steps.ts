@@ -1,8 +1,7 @@
-import { Environment } from "@configs/environment.config";
-import { PAGES_TITLES } from "@data/constants/constants";
+import { PAGES_TITLES, SECOND_IN_MILISECONDS } from "@data/constants/constants";
 import { SitePages } from "@data/types/site-pages.type";
 import { BasePage } from "@pages.base/base.page";
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { BaseSteps } from "@steps/base.steps";
 
 /** Navigation and validation steps reused across many spec files (home navigation, scrolling, page-title assertions), rather than belonging to any single page. */
@@ -19,14 +18,22 @@ export class CommonSteps extends BaseSteps {
   /**
    * Navigates any page object to the application's home page.
    *
-   * @param pageObject - Any page object (used only for its `goToHome()`, inherited from `BasePage`).
    */
-  async navigateHome<T extends BasePage>(pageObject: T): Promise<void> {
-    this.logger.verbose(
-      `Navigating to home page at '${Environment.BASE_URL}'.`,
-    );
-    await this.step("Navigate to application home page", async () => {
-      await pageObject.goToHome();
+  /**
+   * Navigates to the application's home page, relative to the configured `baseURL`
+   * (`Environment.BASE_URL`, wired into `playwright.config.ts`'s `use.baseURL`).
+   *
+   * @param options - Optional navigation overrides, forwarded to `page.goto()`. Defaults to a
+   * 30-second timeout unless overridden.
+   */
+  async navigateHome(options?: {
+    referer?: string;
+    timeout?: number;
+    waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
+  }): Promise<void> {
+    await this.page.goto("/", {
+      timeout: 30 * SECOND_IN_MILISECONDS,
+      ...options,
     });
   }
 
@@ -46,6 +53,18 @@ export class CommonSteps extends BaseSteps {
         await pageObject.scroll(direction);
       },
     );
+  }
+
+  /**
+   * Scrolls to a element via locator, putting it into the viewport.
+   *
+   * @param element - Any page element.
+   * @param elementName - The element name.
+   */
+  async scrollToElement(element: Locator, elementName: string): Promise<void> {
+    await this.step(`Scrolling to ${elementName}.`, async () => {
+      await element.scrollIntoViewIfNeeded();
+    });
   }
 
   // Validations

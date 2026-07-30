@@ -26,18 +26,21 @@ x-shard: &shard
   # directly, so this guard actually runs.
   volumes:
     - ./artifacts:/app/artifacts
+    - ./src:/app/src
 
 services:
   tests:
     <<: *shard
-    command: npm test
+    entrypoint: ["npm", "test", "--"]
+    command: []
 
   # Template service used by scripts/run-sharded.sh — not meant to be run directly with `up`.
   # SHARD_INDEX/SHARD_TOTAL are injected per-invocation by the script via `-e`.
   tests-shard:
     <<: *shard
-    profiles: ["sharded"]   # keeps it out of a bare `docker compose up`
-    command: sh -c 'npm test -- --shard=$$SHARD_INDEX/$$SHARD_TOTAL'
+    profiles: ["sharded"]
+    entrypoint: ["sh", "-c", "npm test -- --shard=$$SHARD_INDEX/$$SHARD_TOTAL \"$@\"", "--"]
+    command: []
 
   # Combines every shard's raw Allure results into one single-file report. Invoked as its own
   # explicit step (see package.json's docker:test:sharded script) rather than via `depends_on`:

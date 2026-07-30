@@ -1,4 +1,5 @@
 import { AccountCreatedDeletedPage } from "@pages/account-created-deleted.page";
+import { ApiTestingPage } from "@pages/api-testing.page";
 import { BrandPage } from "@pages/brand.page";
 import { CartPage } from "@pages/cart.page";
 import { CategoryPage } from "@pages/category.page";
@@ -43,6 +44,7 @@ interface PageFixtures {
   accountCreatedDeletedPage: AccountCreatedDeletedPage;
   contactUsPage: ContactUsPage;
   testCasesPage: TestCasesPage;
+  apiTestingPage: ApiTestingPage;
   productsPage: ProductsPage;
   productPage: ProductPage;
   cartPage: CartPage;
@@ -76,6 +78,7 @@ export const test = base.extend<PageFixtures>({
   accountCreatedDeletedPage: createPageFixture(AccountCreatedDeletedPage),
   contactUsPage: createPageFixture(ContactUsPage),
   testCasesPage: createPageFixture(TestCasesPage),
+  apiTestingPage: createPageFixture(ApiTestingPage),
   productsPage: createPageFixture(ProductsPage),
   productPage: createPageFixture(ProductPage),
   cartPage: createPageFixture(CartPage),

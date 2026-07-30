@@ -1,4 +1,3 @@
-import { HeaderComponent } from "@components/header.component";
 import { UPLOAD_FILEPATH } from "@data/constants/constants";
 import { BasePage } from "@pages.base/base.page";
 import { ContactUsLocators } from "@pages.base/locators/page/contact-us.locators";
@@ -8,12 +7,10 @@ import path from "path";
 /** The site's "Contact Us" form page. */
 export class ContactUsPage extends BasePage {
   readonly locators: ContactUsLocators;
-  readonly header: HeaderComponent;
 
   constructor(page: Page) {
     super(page);
     this.locators = new ContactUsLocators(page);
-    this.header = new HeaderComponent(page);
   }
 
   /** Fills the "Name" field. */
@@ -60,10 +57,5 @@ export class ContactUsPage extends BasePage {
       this.page.on("dialog", async (dialog) => dialog.accept());
     }
     await this.click(this.locators.submitButton);
-  }
-
-  /** Clicks the "Home" button shown after a successful submission. */
-  async clickHome(): Promise<void> {
-    await this.click(this.locators.homeButton);
   }
 }

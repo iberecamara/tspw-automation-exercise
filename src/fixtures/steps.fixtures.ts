@@ -8,9 +8,9 @@ import { UserApiSteps } from "@steps/api/user.steps";
 import { CommonSteps } from "@steps/ui/common/common.steps";
 import { BrandComponentSteps } from "@steps/ui/components/brand.component.steps";
 import { CategoryComponentSteps } from "@steps/ui/components/category.component.steps";
+import { FooterComponentSteps } from "@steps/ui/components/footer.component.steps";
 import { HeaderComponentSteps } from "@steps/ui/components/header.component.steps";
 import { ProductListingComponentSteps } from "@steps/ui/components/product-listing.component.steps";
-import { SubscriptionComponentSteps } from "@steps/ui/components/subscription.component.steps";
 import { AccountCreatedDeletedSteps } from "@steps/ui/pages/account-created-deleted.steps";
 import { BrandSteps } from "@steps/ui/pages/brand.steps";
 import { CartSteps } from "@steps/ui/pages/cart.steps";
@@ -24,6 +24,7 @@ import { ProductsSteps } from "@steps/ui/pages/products.steps";
 import { SignupLoginSteps } from "@steps/ui/pages/signup-login.steps";
 import { SignupSteps } from "@steps/ui/pages/signup.steps";
 import { TestCasesSteps } from "@steps/ui/pages/test-cases.steps";
+import { VisualSteps } from "@steps/ui/visual/visual.steps";
 import { mergeTests } from "playwright/test";
 
 /**
@@ -38,6 +39,7 @@ interface StepsFixtures {
   loginApiSteps: LoginApiSteps;
 
   // UI
+  // Pages
   commonSteps: CommonSteps;
   homeSteps: HomeSteps;
   signupLoginSteps: SignupLoginSteps;
@@ -53,11 +55,15 @@ interface StepsFixtures {
   categorySteps: CategorySteps;
   brandSteps: BrandSteps;
 
+  // Components
   headerComponentSteps: HeaderComponentSteps;
   categoryComponentSteps: CategoryComponentSteps;
   brandComponentSteps: BrandComponentSteps;
   productListingComponentSteps: ProductListingComponentSteps;
-  subscriptionComponentSteps: SubscriptionComponentSteps;
+  footerComponentSteps: FooterComponentSteps;
+
+  // Visual
+  visualSteps: VisualSteps;
 }
 
 /** Base fixture set every Steps fixture below is built on top of (API clients, pages, logging). */
@@ -136,7 +142,12 @@ export const test = merged.extend<StepsFixtures>({
   productListingComponentSteps: async ({}, use) => {
     await use(new ProductListingComponentSteps());
   },
-  subscriptionComponentSteps: async ({}, use) => {
-    await use(new SubscriptionComponentSteps());
+  footerComponentSteps: async ({}, use) => {
+    await use(new FooterComponentSteps());
+  },
+
+  // UI - Visual steps
+  visualSteps: async ({ page }, use) => {
+    await use(new VisualSteps(page));
   },
 });

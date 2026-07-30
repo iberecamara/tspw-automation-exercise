@@ -9,6 +9,7 @@ export class HeaderComponentLocators {
   readonly logoutLink: Locator;
   readonly contactUsLink: Locator;
   readonly testCasesLink: Locator;
+  readonly apiTestingLink: Locator;
   readonly productsLink: Locator;
   readonly cartLink: Locator;
 
@@ -26,6 +27,7 @@ export class HeaderComponentLocators {
     this.logoutLink = page.getByRole("link", { name: " Logout" });
     this.contactUsLink = page.getByRole("link", { name: " Contact us" });
     this.testCasesLink = page.getByRole("link", { name: " Test Cases" });
+    this.apiTestingLink = page.getByRole("link", { name: " API Testing" });
     this.productsLink = page.getByRole("link", { name: " Products" });
     this.cartLink = page.getByRole("link", { name: " Cart" });
   }

@@ -36,7 +36,9 @@ export function generateRandomUser(options?: {
   return {
     name:
       options?.name ??
-      faker.internet.displayName({ firstName: firstName, lastName: lastName }),
+      faker.internet
+        .displayName({ firstName: firstName, lastName: lastName })
+        .toLowerCase(),
     email:
       options?.email ??
       faker.internet

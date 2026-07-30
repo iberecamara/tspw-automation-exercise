@@ -19,8 +19,43 @@ interface ShardResult {
   result: PromiseSettledResult<CommandResult>;
 }
 
+const SUBCOMMANDS = new Set([
+  "flatten-blobs",
+  "artifacts",
+  "build",
+  "single",
+  "merge",
+]);
+
+function isShardCountArg(arg: string | undefined): boolean {
+  return arg !== undefined && /^\d+$/.test(arg);
+}
+
+/**
+ * Everything after the subcommand (or after the shard-count arg, or from the very start if
+ * neither is present) is treated as passthrough args for Playwright itself — e.g. `--grep`,
+ * `--update-snapshots`. Works whether invoked as `single --grep foo`, `4 --update-snapshots`,
+ * or just `--grep foo` (default sharded run, no explicit count).
+ *
+ * These are handed straight through as argv elements (see runSingle/runShardedSuite) rather
+ * than being joined into a shell string — Docker's entrypoint/command split appends `command`
+ * overrides as already-split argv, so no shell re-parsing or quoting is involved and args with
+ * spaces/quotes survive intact.
+ */
+export function extractPassthroughArgs(): string[] {
+  const args = process.argv.slice(2);
+  if (args.length === 0) return [];
+
+  const [first, ...rest] = args;
+  if (SUBCOMMANDS.has(first as string) || isShardCountArg(first)) {
+    return rest;
+  }
+  return args;
+}
+
 export function parseShardCount(): number {
-  const raw = process.argv[2] ?? process.env.SHARDS ?? "4";
+  const arg = process.argv[2];
+  const raw = isShardCountArg(arg) ? arg : (process.env.SHARDS ?? "4");
   const parsed = Number(raw);
 
   if (!Number.isInteger(parsed) || parsed < 1) {
@@ -111,16 +146,20 @@ export async function runBuild(): Promise<void> {
 
 /**
  * Runs the full suite in a single, non-sharded container, streaming output live
- * (`npm run docker:single`).
+ * (`npm run docker:single`). Any extraArgs (e.g. --grep, --update-snapshots) are appended as
+ * a `command` override, which Docker appends to the `tests` service's `entrypoint` array
+ * (["npm", "test", "--"]) as already-split argv — no shell involved, no quoting needed.
  */
-export async function runSingle(): Promise<void> {
+export async function runSingle(extraArgs: string[] = []): Promise<void> {
   ensureArtifactsDir();
   await runDockerCommand([
     "compose",
-    "up",
+    "run",
     "--build",
-    "tests",
+    "--rm",
     "--remove-orphans",
+    "tests",
+    ...extraArgs,
   ]);
 }
 
@@ -163,7 +202,14 @@ export function flattenBlobReports(blobDir: string): void {
   }
 }
 
-export async function runShardedSuite(): Promise<void> {
+/**
+ * extraArgs are appended as a `command` override on each `tests-shard` run. The service's
+ * entrypoint (sh -c 'npm test -- --shard=$$SHARD_INDEX/$$SHARD_TOTAL "$@"' --) expands
+ * SHARD_INDEX/SHARD_TOTAL from the container env (set via -e below) and re-expands "$@" from
+ * its own positional params — which is exactly what the command override becomes — so args
+ * with spaces/quotes pass through intact without any manual quoting here.
+ */
+export async function runShardedSuite(extraArgs: string[] = []): Promise<void> {
   const shards = parseShardCount();
 
   ensureArtifactsDir();
@@ -187,6 +233,7 @@ export async function runShardedSuite(): Promise<void> {
           "-e",
           `SHARD_TOTAL=${shards}`,
           "tests-shard",
+          ...extraArgs,
         ],
         {
           capture: true,
@@ -273,6 +320,8 @@ if (require.main === module) {
     process.exit(1);
   };
 
+  const passthroughArgs = extractPassthroughArgs();
+
   switch (process.argv[2]) {
     case "flatten-blobs":
       flattenBlobReports(process.argv[3] ?? "artifacts/reports/blob");
@@ -284,7 +333,7 @@ if (require.main === module) {
       runBuild().catch(handleError);
       break;
     case "single":
-      runSingle().catch(handleError);
+      runSingle(passthroughArgs).catch(handleError);
       break;
     case "merge":
       runMerge().catch(handleError);
@@ -292,6 +341,6 @@ if (require.main === module) {
     default:
       // No subcommand, or a numeric shard count (e.g. `... 8`) — run the sharded suite;
       // parseShardCount() re-reads argv[2]/SHARDS/the default itself.
-      runShardedSuite().catch(handleError);
+      runShardedSuite(passthroughArgs).catch(handleError);
   }
 }
