@@ -14,8 +14,10 @@ export class ContactUsLocators {
   readonly submitSuccessMessage: Locator;
 
   constructor(page: Page) {
-    this.contactForm = page.locator('.contact-form').filter({ hasText: "Note: Below contact form is for testing purpose." });
-    this.feedbackContainer = page.locator('.contact-info');
+    this.contactForm = page
+      .locator(".contact-form")
+      .filter({ hasText: "Note: Below contact form is for testing purpose." });
+    this.feedbackContainer = page.locator(".contact-info");
     this.getInTouchText = page.getByText("Get In Touch");
     this.nameInput = page.getByTestId("name");
     this.emailInput = page.getByTestId("email");

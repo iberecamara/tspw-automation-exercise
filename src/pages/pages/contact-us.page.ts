@@ -58,5 +58,4 @@ export class ContactUsPage extends BasePage {
     }
     await this.click(this.locators.submitButton);
   }
-
 }

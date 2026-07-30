@@ -7,7 +7,7 @@ test.describe(
   },
   () => {
     test(
-      "Test Cases page visual regression",
+      "TestCases page visual regression",
       { tag: ["@SAMPLE-0046", "@TC-VISUAL-5"] },
       async ({
         commonSteps,

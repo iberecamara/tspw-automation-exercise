@@ -8,7 +8,11 @@ export class ApiTestingLocators {
 
   constructor(page: Page) {
     this.page = page;
-    this.mainContainer = page.locator(".container").filter({ hasText: "APIs List for practice" });
-    this.feedbackContainer = page.locator(".panel-group").filter({ hasText: "Feedback for Us" });
+    this.mainContainer = page
+      .locator(".container")
+      .filter({ hasText: "APIs List for practice" });
+    this.feedbackContainer = page
+      .locator(".panel-group")
+      .filter({ hasText: "Feedback for Us" });
   }
 }
