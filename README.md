@@ -144,7 +144,6 @@ Because the header appears on virtually every page of the site, **every page obj
 // src/pages/pages/home.page.ts
 export class HomePage extends BasePage {
     readonly locators: HomeLocators;
-    readonly header: HeaderComponent;
     readonly subscription: SubscriptionComponent;
     readonly products: ProductComponent;
     readonly continueShoppingViewCart: ContinueShoppingViewCartComponent;
@@ -154,7 +153,6 @@ export class HomePage extends BasePage {
     constructor(page: Page) {
         super(page);
         this.locators = new HomeLocators(page);
-        this.header = new HeaderComponent(page);
         this.subscription = new SubscriptionComponent(page);
         this.products = new ProductComponent(page);
         this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
@@ -426,12 +424,10 @@ The general rule: **add the selector in `locators/page/` or `locators/component/
    ```ts
    export class MyNewPage extends BasePage {
        readonly locators: MyNewLocators;
-       readonly header: HeaderComponent; // compose shared components as needed
 
        constructor(page: Page) {
            super(page);
            this.locators = new MyNewLocators(page);
-           this.header = new HeaderComponent(page);
        }
 
        async doSomething(): Promise<void> {

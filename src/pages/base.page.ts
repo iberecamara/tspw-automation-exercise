@@ -1,4 +1,5 @@
-import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
+import { FooterComponent } from "@components/footer.component";
+import { HeaderComponent } from "@components/header.component";
 import { Locator, Page } from "@playwright/test";
 
 /**
@@ -13,27 +14,13 @@ import { Locator, Page } from "@playwright/test";
 export class BasePage {
   /** The Playwright `Page` this page object/component operates against. */
   readonly page: Page;
+  readonly header: HeaderComponent;
+  readonly footer: FooterComponent;
 
   constructor(page: Page) {
     this.page = page;
-  }
-
-  /**
-   * Navigates to the application's home page, relative to the configured `baseURL`
-   * (`Environment.BASE_URL`, wired into `playwright.config.ts`'s `use.baseURL`).
-   *
-   * @param options - Optional navigation overrides, forwarded to `page.goto()`. Defaults to a
-   * 30-second timeout unless overridden.
-   */
-  async goToHome(options?: {
-    referer?: string;
-    timeout?: number;
-    waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
-  }): Promise<void> {
-    await this.page.goto("/", {
-      timeout: 30 * SECOND_IN_MILISECONDS,
-      ...options,
-    });
+    this.header = new HeaderComponent(page);
+    this.footer = new FooterComponent(page);
   }
 
   /**

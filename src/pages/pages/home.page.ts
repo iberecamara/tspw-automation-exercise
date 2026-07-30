@@ -4,9 +4,7 @@ import {
   HasCategories,
 } from "@components/categories.component";
 import { ContinueShoppingViewCartComponent } from "@components/continueshopping-viewcart.component";
-import { HeaderComponent } from "@components/header.component";
 import { HasProducts, ProductComponent } from "@components/product.component";
-import { SubscriptionComponent } from "@components/subscription.component";
 import { RUPEES } from "@data/constants/common.constants";
 import { EMPTY } from "@data/constants/string.constants";
 import { ProductType } from "@data/model/product.model";
@@ -24,8 +22,6 @@ export class HomePage
   implements HasBrands, HasProducts, HasCategories
 {
   readonly locators: HomeLocators;
-  readonly header: HeaderComponent;
-  readonly subscription: SubscriptionComponent;
   readonly products: ProductComponent;
   readonly continueShoppingViewCart: ContinueShoppingViewCartComponent;
   readonly categories: CategoriesComponent;
@@ -34,8 +30,6 @@ export class HomePage
   constructor(page: Page) {
     super(page);
     this.locators = new HomeLocators(page);
-    this.header = new HeaderComponent(page);
-    this.subscription = new SubscriptionComponent(page);
     this.products = new ProductComponent(page);
     this.continueShoppingViewCart = new ContinueShoppingViewCartComponent(page);
     this.categories = new CategoriesComponent(page);

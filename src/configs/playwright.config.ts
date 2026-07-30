@@ -1,6 +1,7 @@
 import { Environment } from "@configs/environment.config";
 import { PATHS } from "@configs/paths";
 import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
+import { SCREENSHOTS_FILEPATH } from "@files/screenshots/screenshots.filepath";
 import { defineConfig, devices } from "@playwright/test";
 import { getDateTime } from "@utils/datetime.utils";
 import { capitalize } from "@utils/string.utils";
@@ -32,11 +33,16 @@ export default defineConfig({
   timeout: 90 * SECOND_IN_MILISECONDS,
   expect: {
     timeout: 5 * SECOND_IN_MILISECONDS,
+    toHaveScreenshot: {
+      threshold: 0.2,
+      maxDiffPixelRatio: 0.02,
+    },
   },
   fullyParallel: true,
   retries: Environment.RETRIES,
   workers: Environment.WORKERS,
   globalTeardown: require.resolve(PATHS.GLOBAL_TEARDOWN_PATH),
+  snapshotDir: SCREENSHOTS_FILEPATH,
   reporter: [
     ["line"],
     ...(isSharded

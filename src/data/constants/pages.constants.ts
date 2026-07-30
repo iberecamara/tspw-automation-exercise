@@ -7,6 +7,7 @@ export const PAGES_TITLES: SitePagesTitles = {
   Product: "Automation Exercise - Product Details",
   Products: "Automation Exercise - All Products",
   "Test Cases": "Automation Practice Website for UI Testing - Test Cases",
+  "API Testing": "Automation Practice for API Testing",
   "Contact Us": "Automation Exercise - Contact Us",
   "Signup / Login": "Automation Exercise - Signup / Login",
 };

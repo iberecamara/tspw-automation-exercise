@@ -5,6 +5,7 @@ export type SitePages =
   | "Product"
   | "Products"
   | "Test Cases"
+  | "API Testing"
   | "Contact Us"
   | "Signup / Login";
 

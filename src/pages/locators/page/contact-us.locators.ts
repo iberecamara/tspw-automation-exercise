@@ -2,6 +2,8 @@ import { Locator, Page } from "@playwright/test";
 
 /** Raw `Locator` definitions for the Contact Us form page. */
 export class ContactUsLocators {
+  readonly contactForm: Locator;
+  readonly feedbackContainer: Locator;
   readonly getInTouchText: Locator;
   readonly nameInput: Locator;
   readonly emailInput: Locator;
@@ -10,9 +12,10 @@ export class ContactUsLocators {
   readonly upoadFileInput: Locator;
   readonly submitButton: Locator;
   readonly submitSuccessMessage: Locator;
-  readonly homeButton: Locator;
 
   constructor(page: Page) {
+    this.contactForm = page.locator('.contact-form').filter({ hasText: "Note: Below contact form is for testing purpose." });
+    this.feedbackContainer = page.locator('.contact-info');
     this.getInTouchText = page.getByText("Get In Touch");
     this.nameInput = page.getByTestId("name");
     this.emailInput = page.getByTestId("email");
@@ -23,6 +26,5 @@ export class ContactUsLocators {
     this.submitSuccessMessage = page
       .locator("#contact-page")
       .getByText("Success! Your details have");
-    this.homeButton = page.getByRole("link", { name: " Home" });
   }
 }

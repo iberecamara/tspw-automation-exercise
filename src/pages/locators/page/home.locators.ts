@@ -15,6 +15,7 @@ export class HomeLocators {
   readonly addRecommendedItem: (id: number) => Locator;
   readonly subheading: Locator;
   readonly scrollUpButton: Locator;
+  readonly footer: Locator;
 
   constructor(page: Page) {
     this.productsContainer = page.locator(".features_items");
@@ -51,5 +52,6 @@ export class HomeLocators {
       name: "Full-Fledged practice website",
     });
     this.scrollUpButton = page.locator("#scrollUp");
+    this.footer = page.locator("#footer");
   }
 }
