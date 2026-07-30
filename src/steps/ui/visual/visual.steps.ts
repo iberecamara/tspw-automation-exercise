@@ -1,5 +1,6 @@
 import { SitePages } from "@data/types/site-pages.type";
 import { BaseSteps } from "@steps/base.steps";
+import * as allure from "allure-js-commons";
 import { Locator, Page } from "playwright";
 import { expect } from "playwright/test";
 
@@ -20,6 +21,12 @@ export class VisualSteps extends BaseSteps {
         this.page,
         `${webPage} screenshot should match existing one '${screenshot}'.`,
       ).toHaveScreenshot(screenshot);
+      const visualBuffer = await this.page.screenshot();
+      await allure.attachment(
+        `${webPage} visual check success`,
+        visualBuffer,
+        "image/png",
+      );
     });
   }
 
@@ -36,6 +43,12 @@ export class VisualSteps extends BaseSteps {
           element,
           `${elementName} element screenshot should match existing one '${screenshot}'.`,
         ).toHaveScreenshot(screenshot);
+        const visualBuffer = await element.screenshot();
+        await allure.attachment(
+          `${elementName} visual check success`,
+          visualBuffer,
+          "image/png",
+        );
       },
     );
   }
