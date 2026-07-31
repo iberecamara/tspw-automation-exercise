@@ -171,10 +171,10 @@ export class TestAutomationLogger {
           path.basename(logFile),
         );
         const shardSuffix = TestAutomationLogger.getShardSuffix();
-        const project = TestAutomationLogger.extractProject(block)
-        const outputFileName = project ?
-          `${executionTag}-test-automation-${project}-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log` :
-          `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`;
+        const project = TestAutomationLogger.extractProject(block);
+        const outputFileName = project
+          ? `${executionTag}-test-automation-${project}-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`
+          : `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`;
         fs.writeFileSync(
           path.join(outputDirectory, outputFileName),
           block,
@@ -184,7 +184,6 @@ export class TestAutomationLogger {
     }
 
     await TestAutomationLogger.removeTempFiles();
-
   }
 
   /**
