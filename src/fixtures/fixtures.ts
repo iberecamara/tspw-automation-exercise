@@ -1,3 +1,4 @@
+import { test as allure } from "@fixtures/allure.fixtures";
 import { test as apis } from "@fixtures/apis.fixtures";
 import { test as data } from "@fixtures/data.fixtures";
 import { test as logging } from "@fixtures/logging.fixtures";
@@ -11,4 +12,4 @@ import { mergeTests } from "playwright/test";
  * logging, pages, steps) into one Playwright `test`, so a spec can destructure any fixture it
  * needs from a single import without knowing which individual module provides it.
  */
-export const test = mergeTests(apis, data, logging, pages, steps);
+export const test = mergeTests(allure, apis, data, logging, pages, steps);

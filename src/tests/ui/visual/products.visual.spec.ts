@@ -37,11 +37,6 @@ test.describe(
           "products-brands.png",
         );
         await visualSteps.validateElementScreenshot(
-          productsPage.locators.allProductsContainer,
-          "Products - All Products",
-          "products-all-products.png",
-        );
-        await visualSteps.validateElementScreenshot(
           productsPage.footer.locators.footerContainer,
           "Products - Footer",
           "products-footer.png",

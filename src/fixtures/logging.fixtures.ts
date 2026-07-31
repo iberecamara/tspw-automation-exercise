@@ -22,7 +22,7 @@ interface LoggingFixtures {
  *   split each worker's raw log into one file per test.
  */
 export const test = base.extend<LoggingFixtures>({
-  logger: async ({}, use, testInfo) => {
+  logger: async ({ }, use, testInfo) => {
     const log = TestAutomationLogger.getInstance(
       testInfo.workerIndex.toString(),
     );
@@ -32,6 +32,7 @@ export const test = base.extend<LoggingFixtures>({
     async ({ logger }, use, testInfo: TestInfo) => {
       logger.info("*".repeat(Environment.LOG_LINE_LENGTH));
       logger.info(NEWLINE);
+      logger.info(`Test Project: ${testInfo.project.name}`);
       logger.info(`Starting test: ${testInfo.title}`);
       logger.info(
         `Test tags: ${testInfo.tags.length > 0 ? testInfo.tags.join(", ") : "none"}`,
@@ -51,5 +52,5 @@ export const test = base.extend<LoggingFixtures>({
     {
       auto: true,
     },
-  ],
+  ]
 });

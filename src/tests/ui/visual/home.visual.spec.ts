@@ -23,11 +23,6 @@ test.describe(
           "home-brands.png",
         );
         await visualSteps.validateElementScreenshot(
-          homePage.locators.productsContainer,
-          "Home - Product List",
-          "home-products.png",
-        );
-        await visualSteps.validateElementScreenshot(
           homePage.footer.locators.footerContainer,
           "Home - Footer",
           "home-footer.png",

@@ -10,22 +10,22 @@ import path from "node:path";
 
 /**
  * Launch options shared by every project (`headless`/`slowMo`, both environment-driven), reused
- * both in the top-level `use.launchOptions` and layered into each project's own `launchOptions`.
+ * both in the top-level `use.launchOptions` and layered into each project"s own `launchOptions`.
  */
 const globalLaunchOptions = {
   headless: Environment.HEADLESS,
   slowMo: Environment.SLOWMO,
 };
 
-// True when this run is one shard of a sharded execution (see docker-compose.yml's
+// True when this run is one shard of a sharded execution (see docker-compose.yml"s
 // tests-shard service and docker.compose.utils.ts, which set SHARD_INDEX per container).
 const isSharded = Boolean(process.env.SHARD_INDEX);
 
 /**
- * The framework's Playwright configuration: test directory, timeouts, retries/workers (all
+ * The framework"s Playwright configuration: test directory, timeouts, retries/workers (all
  * environment-driven via {@link Environment}), the HTML/JSON/Allure reporter stack plus the
  * custom Allure-cleanup reporter, `baseURL` (so tests can navigate with relative paths), and the
- * single Chromium project (see the README's Project Structure section for the framework's
+ * single Chromium project (see the README"s Project Structure section for the framework"s
  * browser-coverage scope).
  */
 export default defineConfig({
@@ -36,6 +36,7 @@ export default defineConfig({
     toHaveScreenshot: {
       threshold: 0.2,
       maxDiffPixelRatio: 0.02,
+      animations: "disabled",
     },
   },
   fullyParallel: true,
@@ -48,12 +49,12 @@ export default defineConfig({
     ...(isSharded
       ? [["blob", { outputDir: PATHS.BLOB_REPORTS_SHARD_DIR }] as const]
       : [
-          [
-            "html",
-            { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
-          ] as const,
-          ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
-        ]),
+        [
+          "html",
+          { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
+        ] as const,
+        ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
+      ]),
     [
       "allure-playwright",
       {
@@ -94,7 +95,7 @@ export default defineConfig({
   },
   projects: [
     {
-      name: "chromium",
+      name: "Chromium",
       use: {
         ...devices["Desktop Chrome"],
         viewport: Environment.VIEWPORT,
@@ -104,6 +105,56 @@ export default defineConfig({
           args: ["--start-maximized"],
         },
       },
+    },
+    {
+      name: "Chrome",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+        viewport: Environment.VIEWPORT,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          args: ["--start-maximized"],
+        },
+      },
+    },
+    {
+      name: "Firefox",
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: Environment.VIEWPORT,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          args: Environment.HEADLESS ? [] : ["-width=1920", "-height=1080"],
+        },
+      },
+    },
+    {
+      name: "Edge",
+      use: {
+        ...devices["Desktop Edge"],
+        channel: "msedge",
+        viewport: Environment.VIEWPORT,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          args: ["--start-maximized"],
+        },
+      },
+    },
+    {
+      name: "Safari",
+      use: {
+        ...devices["Desktop Safari"],
+        deviceScaleFactor: undefined,
+      },
+    },
+    {
+      name: "iPhone 14 Pro Max",
+      use: { ...devices["iPhone 14 Pro Max"], deviceScaleFactor: undefined },
+    },
+    {
+      name: "Samsung Galaxy S24 Ultra",
+      use: { ...devices["Galaxy S24 Ultra"] },
     },
   ],
 });
