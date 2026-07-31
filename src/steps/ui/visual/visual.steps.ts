@@ -21,7 +21,6 @@ export class VisualSteps extends BaseSteps {
     screenshot: string,
   ): Promise<void> {
     await this.step(`Validate visual regression for ${webPage}`, async () => {
-      await this.page.waitForLoadState("networkidle");
       await expect(
         this.page,
         `${webPage} screenshot should match existing one '${screenshot}'.`,
@@ -43,7 +42,6 @@ export class VisualSteps extends BaseSteps {
     await this.step(
       `Validate visual regression for ${elementName} element`,
       async () => {
-        await this.page.waitForLoadState("networkidle");
         await element.scrollIntoViewIfNeeded();
         await expect(
           element,
