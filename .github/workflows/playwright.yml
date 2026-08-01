@@ -164,49 +164,7 @@ jobs:
                   EDGE_PASSED: ${{ needs.edge.outputs.passed }}
                   EDGE_FAILED: ${{ needs.edge.outputs.failed }}
                   EDGE_SKIPPED: ${{ needs.edge.outputs.skipped }}
-              run: |
-                  python3 - << 'PYEOF'
-                  import json
-                  import os
-                  from datetime import datetime, timezone
-
-                  def as_int(value):
-                      try:
-                          return int(value)
-                      except (TypeError, ValueError):
-                          return 0
-
-                  def browser_entry(slug, label, prefix):
-                      return {
-                          "slug": slug,
-                          "label": label,
-                          "job_status": os.environ.get(f"{prefix}_STATUS", ""),
-                          "total": as_int(os.environ.get(f"{prefix}_TOTAL")),
-                          "passed": as_int(os.environ.get(f"{prefix}_PASSED")),
-                          "failed": as_int(os.environ.get(f"{prefix}_FAILED")),
-                          "skipped": as_int(os.environ.get(f"{prefix}_SKIPPED")),
-                      }
-
-                  reports = [
-                      browser_entry("chromium", "Chromium", "CHROMIUM"),
-                      browser_entry("chrome", "Chrome", "CHROME"),
-                      browser_entry("firefox", "Firefox", "FIREFOX"),
-                      browser_entry("webkit", "WebKit (Safari)", "WEBKIT"),
-                      browser_entry("edge", "Edge", "EDGE"),
-                  ]
-
-                  run_date = datetime.now(timezone.utc).strftime("%-m/%-d/%Y at %H:%M UTC")
-
-                  with open(".github/hub-template/index.html") as f:
-                      html = f.read()
-
-                  html = html.replace("__RUN_URL__", os.environ["RUN_URL"])
-                  html = html.replace("__RUN_DATE__", run_date)
-                  html = html.replace("__REPORTS_JSON__", json.dumps(reports))
-
-                  with open("pages-site/index.html", "w") as f:
-                      f.write(html)
-                  PYEOF
+              run: python3 .github/scripts/generate_hub.py
 
             - name: Upload Allure Report Hub - Zipped File
               uses: actions/upload-artifact@v7
