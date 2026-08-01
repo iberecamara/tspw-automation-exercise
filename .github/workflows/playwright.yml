@@ -1,4 +1,4 @@
-name: Vanilla Playwright Test Automation Framework for Automation Exercise website
+name: Vanilla Playwright Test Automation Framework for Automation Exercise website - All Browsers
 
 on:
     push:
@@ -15,18 +15,6 @@ permissions:
 concurrency:
     group: "pages"
     cancel-in-progress: false
-
-env:
-    BASE_URL: https://automationexercise.com
-    APPLICATION: Automation Exercise
-    WORKERS: 4
-    RETRIES: 2
-    LOG_LINE_LENGTH: 100
-    LOG_CONSOLE: true
-    LOG_LEVEL: verbose
-    HEADLESS: true
-    JIRA_BOARD: SAMPLE
-    SHARDS_TOTAL: 4
 
 jobs:
     static-checks:
@@ -49,162 +37,181 @@ jobs:
             - name: Run type check, lint, and format check
               run: npm run codestandards
 
-    test:
-        name: Test (${{ matrix.browser }} shard ${{ matrix.shardIndex }}/4)
+    chromium:
+        name: Chromium
         needs: static-checks
-        runs-on: ubuntu-latest
-        timeout-minutes: 45
-        strategy:
-            fail-fast: false
-            matrix:
-                shardIndex: [1, 2, 3, 4]
-                browser: [chromium, chrome, firefox, webkit, edge]
-                include:
-                    - browser: chromium
-                      script: test:chromium
-                      install_pkg: chromium
-                      cache_extra_path: ""
-                    - browser: chrome
-                      script: test:chrome
-                      install_pkg: chrome
-                      cache_extra_path: "/opt/google/chrome"
-                    - browser: firefox
-                      script: test:firefox
-                      install_pkg: firefox
-                      cache_extra_path: ""
-                    - browser: webkit
-                      script: test:webkit
-                      install_pkg: webkit
-                      cache_extra_path: ""
-                    - browser: edge
-                      script: test:edge
-                      install_pkg: msedge
-                      cache_extra_path: "/opt/microsoft/msedge"
-        env:
-            SHARD_INDEX: ${{ matrix.shardIndex }}
-            SHARD_TOTAL: 4
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v7
+        uses: ./.github/workflows/playwright-browser.yml
+        with:
+            browser: chromium
+            script: test:chromium
+            install_pkg: chromium
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
+    chrome:
+        name: Chrome
+        needs: chromium
+        uses: ./.github/workflows/playwright-browser.yml
+        with:
+            browser: chrome
+            script: test:chrome
+            install_pkg: chrome
+            cache_extra_path: "/opt/google/chrome"
 
-            - name: Install dependencies
-              run: npm ci --prefer-offline
+    firefox:
+        name: Firefox
+        needs: chrome
+        uses: ./.github/workflows/playwright-browser.yml
+        with:
+            browser: firefox
+            script: test:firefox
+            install_pkg: firefox
 
-            - name: Cache Playwright browsers
-              uses: actions/cache@v5
-              id: pw-cache
-              with:
-                  path: |
-                      ~/.cache/ms-playwright
-                      ${{ matrix.cache_extra_path }}
-                  key: playwright-${{ matrix.browser }}-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+    webkit:
+        name: WebKit (Safari)
+        needs: firefox
+        uses: ./.github/workflows/playwright-browser.yml
+        with:
+            browser: webkit
+            script: test:webkit
+            install_pkg: webkit
 
-            - name: Install Playwright Browsers
-              run: npx playwright install --with-deps ${{ matrix.install_pkg }}
-              if: steps.pw-cache.outputs.cache-hit != 'true'
+    edge:
+        name: Edge
+        needs: webkit
+        uses: ./.github/workflows/playwright-browser.yml
+        with:
+            browser: edge
+            script: test:edge
+            install_pkg: msedge
+            cache_extra_path: "/opt/microsoft/msedge"
 
-            - name: Install Playwright OS deps only
-              run: npx playwright install-deps
-              if: steps.pw-cache.outputs.cache-hit == 'true'
-
-            - name: Run Tests (${{ matrix.browser }} shard ${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }})
-              id: run-tests
-              run: npm run ${{ matrix.script }} -- --shard=${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }}
-              continue-on-error: true
-
-            - name: Upload raw Allure results (for merging)
-              uses: actions/upload-artifact@v7
-              if: ${{ !cancelled() }}
-              with:
-                  name: allure-results-${{ matrix.browser }}-shard-${{ matrix.shardIndex }}
-                  path: artifacts/reports/allure/allure-results
-                  retention-days: 30
-                  if-no-files-found: warn
-
-            - name: Upload logs (for merging)
-              uses: actions/upload-artifact@v7
-              if: ${{ !cancelled() }}
-              with:
-                  name: automation-logs-${{ matrix.browser }}-shard-${{ matrix.shardIndex }}
-                  path: artifacts/logs/**/**/*.log
-                  retention-days: 30
-                  if-no-files-found: warn
-
-            - name: Fail job if tests failed
-              if: steps.run-tests.outcome == 'failure'
-              run: |
-                  echo "::error::Test suite failed for ${{ matrix.browser }} shard ${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }}. See Allure Report/logs artifacts for details."
-                  exit 1
-
-    merge-reports:
-        name: Merge logs and generate single-file Allure Report (all browsers combined)
-        needs: test
+    build-hub:
+        name: Build Allure hub and assemble Pages site
+        needs: [chromium, chrome, firefox, webkit, edge]
         if: ${{ !cancelled() }}
         runs-on: ubuntu-latest
-        timeout-minutes: 20
+        timeout-minutes: 15
         steps:
-            - name: Checkout repository
-              uses: actions/checkout@v7
+            - name: Create site layout
+              run: mkdir -p pages-site
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v5
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci --prefer-offline
-
-            - name: Download and merge Allure results from all browsers/shards
+            - name: Download Chromium report
               uses: actions/download-artifact@v6
+              continue-on-error: true
               with:
-                  pattern: allure-results-*
-                  path: artifacts/reports/allure/allure-results
-                  merge-multiple: true
+                  name: allure-report-chromium
+                  path: pages-site/chromium
 
-            - name: Download and merge logs from all browsers/shards
+            - name: Download Chrome report
               uses: actions/download-artifact@v6
+              continue-on-error: true
               with:
-                  pattern: automation-logs-*
-                  path: artifacts/logs
-                  merge-multiple: true
+                  name: allure-report-chrome
+                  path: pages-site/chrome
 
-            - name: Generate single file Allure Report (all browsers/shards combined)
-              run: npm run report:allure:export
+            - name: Download Firefox report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-firefox
+                  path: pages-site/firefox
 
-            - name: Upload Allure Report - Zipped File
+            - name: Download WebKit report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-webkit
+                  path: pages-site/webkit
+
+            - name: Download Edge report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-edge
+                  path: pages-site/edge
+
+            - name: Generate hub index page
+              run: |
+                  cat > pages-site/index.html << 'HTMLEOF'
+                  <!DOCTYPE html>
+                  <html lang="en">
+                  <head>
+                    <meta charset="UTF-8">
+                    <title>Automation Exercise - Allure Report Hub</title>
+                    <style>
+                      body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 720px; margin: 60px auto; padding: 0 20px; color: #1a1a1a; }
+                      h1 { font-size: 1.6rem; margin-bottom: 4px; }
+                      p.sub { color: #666; margin-top: 0; }
+                      ul { list-style: none; padding: 0; }
+                      li { margin: 10px 0; }
+                      a.card { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border: 1px solid #ddd; border-radius: 8px; text-decoration: none; color: #1a1a1a; transition: border-color .15s ease; }
+                      a.card:hover { border-color: #888; }
+                      .name { font-weight: 600; }
+                      .badge { font-size: 0.8rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+                      .badge.success { background: #e3f8e8; color: #1a7d3a; }
+                      .badge.failure { background: #fde7e7; color: #b3261e; }
+                      .badge.other { background: #eee; color: #555; }
+                      footer { margin-top: 40px; color: #999; font-size: 0.8rem; }
+                    </style>
+                  </head>
+                  <body>
+                    <h1>Automation Exercise — Allure Report Hub</h1>
+                    <p class="sub">Per-browser Playwright test reports for this run</p>
+                    <ul id="report-list"></ul>
+                    <footer>Generated automatically by GitHub Actions</footer>
+                    <script>
+                      const reports = REPORTS_JSON_PLACEHOLDER;
+                      const list = document.getElementById('report-list');
+                      reports.forEach(r => {
+                        const li = document.createElement('li');
+                        const badgeClass = r.status === 'success' ? 'success' : (r.status === 'failure' ? 'failure' : 'other');
+                        li.innerHTML = `<a class="card" href="./${r.slug}/index.html"><span class="name">${r.label}</span><span class="badge ${badgeClass}">${r.status}</span></a>`;
+                        list.appendChild(li);
+                      });
+                    </script>
+                  </body>
+                  </html>
+                  HTMLEOF
+
+            - name: Inject report statuses into hub page
+              run: |
+                  python3 - << 'PYEOF'
+                  import json
+
+                  reports = [
+                      {"slug": "chromium", "label": "Chromium", "status": "${{ needs.chromium.result }}"},
+                      {"slug": "chrome", "label": "Chrome", "status": "${{ needs.chrome.result }}"},
+                      {"slug": "firefox", "label": "Firefox", "status": "${{ needs.firefox.result }}"},
+                      {"slug": "webkit", "label": "WebKit (Safari)", "status": "${{ needs.webkit.result }}"},
+                      {"slug": "edge", "label": "Edge", "status": "${{ needs.edge.result }}"},
+                  ]
+
+                  with open("pages-site/index.html") as f:
+                      html = f.read()
+
+                  html = html.replace("REPORTS_JSON_PLACEHOLDER", json.dumps(reports))
+
+                  with open("pages-site/index.html", "w") as f:
+                      f.write(html)
+                  PYEOF
+
+            - name: Upload Allure Report Hub - Zipped File
               uses: actions/upload-artifact@v7
               if: ${{ !cancelled() }}
               with:
-                  name: Allure Report - All Browsers
-                  path: artifacts/reports/allure/allure-report-single
+                  name: Allure Report - Hub (All Browsers)
+                  path: pages-site
                   retention-days: 30
                   overwrite: true
-                  if-no-files-found: warn
-
-            - name: Upload logs
-              uses: actions/upload-artifact@v7
-              if: ${{ !cancelled() }}
-              with:
-                  name: Automation Logs - All Browsers
-                  path: artifacts/logs/**/**/*.log
-                  retention-days: 30
                   if-no-files-found: warn
 
             - name: Upload Report for Pages (build-time)
               uses: actions/upload-pages-artifact@v4
               if: ${{ !cancelled() }}
               with:
-                  path: artifacts/reports/allure/allure-report-single
+                  path: pages-site
 
     deploy:
-        needs: merge-reports
+        needs: build-hub
         if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         runs-on: ubuntu-latest
         timeout-minutes: 10
