@@ -49,6 +49,7 @@ jobs:
     chrome:
         name: Chrome
         needs: chromium
+        if: ${{ !cancelled() }}
         uses: ./.github/workflows/playwright-browser.yml
         with:
             browser: chrome
@@ -59,6 +60,7 @@ jobs:
     firefox:
         name: Firefox
         needs: chrome
+        if: ${{ !cancelled() }}
         uses: ./.github/workflows/playwright-browser.yml
         with:
             browser: firefox
@@ -68,6 +70,7 @@ jobs:
     webkit:
         name: WebKit (Safari)
         needs: firefox
+        if: ${{ !cancelled() }}
         uses: ./.github/workflows/playwright-browser.yml
         with:
             browser: webkit
@@ -77,6 +80,7 @@ jobs:
     edge:
         name: Edge
         needs: webkit
+        if: ${{ !cancelled() }}
         uses: ./.github/workflows/playwright-browser.yml
         with:
             browser: edge
