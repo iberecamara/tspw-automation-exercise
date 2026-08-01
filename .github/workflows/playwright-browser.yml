@@ -20,13 +20,25 @@ on:
             report_artifact:
                 description: "Name of the uploaded single-file Allure report artifact"
                 value: ${{ jobs.merge-report.outputs.report_artifact }}
+            total:
+                description: "Total number of test results for this browser"
+                value: ${{ jobs.merge-report.outputs.total }}
+            passed:
+                description: "Number of passed test results for this browser"
+                value: ${{ jobs.merge-report.outputs.passed }}
+            failed:
+                description: "Number of failed/broken test results for this browser"
+                value: ${{ jobs.merge-report.outputs.failed }}
+            skipped:
+                description: "Number of skipped/unknown test results for this browser"
+                value: ${{ jobs.merge-report.outputs.skipped }}
 
 env:
     BASE_URL: https://automationexercise.com
     APPLICATION: Automation Exercise
     WORKERS: 4
     RETRIES: 4
-    SLOWMO: 300
+    SLOWMO: 500
     LOG_LINE_LENGTH: 100
     LOG_CONSOLE: true
     LOG_LEVEL: verbose
@@ -113,6 +125,10 @@ jobs:
         timeout-minutes: 20
         outputs:
             report_artifact: allure-report-${{ inputs.browser }}
+            total: ${{ steps.counts.outputs.total }}
+            passed: ${{ steps.counts.outputs.passed }}
+            failed: ${{ steps.counts.outputs.failed }}
+            skipped: ${{ steps.counts.outputs.skipped }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v7
@@ -139,6 +155,40 @@ jobs:
                   pattern: automation-logs-${{ inputs.browser }}-*
                   path: artifacts/logs
                   merge-multiple: true
+
+            - name: Compute result counts (${{ inputs.browser }})
+              id: counts
+              run: |
+                  python3 - << 'PYEOF'
+                  import glob
+                  import json
+                  import os
+
+                  files = glob.glob("artifacts/reports/allure/allure-results/*-result.json")
+                  counts = {"passed": 0, "failed": 0, "broken": 0, "skipped": 0, "unknown": 0}
+
+                  for path in files:
+                      try:
+                          with open(path) as f:
+                              data = json.load(f)
+                          status = data.get("status", "unknown")
+                          if status not in counts:
+                              status = "unknown"
+                          counts[status] += 1
+                      except Exception:
+                          pass
+
+                  total = sum(counts.values())
+                  failed = counts["failed"] + counts["broken"]
+                  skipped = counts["skipped"] + counts["unknown"]
+                  passed = counts["passed"]
+
+                  with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+                      out.write(f"total={total}\n")
+                      out.write(f"passed={passed}\n")
+                      out.write(f"failed={failed}\n")
+                      out.write(f"skipped={skipped}\n")
+                  PYEOF
 
             - name: Generate single file Allure Report (${{ inputs.browser }}, all shards combined)
               run: npm run report:allure:export

@@ -1,4 +1,4 @@
-name: Vanilla Playwright Test Automation Framework for Automation Exercise website - All Browsers
+name: Vanilla Playwright Test Automation Framework for Automation Exercise website - All Browsers (Sequential)
 
 on:
     push:
@@ -95,6 +95,9 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
+            - name: Checkout repository
+              uses: actions/checkout@v7
+
             - name: Create site layout
               run: mkdir -p pages-site
 
@@ -133,66 +136,73 @@ jobs:
                   name: allure-report-edge
                   path: pages-site/edge
 
-            - name: Generate hub index page
-              run: |
-                  cat > pages-site/index.html << 'HTMLEOF'
-                  <!DOCTYPE html>
-                  <html lang="en">
-                  <head>
-                    <meta charset="UTF-8">
-                    <title>Automation Exercise - Allure Report Hub</title>
-                    <style>
-                      body { font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif; max-width: 720px; margin: 60px auto; padding: 0 20px; color: #1a1a1a; }
-                      h1 { font-size: 1.6rem; margin-bottom: 4px; }
-                      p.sub { color: #666; margin-top: 0; }
-                      ul { list-style: none; padding: 0; }
-                      li { margin: 10px 0; }
-                      a.card { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border: 1px solid #ddd; border-radius: 8px; text-decoration: none; color: #1a1a1a; transition: border-color .15s ease; }
-                      a.card:hover { border-color: #888; }
-                      .name { font-weight: 600; }
-                      .badge { font-size: 0.8rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
-                      .badge.success { background: #e3f8e8; color: #1a7d3a; }
-                      .badge.failure { background: #fde7e7; color: #b3261e; }
-                      .badge.other { background: #eee; color: #555; }
-                      footer { margin-top: 40px; color: #999; font-size: 0.8rem; }
-                    </style>
-                  </head>
-                  <body>
-                    <h1>Automation Exercise — Allure Report Hub</h1>
-                    <p class="sub">Per-browser Playwright test reports for this run</p>
-                    <ul id="report-list"></ul>
-                    <footer>Generated automatically by GitHub Actions</footer>
-                    <script>
-                      const reports = REPORTS_JSON_PLACEHOLDER;
-                      const list = document.getElementById('report-list');
-                      reports.forEach(r => {
-                        const li = document.createElement('li');
-                        const badgeClass = r.status === 'success' ? 'success' : (r.status === 'failure' ? 'failure' : 'other');
-                        li.innerHTML = `<a class="card" href="./${r.slug}/index.html"><span class="name">${r.label}</span><span class="badge ${badgeClass}">${r.status}</span></a>`;
-                        list.appendChild(li);
-                      });
-                    </script>
-                  </body>
-                  </html>
-                  HTMLEOF
-
-            - name: Inject report statuses into hub page
+            - name: Generate hub index page from template
+              env:
+                  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                  CHROMIUM_STATUS: ${{ needs.chromium.result }}
+                  CHROMIUM_TOTAL: ${{ needs.chromium.outputs.total }}
+                  CHROMIUM_PASSED: ${{ needs.chromium.outputs.passed }}
+                  CHROMIUM_FAILED: ${{ needs.chromium.outputs.failed }}
+                  CHROMIUM_SKIPPED: ${{ needs.chromium.outputs.skipped }}
+                  CHROME_STATUS: ${{ needs.chrome.result }}
+                  CHROME_TOTAL: ${{ needs.chrome.outputs.total }}
+                  CHROME_PASSED: ${{ needs.chrome.outputs.passed }}
+                  CHROME_FAILED: ${{ needs.chrome.outputs.failed }}
+                  CHROME_SKIPPED: ${{ needs.chrome.outputs.skipped }}
+                  FIREFOX_STATUS: ${{ needs.firefox.result }}
+                  FIREFOX_TOTAL: ${{ needs.firefox.outputs.total }}
+                  FIREFOX_PASSED: ${{ needs.firefox.outputs.passed }}
+                  FIREFOX_FAILED: ${{ needs.firefox.outputs.failed }}
+                  FIREFOX_SKIPPED: ${{ needs.firefox.outputs.skipped }}
+                  WEBKIT_STATUS: ${{ needs.webkit.result }}
+                  WEBKIT_TOTAL: ${{ needs.webkit.outputs.total }}
+                  WEBKIT_PASSED: ${{ needs.webkit.outputs.passed }}
+                  WEBKIT_FAILED: ${{ needs.webkit.outputs.failed }}
+                  WEBKIT_SKIPPED: ${{ needs.webkit.outputs.skipped }}
+                  EDGE_STATUS: ${{ needs.edge.result }}
+                  EDGE_TOTAL: ${{ needs.edge.outputs.total }}
+                  EDGE_PASSED: ${{ needs.edge.outputs.passed }}
+                  EDGE_FAILED: ${{ needs.edge.outputs.failed }}
+                  EDGE_SKIPPED: ${{ needs.edge.outputs.skipped }}
               run: |
                   python3 - << 'PYEOF'
                   import json
+                  import os
+                  from datetime import datetime, timezone
+
+                  def as_int(value):
+                      try:
+                          return int(value)
+                      except (TypeError, ValueError):
+                          return 0
+
+                  def browser_entry(slug, label, prefix):
+                      return {
+                          "slug": slug,
+                          "label": label,
+                          "job_status": os.environ.get(f"{prefix}_STATUS", ""),
+                          "total": as_int(os.environ.get(f"{prefix}_TOTAL")),
+                          "passed": as_int(os.environ.get(f"{prefix}_PASSED")),
+                          "failed": as_int(os.environ.get(f"{prefix}_FAILED")),
+                          "skipped": as_int(os.environ.get(f"{prefix}_SKIPPED")),
+                      }
 
                   reports = [
-                      {"slug": "chromium", "label": "Chromium", "status": "${{ needs.chromium.result }}"},
-                      {"slug": "chrome", "label": "Chrome", "status": "${{ needs.chrome.result }}"},
-                      {"slug": "firefox", "label": "Firefox", "status": "${{ needs.firefox.result }}"},
-                      {"slug": "webkit", "label": "WebKit (Safari)", "status": "${{ needs.webkit.result }}"},
-                      {"slug": "edge", "label": "Edge", "status": "${{ needs.edge.result }}"},
+                      browser_entry("chromium", "Chromium", "CHROMIUM"),
+                      browser_entry("chrome", "Chrome", "CHROME"),
+                      browser_entry("firefox", "Firefox", "FIREFOX"),
+                      browser_entry("webkit", "WebKit (Safari)", "WEBKIT"),
+                      browser_entry("edge", "Edge", "EDGE"),
                   ]
 
-                  with open("pages-site/index.html") as f:
+                  run_date = datetime.now(timezone.utc).strftime("%-m/%-d/%Y at %H:%M UTC")
+
+                  with open(".github/hub-template/index.html") as f:
                       html = f.read()
 
-                  html = html.replace("REPORTS_JSON_PLACEHOLDER", json.dumps(reports))
+                  html = html.replace("__RUN_URL__", os.environ["RUN_URL"])
+                  html = html.replace("__RUN_DATE__", run_date)
+                  html = html.replace("__REPORTS_JSON__", json.dumps(reports))
 
                   with open("pages-site/index.html", "w") as f:
                       f.write(html)
