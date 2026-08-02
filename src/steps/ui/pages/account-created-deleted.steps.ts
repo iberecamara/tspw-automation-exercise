@@ -1,4 +1,4 @@
-import { SECOND_IN_MILISECONDS } from "@data/constants/constants";
+import { SECOND_IN_MILLISECONDS } from "@data/constants/constants";
 import { AccountCreatedDeletedPage } from "@pages/account-created-deleted.page";
 import { expect, Locator } from "@playwright/test";
 import { BaseSteps } from "@steps/base.steps";
@@ -26,7 +26,7 @@ export class AccountCreatedDeletedSteps extends BaseSteps {
       async () => {
         await this.accountCreatedDeletedPage.clickContinue();
         await this.accountCreatedDeletedPage.page.waitForLoadState("load", {
-          timeout: 15 * SECOND_IN_MILISECONDS,
+          timeout: 15 * SECOND_IN_MILLISECONDS,
         });
       },
     );

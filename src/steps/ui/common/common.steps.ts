@@ -1,4 +1,7 @@
-import { PAGES_TITLES, SECOND_IN_MILISECONDS } from "@data/constants/constants";
+import {
+  PAGES_TITLES,
+  SECOND_IN_MILLISECONDS,
+} from "@data/constants/constants";
 import { SitePages } from "@data/types/site-pages.type";
 import { BasePage } from "@pages.base/base.page";
 import { expect, Locator, Page } from "@playwright/test";
@@ -32,7 +35,7 @@ export class CommonSteps extends BaseSteps {
     waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
   }): Promise<void> {
     await this.page.goto("/", {
-      timeout: 30 * SECOND_IN_MILISECONDS,
+      timeout: 30 * SECOND_IN_MILLISECONDS,
       ...options,
     });
   }

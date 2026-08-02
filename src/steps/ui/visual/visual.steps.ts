@@ -1,4 +1,4 @@
-import { SECOND_IN_MILISECONDS } from "@data/constants/constants";
+import { SECOND_IN_MILLISECONDS } from "@data/constants/constants";
 import { SitePages } from "@data/types/site-pages.type";
 import { BaseSteps } from "@steps/base.steps";
 import { Locator, Page } from "playwright";
@@ -7,7 +7,7 @@ import { expect } from "playwright/test";
 export class VisualSteps extends BaseSteps {
   readonly page: Page;
   private readonly visualTimeoutConfig = {
-    timeout: 15 * SECOND_IN_MILISECONDS, // Applied specifically to the screenshot loop
+    timeout: 15 * SECOND_IN_MILLISECONDS,
   };
 
   constructor(page: Page) {

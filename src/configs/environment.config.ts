@@ -122,6 +122,7 @@ interface Viewport {
  * handful of values derived from them (e.g. the `*_API_URL` endpoints, built from `BASE_URL`).
  */
 export class Environment {
+  static readonly CI: boolean = process.env.CI ? true : false;
   static readonly WORKERS: number = envValues.WORKERS;
   static readonly RETRIES: number = envValues.RETRIES;
   static readonly HEADLESS: boolean = envValues.HEADLESS;

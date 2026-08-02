@@ -38,6 +38,7 @@ env:
     APPLICATION: Automation Exercise
     WORKERS: 4
     RETRIES: 2
+    SLOWMO: 300
     LOG_LINE_LENGTH: 100
     LOG_CONSOLE: true
     LOG_LEVEL: verbose

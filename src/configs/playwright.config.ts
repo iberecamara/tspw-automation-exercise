@@ -1,6 +1,6 @@
 import { Environment } from "@configs/environment.config";
 import { PATHS } from "@configs/paths";
-import { SECOND_IN_MILISECONDS } from "@data/constants/common.constants";
+import { SECOND_IN_MILLISECONDS } from "@data/constants/common.constants";
 import { SCREENSHOTS_FILEPATH } from "@files/screenshots/screenshots.filepath";
 import { defineConfig, devices } from "@playwright/test";
 import { getDateTime } from "@utils/datetime.utils";
@@ -30,9 +30,9 @@ const isSharded = Boolean(process.env.SHARD_INDEX);
  */
 export default defineConfig({
   testDir: "../tests/",
-  timeout: 90 * SECOND_IN_MILISECONDS,
+  timeout: 90 * SECOND_IN_MILLISECONDS,
   expect: {
-    timeout: 5 * SECOND_IN_MILISECONDS,
+    timeout: 5 * SECOND_IN_MILLISECONDS,
     toHaveScreenshot: {
       threshold: 0.2,
       maxDiffPixelRatio: 0.02,
@@ -87,7 +87,7 @@ export default defineConfig({
     baseURL: Environment.BASE_URL,
     testIdAttribute: "data-qa",
     ignoreHTTPSErrors: true,
-    actionTimeout: 5 * SECOND_IN_MILISECONDS,
+    actionTimeout: 5 * SECOND_IN_MILLISECONDS,
     screenshot: "only-on-failure",
     video: "retain-on-failure",
     trace: "retain-on-failure",

@@ -2,7 +2,7 @@
 export const BUTTON = "button";
 export const YES = "yes";
 export const NO = "no";
-export const SECOND_IN_MILISECONDS = 1000;
+export const SECOND_IN_MILLISECONDS = 1000;
 export const RUPEES = "Rs. ";
 export const CATEGORY_DELIMITER = " > ";
 export const PRODUCT_PREFIX = "product-";
