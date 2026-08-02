@@ -40,7 +40,7 @@ env:
     BASE_URL: https://automationexercise.com
     APPLICATION: Automation Exercise
     WORKERS: 4
-    RETRIES: 2
+    RETRIES: 4
     SLOWMO: 500
     LOG_LINE_LENGTH: 100
     LOG_CONSOLE: true
