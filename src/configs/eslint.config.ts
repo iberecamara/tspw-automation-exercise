@@ -74,7 +74,7 @@ export default defineConfig([
     // argument. TS specially allows omitting a `void`-typed parameter but
     // NOT an `undefined`-typed one, so `undefined` isn't a safe substitute
     // here — every use() call would have to become use(undefined).
-    files: ["src/fixtures/*.fixtures.ts"],
+    files: ["src/fixtures/*.fixtures.ts", "src/fixtures/fixtures.ts"],
     rules: {
       "@typescript-eslint/no-invalid-void-type": "off",
     },
