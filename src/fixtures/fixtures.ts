@@ -22,10 +22,13 @@ interface TestDelay {
 
 export const test = merged.extend<TestDelay>({
   delay: [
-    async ({ page }, use) => {
+    async ({ page }, use, testInfo) => {
       await use();
       if (Environment.CI) {
         await page.waitForTimeout(10 * SECOND_IN_MILLISECONDS);
+      }
+      if (testInfo.retry > 0) {
+        await page.waitForTimeout(testInfo.retry * 5 * SECOND_IN_MILLISECONDS);
       }
     },
     {
