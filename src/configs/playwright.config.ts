@@ -44,6 +44,12 @@ export default defineConfig({
   workers: Environment.WORKERS,
   globalTeardown: require.resolve(PATHS.GLOBAL_TEARDOWN_PATH),
   snapshotDir: SCREENSHOTS_FILEPATH,
+  // Nests every visual-regression baseline under a folder named for where it was captured
+  // ("local" | "docker" | "github" — see Environment.SNAPSHOT_ENV), since font rendering and
+  // anti-aliasing differ enough between a developer's machine, this project's Docker image, and
+  // the GitHub Actions runner image to produce false-positive diffs if they shared one baseline
+  // set. `npm run test:visual:update` picks the right folder automatically, wherever it's run.
+  snapshotPathTemplate: `{snapshotDir}/{testFileDir}/{testFileName}-snapshots/${Environment.SNAPSHOT_ENV}/{arg}{-projectName}{-platform}{ext}`,
   reporter: [
     ["line"],
     ...(isSharded

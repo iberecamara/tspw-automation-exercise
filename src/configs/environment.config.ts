@@ -33,6 +33,7 @@ interface EnvVars {
   SLOWMO: number;
   VIEWPORT_HEIGHT: number | null;
   VIEWPORT_WIDTH: number | null;
+  SNAPSHOT_ENV?: "local" | "docker" | "github";
 
   // Application variables
   APPLICATION: string;
@@ -63,6 +64,7 @@ const variables = {
   SLOWMO: Joi.number().integer().positive().empty("").default(0),
   VIEWPORT_HEIGHT: Joi.number().integer().positive().empty("").default(null),
   VIEWPORT_WIDTH: Joi.number().integer().positive().empty("").default(null),
+  SNAPSHOT_ENV: Joi.string().empty("").valid("local", "docker", "github"),
 
   // Application variables
   APPLICATION: Joi.string().required(),
@@ -123,6 +125,31 @@ interface Viewport {
  */
 export class Environment {
   static readonly CI: boolean = process.env.CI ? true : false;
+  /** True when running inside a GitHub Actions runner (set automatically by GitHub, not by us). */
+  static readonly RUNNING_IN_GITHUB_ACTIONS: boolean =
+    process.env.GITHUB_ACTIONS === "true";
+  /** True when running inside this project's Docker image (set via `ENV` in the Dockerfile). */
+  static readonly RUNNING_IN_DOCKER: boolean =
+    process.env.RUNNING_IN_DOCKER === "true";
+  /**
+   * Which set of visual-regression baselines this run should read from/write to. Font rendering
+   * and anti-aliasing differ enough between a local machine, this project's Docker image, and the
+   * GitHub Actions runner image to produce false-positive screenshot diffs across environments,
+   * so each keeps its own baselines (see `playwright.config.ts`'s `snapshotPathTemplate`, which
+   * nests screenshots under a folder named for this value, e.g.
+   * `home.visual.spec.ts-snapshots/docker/...`).
+   *
+   * Auto-detected from `RUNNING_IN_GITHUB_ACTIONS`/`RUNNING_IN_DOCKER` (GitHub takes priority, in
+   * case tests are ever run inside Docker from within a GitHub Actions job); can be overridden
+   * explicitly via the `SNAPSHOT_ENV` environment variable if needed.
+   */
+  static readonly SNAPSHOT_ENV: "local" | "docker" | "github" =
+    envValues.SNAPSHOT_ENV ??
+    (Environment.RUNNING_IN_GITHUB_ACTIONS
+      ? "github"
+      : Environment.RUNNING_IN_DOCKER
+        ? "docker"
+        : "local");
   static readonly WORKERS: number = envValues.WORKERS;
   static readonly RETRIES: number = envValues.RETRIES;
   static readonly HEADLESS: boolean = envValues.HEADLESS;

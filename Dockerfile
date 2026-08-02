@@ -14,9 +14,13 @@ FROM node:24-bookworm-slim
 # that files written into the bind-mounted artifacts/ folder end up owned by that user, not root.
 # An arbitrary UID with no /etc/passwd entry has no resolvable $HOME, which would otherwise make
 # Playwright unable to find the browser it installed at build time.
+# RUNNING_IN_DOCKER lets the framework (src/configs/environment.config.ts, Environment.SNAPSHOT_ENV)
+# detect it's executing inside this image, so visual regression tests read/write the "docker"
+# baseline set instead of "local" or "github" (see playwright.config.ts's snapshotPathTemplate).
 ENV CI=true \
     APPLICATION_ENVIRONMENT=dev \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    RUNNING_IN_DOCKER=true
 
 WORKDIR /app
 

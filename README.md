@@ -366,6 +366,40 @@ npm run clean:reports   # removes artifacts/reports/*
 npm run clean           # both of the above
 ```
 
+## Visual Regression
+
+Visual regression specs (`src/tests/ui/visual/*.visual.spec.ts`, tagged `@visual`) compare live screenshots against baseline PNGs stored under `src/files/screenshots/`.
+
+Font rendering and anti-aliasing differ enough between a developer's machine, this project's Docker image, and the GitHub Actions runner image to produce false-positive diffs if all three shared one baseline set. To avoid that, baselines are nested under a subfolder named for where they were captured — `local`, `docker`, or `github` — and each run automatically reads from and writes to the matching one via `Environment.SNAPSHOT_ENV` (`src/configs/environment.config.ts`) and `snapshotPathTemplate` (`src/configs/playwright.config.ts`):
+
+```
+src/files/screenshots/ui/visual/home.visual.spec.ts-snapshots/
+├── local/
+│   └── home-header-chromium-linux.png
+├── docker/
+│   └── home-header-chromium-linux.png
+└── github/
+    └── home-header-chromium-linux.png
+```
+
+Detection is automatic and needs no setup:
+
+| Where you run it | How it's detected |
+|---|---|
+| `npm run test:visual` / `npm test` on your machine | Neither of the below is set → `local` |
+| `npm run docker:*` (any Docker Compose command) | `RUNNING_IN_DOCKER=true`, set in the `Dockerfile` → `docker` |
+| The `playwright.yml`/`playwright-browser.yml` GitHub Actions workflows | `GITHUB_ACTIONS=true`, set automatically by GitHub → `github` |
+
+If you need to override this (e.g. to inspect what the Docker baselines look like from your local machine), set `SNAPSHOT_ENV=local|docker|github` in `.env` — see `.env.example`. If both `GITHUB_ACTIONS` and `RUNNING_IN_DOCKER` are set (Docker run from inside a GitHub Actions job), `github` takes priority.
+
+To (re)generate baselines for wherever you're currently running:
+
+```bash
+npm run test:visual:update
+```
+
+Run this once per environment whose baselines you need to (re)generate — e.g. once locally and once via `npm run docker:build && npm run docker:single -- --grep @visual --update-snapshot` for the Docker set — then commit the resulting PNGs.
+
 ## Linting & Formatting
 
 ESLint (flat config, `src/configs/eslint.config.mjs`) and Prettier are used to keep the codebase consistent:
