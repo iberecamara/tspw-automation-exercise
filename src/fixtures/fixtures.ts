@@ -25,7 +25,7 @@ export const test = merged.extend<TestDelay>({
     async ({ page }, use) => {
       await use();
       if (Environment.CI) {
-        await page.waitForTimeout(5 * SECOND_IN_MILLISECONDS);
+        await page.waitForTimeout(10 * SECOND_IN_MILLISECONDS);
       }
     },
     {

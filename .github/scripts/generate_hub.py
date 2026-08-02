@@ -4,9 +4,10 @@ Generate pages-site/index.html (the Allure report hub) from the
 
 Reads per-browser job status and test counts from environment variables
 set by the calling workflow step, and fills in the template placeholders:
-  __RUN_URL__      - link back to the GitHub Actions run
+  __RUN_URL__       - link back to the GitHub Actions run
   __RUN_DATE__      - human-readable UTC timestamp for this run
   __REPORTS_JSON__  - JSON array of per-browser report summaries
+  __TOTAL_RETRIES__ - sum of retried attempts across all browsers
 """
 
 import json
@@ -41,11 +42,13 @@ def browser_entry(slug, label, prefix):
         "passed": as_int(os.environ.get(f"{prefix}_PASSED")),
         "failed": as_int(os.environ.get(f"{prefix}_FAILED")),
         "skipped": as_int(os.environ.get(f"{prefix}_SKIPPED")),
+        "retries": as_int(os.environ.get(f"{prefix}_RETRIES")),
     }
 
 
 def main():
     reports = [browser_entry(slug, label, prefix) for slug, label, prefix in BROWSERS]
+    total_retries = sum(r["retries"] for r in reports)
     run_date = datetime.now(timezone.utc).strftime("%-m/%-d/%Y at %H:%M UTC")
 
     with open(TEMPLATE_PATH) as f:
@@ -54,6 +57,7 @@ def main():
     html = html.replace("__RUN_URL__", os.environ["RUN_URL"])
     html = html.replace("__RUN_DATE__", run_date)
     html = html.replace("__REPORTS_JSON__", json.dumps(reports))
+    html = html.replace("__TOTAL_RETRIES__", str(total_retries))
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w") as f:

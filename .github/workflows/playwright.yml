@@ -144,26 +144,31 @@ jobs:
                   CHROMIUM_PASSED: ${{ needs.chromium.outputs.passed }}
                   CHROMIUM_FAILED: ${{ needs.chromium.outputs.failed }}
                   CHROMIUM_SKIPPED: ${{ needs.chromium.outputs.skipped }}
+                  CHROMIUM_RETRIES: ${{ needs.chromium.outputs.retries }}
                   CHROME_STATUS: ${{ needs.chrome.result }}
                   CHROME_TOTAL: ${{ needs.chrome.outputs.total }}
                   CHROME_PASSED: ${{ needs.chrome.outputs.passed }}
                   CHROME_FAILED: ${{ needs.chrome.outputs.failed }}
                   CHROME_SKIPPED: ${{ needs.chrome.outputs.skipped }}
+                  CHROME_RETRIES: ${{ needs.chrome.outputs.retries }}
                   FIREFOX_STATUS: ${{ needs.firefox.result }}
                   FIREFOX_TOTAL: ${{ needs.firefox.outputs.total }}
                   FIREFOX_PASSED: ${{ needs.firefox.outputs.passed }}
                   FIREFOX_FAILED: ${{ needs.firefox.outputs.failed }}
                   FIREFOX_SKIPPED: ${{ needs.firefox.outputs.skipped }}
+                  FIREFOX_RETRIES: ${{ needs.firefox.outputs.retries }}
                   WEBKIT_STATUS: ${{ needs.webkit.result }}
                   WEBKIT_TOTAL: ${{ needs.webkit.outputs.total }}
                   WEBKIT_PASSED: ${{ needs.webkit.outputs.passed }}
                   WEBKIT_FAILED: ${{ needs.webkit.outputs.failed }}
                   WEBKIT_SKIPPED: ${{ needs.webkit.outputs.skipped }}
+                  WEBKIT_RETRIES: ${{ needs.webkit.outputs.retries }}
                   EDGE_STATUS: ${{ needs.edge.result }}
                   EDGE_TOTAL: ${{ needs.edge.outputs.total }}
                   EDGE_PASSED: ${{ needs.edge.outputs.passed }}
                   EDGE_FAILED: ${{ needs.edge.outputs.failed }}
                   EDGE_SKIPPED: ${{ needs.edge.outputs.skipped }}
+                  EDGE_RETRIES: ${{ needs.edge.outputs.retries }}
               run: python3 .github/scripts/generate_hub.py
 
             - name: Upload Allure Report Hub - Zipped File

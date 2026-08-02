@@ -128,6 +128,34 @@
             font-size: 0.88rem;
         }
 
+        .au-retries-summary {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin: -14px 0 24px;
+            padding: 6px 14px 6px 10px;
+            border-radius: 999px;
+            background: rgba(242, 184, 75, 0.12);
+            border: 1px solid rgba(242, 184, 75, 0.3);
+            color: var(--au-broken);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .au-retries-summary.visible {
+            display: inline-flex;
+        }
+
+        .au-retries-summary svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .au-retries-summary strong {
+            color: #ffffff;
+        }
+
         .au-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -373,6 +401,7 @@
     <main>
         <p class="au-page-title">Test Reports by Browser</p>
         <p class="au-page-sub">Select a browser to open its full Allure report for this run</p>
+        <div class="au-retries-summary" id="retries-summary"></div>
         <div class="au-grid" id="report-grid"></div>
     </main>
 
@@ -393,6 +422,13 @@
 
         const RUN_DATE = "__RUN_DATE__";
         const REPORTS = __REPORTS_JSON__;
+        const TOTAL_RETRIES = __TOTAL_RETRIES__;
+
+        const retriesSummary = document.getElementById('retries-summary');
+        if (TOTAL_RETRIES > 0) {
+            retriesSummary.classList.add('visible');
+            retriesSummary.innerHTML = `${ICONS.retry}<span><strong>${TOTAL_RETRIES}</strong> retried attempt${TOTAL_RETRIES === 1 ? '' : 's'} across all browsers this run</span>`;
+        }
 
         const grid = document.getElementById('report-grid');
 
@@ -401,6 +437,7 @@
             const passed = r.passed || 0;
             const failed = r.failed || 0;
             const skipped = r.skipped || 0;
+            const retries = r.retries || 0;
 
             let statusKey = 'skipped';
             if (total > 0) {
@@ -432,7 +469,7 @@
             </div>
             <div class="au-icon-row">
               <span class="au-icon-item">${ICONS.clipboard}${total}</span>
-              <span class="au-icon-item">${ICONS.retry}\u2013</span>
+              <span class="au-icon-item">${ICONS.retry}${retries}</span>
               <span class="au-icon-item">${ICONS.flaky}\u2013</span>
             </div>
           </div>
