@@ -77,6 +77,7 @@ export default defineConfig([
     files: ["src/fixtures/*.fixtures.ts", "src/fixtures/fixtures.ts"],
     rules: {
       "@typescript-eslint/no-invalid-void-type": "off",
+      "playwright/no-wait-for-timeout": "off",
     },
   },
 ]);

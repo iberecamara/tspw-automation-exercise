@@ -147,14 +147,14 @@ jobs:
               run: npm ci --prefer-offline
 
             - name: Download and merge Allure results from all shards
-              uses: actions/download-artifact@v6
+              uses: actions/download-artifact@v7
               with:
                   pattern: allure-results-${{ inputs.browser }}-*
                   path: artifacts/reports/allure/allure-results
                   merge-multiple: true
 
             - name: Download and merge logs from all shards
-              uses: actions/download-artifact@v6
+              uses: actions/download-artifact@v7
               with:
                   pattern: automation-logs-${{ inputs.browser }}-*
                   path: artifacts/logs
