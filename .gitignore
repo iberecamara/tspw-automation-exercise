@@ -12,3 +12,9 @@ node_modules/
 # Development playground test
 src/tests/dev/
 src/tests/**/dev.spec.ts
+# Ignore all files inside the download folder
+src/files/download/*
+# Do not ignore .ts files inside the download folder
+!src/files/download/*.ts
+# Ignore all files inside the visual/**/local folder
+src/screenshots/ui/visual/**/local/*

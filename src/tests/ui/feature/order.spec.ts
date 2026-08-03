@@ -261,7 +261,14 @@ test.describe(
 
     test(
       "Download Invoice after purchase order",
-      { tag: ["@SAMPLE-0025", "@TC-UI-24", "@user-register-checkout"] },
+      {
+        tag: [
+          "@SAMPLE-0025",
+          "@TC-UI-24",
+          "@user-register-checkout",
+          "@download",
+        ],
+      },
       async ({
         productApiSteps,
         homePage,

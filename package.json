@@ -28,7 +28,7 @@
         "docker:merge": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts merge",
         "docker:single": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts single",
         "docker:sharded": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts",
-        "docker:linux:cleanup": "sudo docker system prune -a --volumes -f",
+        "docker:linux:cleanup": "sudo docker rm -f $(docker ps -aq); sudo docker rmi -f $(docker images -aq); sudo docker system prune -a --volumes -f",
         "report:merge": "npm run report:allure:export && npm run report:blob:flatten && npm run report:html:merge && npm run report:cleanup:shards",
         "report:blob:flatten": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts flatten-blobs artifacts/reports/blob",
         "report:cleanup:shards": "rimraf artifacts/reports/playwright/shard-* artifacts/reports/blob",
