@@ -55,12 +55,12 @@ export default defineConfig({
     ...(isSharded
       ? [["blob", { outputDir: PATHS.BLOB_REPORTS_SHARD_DIR }] as const]
       : [
-        [
-          "html",
-          { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
-        ] as const,
-        ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
-      ]),
+          [
+            "html",
+            { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
+          ] as const,
+          ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
+        ]),
     [
       "allure-playwright",
       {
