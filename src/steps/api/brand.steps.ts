@@ -36,24 +36,19 @@ export class BrandApiSteps extends BaseSteps {
     await this.step(
       "Validate raw response from Get All Brands endpoint",
       () => {
-        expect
-          .soft(
-            response.statusCode,
-            "Status Code (from response) for Get All Brands should be 200",
-          )
-          .toBe(200);
-        expect
-          .soft(
-            response.statusText,
-            `Status Text (from response) for Get All Brands should be 'OK'`,
-          )
-          .toBe("OK");
-        expect
-          .soft(
-            response.body.responseCode,
-            "Response Code (from body) for Get All Brands should be 200",
-          )
-          .toBe(200);
+        // Hard gate: confirms the call actually succeeded before asserting on body shape below.
+        expect(
+          response.statusCode,
+          "Status Code (from response) for Get All Brands should be 200",
+        ).toBe(200);
+        expect(
+          response.statusText,
+          `Status Text (from response) for Get All Brands should be 'OK'`,
+        ).toBe("OK");
+        expect(
+          response.body.responseCode,
+          "Response Code (from body) for Get All Brands should be 200",
+        ).toBe(200);
         expect
           .soft(
             response.body,
@@ -87,12 +82,10 @@ export class BrandApiSteps extends BaseSteps {
     await this.step(
       "Validate Method Not Allowed - PUT - Get All Brands endpoint",
       () => {
-        expect
-          .soft(
-            response.body.responseCode,
-            "Response Code (from body) for PUT into Get All Brands should be 405",
-          )
-          .toBe(405);
+        expect(
+          response.body.responseCode,
+          "Response Code (from body) for PUT into Get All Brands should be 405",
+        ).toBe(405);
         const expectedMessage = "This request method is not supported.";
         expect
           .soft(

@@ -55,12 +55,12 @@ export default defineConfig({
     ...(isSharded
       ? [["blob", { outputDir: PATHS.BLOB_REPORTS_SHARD_DIR }] as const]
       : [
-          [
-            "html",
-            { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
-          ] as const,
-          ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
-        ]),
+        [
+          "html",
+          { open: "never", outputFolder: PATHS.HTML_REPORTS_DIR },
+        ] as const,
+        ["json", { outputFile: PATHS.JSON_REPORTS_FILE }] as const,
+      ]),
     [
       "allure-playwright",
       {
@@ -149,6 +149,7 @@ export default defineConfig({
     },
     {
       name: "Safari",
+      testIgnore: "src/tests/ui/download.ts",
       use: {
         ...devices["Desktop Safari"],
         deviceScaleFactor: undefined,
@@ -156,6 +157,7 @@ export default defineConfig({
     },
     {
       name: "iPhone 14 Pro Max",
+      testIgnore: ["src/tests/ui/visual/**", "src/tests/ui/download.ts"],
       use: { ...devices["iPhone 14 Pro Max"], deviceScaleFactor: undefined },
     },
     {

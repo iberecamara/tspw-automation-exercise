@@ -44,13 +44,18 @@ function isShardCountArg(arg: string | undefined): boolean {
  */
 export function extractPassthroughArgs(): string[] {
   const args = process.argv.slice(2);
-  if (args.length === 0) return [];
+
+  if (args.length === 0) {
+    return [];
+  }
 
   const [first, ...rest] = args;
+
   if (SUBCOMMANDS.has(first as string) || isShardCountArg(first)) {
-    return rest;
+    return rest[0] === "--" ? rest.slice(1) : rest;
   }
-  return args;
+
+  return args[0] === "--" ? args.slice(1) : args;
 }
 
 export function parseShardCount(): number {

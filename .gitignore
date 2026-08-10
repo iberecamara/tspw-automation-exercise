@@ -1,17 +1,11 @@
 # Playwright
 node_modules/
-/test-results/
-/playwright-report/
-/blob-report/
 /playwright/.cache/
 /playwright/.auth/
 # Test artifacts
 /artifacts/
 # Environment settings
 .env
-# Development playground test
-src/tests/dev/
-src/tests/**/dev.spec.ts
 # Ignore all files inside the download folder
 src/files/download/*
 # Do not ignore .ts files inside the download folder

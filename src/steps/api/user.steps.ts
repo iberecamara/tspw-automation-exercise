@@ -68,12 +68,10 @@ export class UserApiSteps extends BaseSteps {
   /** Validates a create-account response has status `201` and the expected success message. */
   async validateCreateAccount(response: CustomResponseType): Promise<void> {
     await this.step("Validate Create User response", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Create User should be 201",
-        )
-        .toBe(201);
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Create User should be 201",
+      ).toBe(201);
       const expectedMessage = "User created!";
       expect
         .soft(
@@ -87,12 +85,10 @@ export class UserApiSteps extends BaseSteps {
   /** Validates a delete-account response has status `200` and the expected success message. */
   async validateDeleteAccount(response: CustomResponseType): Promise<void> {
     await this.step("Validate Delete User response", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Delete User should be 200",
-        )
-        .toBe(200);
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Delete User should be 200",
+      ).toBe(200);
       const expectedMessage = "Account deleted!";
       expect
         .soft(
@@ -108,12 +104,10 @@ export class UserApiSteps extends BaseSteps {
     response: CustomResponseType,
   ): Promise<void> {
     await this.step("Validate Update User response", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Update User should be 200",
-        )
-        .toBe(200);
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Update User should be 200",
+      ).toBe(200);
       const expectedMessage = "User updated!";
       expect
         .soft(
@@ -229,12 +223,12 @@ export class UserApiSteps extends BaseSteps {
     user: UserType,
   ): Promise<void> {
     await this.step("Validate Get User by Email response and data", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Get User by Email should be 200",
-        )
-        .toBe(200);
+      // Hard gate: confirms the call actually succeeded before asserting on the 'user' field
+      // checks below, which assume response.body.user is populated.
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Get User by Email should be 200",
+      ).toBe(200);
       expect
         .soft(
           response.body,

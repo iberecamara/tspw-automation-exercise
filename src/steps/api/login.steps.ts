@@ -33,12 +33,10 @@ export class LoginApiSteps extends BaseSteps {
   /** Validates a response for an existing user's credentials has the API's `200 - "User exists!"` body. */
   async validateUserExists(response: CustomResponseType): Promise<void> {
     await this.step("Validate User Exists - Verify Login endpoint", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Verify Login where user exists should be 200",
-        )
-        .toBe(200);
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Verify Login where user exists should be 200",
+      ).toBe(200);
       const expectedMessage = "User exists!";
       expect
         .soft(
@@ -52,12 +50,10 @@ export class LoginApiSteps extends BaseSteps {
   /** Validates a response for non-existent credentials has the API's `404 - "User not found!"` body. */
   async validateUserNotFound(response: CustomResponseType): Promise<void> {
     await this.step("Validate User Not Found - Verify Login endpoint", () => {
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Verify Login where user does not exist should be 404",
-        )
-        .toBe(404);
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Verify Login where user does not exist should be 404",
+      ).toBe(404);
       const expectedMessage = "User not found!";
       expect
         .soft(
@@ -73,12 +69,10 @@ export class LoginApiSteps extends BaseSteps {
     await this.step(
       "Validate Missing Parameter - Password - Verify Login endpoint",
       () => {
-        expect
-          .soft(
-            response.body.responseCode,
-            "Response Code (from body) for Missing Parameter - Password - Verify Login should be 400",
-          )
-          .toBe(400);
+        expect(
+          response.body.responseCode,
+          "Response Code (from body) for Missing Parameter - Password - Verify Login should be 400",
+        ).toBe(400);
         const expectedMessage =
           "Bad request, email or password parameter is missing in POST request.";
         expect
@@ -96,12 +90,10 @@ export class LoginApiSteps extends BaseSteps {
     await this.step(
       "Validate Method Not Allowed - DELETE - Verify Login endpoint",
       () => {
-        expect
-          .soft(
-            response.body.responseCode,
-            "Response Code (from body) for DELETE into Verify Login should be 405",
-          )
-          .toBe(405);
+        expect(
+          response.body.responseCode,
+          "Response Code (from body) for DELETE into Verify Login should be 405",
+        ).toBe(405);
         const expectedMessage = "This request method is not supported.";
         expect
           .soft(
