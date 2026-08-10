@@ -42,6 +42,8 @@ env:
     WORKERS: 4
     RETRIES: 4
     SLOWMO: 500
+    TEST_DELAY: 10
+    RETRY_DELAY: 5
     LOG_LINE_LENGTH: 100
     LOG_CONSOLE: true
     LOG_LEVEL: verbose
