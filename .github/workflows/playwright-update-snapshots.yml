@@ -57,7 +57,7 @@ jobs:
             - name: Update @visual snapshots
               id: update-snapshots
               run: |
-                  npm test -- --update-snapshots --grep '(^|[[:space:]])@visual([[:space:]]|$)'
+                  run: npm test -- --update-snapshots --grep='(^|\\s)@visual(\\s|$)'
               continue-on-error: true
 
             - name: Check for snapshot changes
