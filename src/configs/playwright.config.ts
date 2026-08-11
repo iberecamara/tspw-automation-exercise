@@ -125,17 +125,6 @@ export default defineConfig({
       },
     },
     {
-      name: "Firefox",
-      use: {
-        ...devices["Desktop Firefox"],
-        viewport: Environment.VIEWPORT,
-        deviceScaleFactor: undefined,
-        launchOptions: {
-          args: Environment.HEADLESS ? [] : ["-width=1920", "-height=1080"],
-        },
-      },
-    },
-    {
       name: "Edge",
       use: {
         ...devices["Desktop Edge"],
@@ -148,8 +137,20 @@ export default defineConfig({
       },
     },
     {
+      name: "Firefox",
+      testIgnore: ["src/tests/ui/visual/**"],
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: Environment.VIEWPORT,
+        deviceScaleFactor: undefined,
+        launchOptions: {
+          args: Environment.HEADLESS ? [] : ["-width=1920", "-height=1080"],
+        },
+      },
+    },
+    {
       name: "Safari",
-      testIgnore: "src/tests/ui/download.ts",
+      testIgnore: ["src/tests/ui/visual/**", "src/tests/ui/download.ts"],
       use: {
         ...devices["Desktop Safari"],
         deviceScaleFactor: undefined,
@@ -162,6 +163,7 @@ export default defineConfig({
     },
     {
       name: "Samsung Galaxy S24 Ultra",
+      testIgnore: ["src/tests/ui/visual/**"],
       use: { ...devices["Galaxy S24 Ultra"] },
     },
   ],

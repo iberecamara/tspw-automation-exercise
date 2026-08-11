@@ -22,7 +22,7 @@
         "test:pwui:api": "npm test -- --ui --grep @api",
         "test:visual": "npm test -- --grep \"@visual\\b\"",
         "test:pwui:visual": "npm run test:visual -- --ui",
-        "test:visual:update": "npm run test:visual -- --update-snapshot",
+        "test:visual:update": "npm run test:visual -- --update-snapshots",
         "docker:build": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts build",
         "docker:merge": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts merge",
         "docker:single": "ts-node -r tsconfig-paths/register src/utils/docker.compose.utils.ts single",
@@ -43,10 +43,11 @@
         "clean": "npm run clean:logs && npm run clean:reports",
         "lint": "eslint src --config src/configs/eslint.config.ts .",
         "lint:fix": "eslint src --fix --config src/configs/eslint.config.ts .",
-        "format:check": "prettier --check \"src/**/*.ts\" \"src/**/*.mjs\"",
-        "format:fix": "prettier --write \"src/**/*.ts\" \"src/**/*.mjs\"",
+        "prettier": "prettier --check \"src/**/*.ts\" \"src/**/*.mjs\"",
+        "prettier:fix": "prettier --write \"src/**/*.ts\" \"src/**/*.mjs\"",
         "typecheck": "tsc --noEmit",
-        "codestandards": "npm run typecheck && npm run format:check && npm run lint"
+        "codestandards": "npm run typecheck && npm run prettier && npm run lint",
+        "codestandards:fix": "npm run typecheck && npm run lint:fix && npm run prettier:fix"
     },
     "keywords": [],
     "author": "Iberê Camara",
