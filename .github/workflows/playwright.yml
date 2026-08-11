@@ -68,13 +68,13 @@ jobs:
             install_pkg: firefox
 
     webkit:
-        name: WebKit (Safari)
+        name: Safari
         needs: firefox
         if: ${{ !cancelled() }}
         uses: ./.github/workflows/playwright-browser.yml
         with:
             browser: webkit
-            script: test:webkit
+            script: test:safari
             install_pkg: webkit
 
     edge:
