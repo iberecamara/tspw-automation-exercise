@@ -1,4 +1,7 @@
-import { PAGES_TITLES, SECOND_IN_MILISECONDS } from "@data/constants/constants";
+import {
+  PAGES_TITLES,
+  SECOND_IN_MILLISECONDS,
+} from "@data/constants/constants";
 import { SitePages } from "@data/types/site-pages.type";
 import { BasePage } from "@pages.base/base.page";
 import { expect, Locator, Page } from "@playwright/test";
@@ -32,7 +35,7 @@ export class CommonSteps extends BaseSteps {
     waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
   }): Promise<void> {
     await this.page.goto("/", {
-      timeout: 30 * SECOND_IN_MILISECONDS,
+      timeout: 30 * SECOND_IN_MILLISECONDS,
       ...options,
     });
   }
@@ -72,18 +75,21 @@ export class CommonSteps extends BaseSteps {
   /**
    * Validates the browser tab's title matches the expected title for a known site page.
    *
+   * @remarks Hard gate assertion (not `expect.soft`): this is the "did the page actually
+   * navigate" checkpoint used after most navigation actions, so a failure here should stop the
+   * test immediately rather than let it wander through subsequent page-specific steps on the
+   * wrong page.
+   *
    * @param sitePage - Which page's expected title (from {@link PAGES_TITLES}) to assert against.
    */
   async validateTitle(sitePage: SitePages): Promise<void> {
     await this.step(
       `Validate that application ${sitePage} page have the expected title`,
       async () => {
-        await expect
-          .soft(
-            this.page,
-            `${sitePage} page should have the expected title: ${PAGES_TITLES[sitePage]} `,
-          )
-          .toHaveTitle(PAGES_TITLES[sitePage]);
+        await expect(
+          this.page,
+          `${sitePage} page should have the expected title: ${PAGES_TITLES[sitePage]} `,
+        ).toHaveTitle(PAGES_TITLES[sitePage]);
       },
     );
   }
@@ -92,6 +98,11 @@ export class CommonSteps extends BaseSteps {
    * Validates the browser tab's title matches an explicitly given title, for pages not covered
    * by {@link SitePages}/{@link PAGES_TITLES}.
    *
+   * @remarks Hard gate assertion (not `expect.soft`): this is the "did the page actually
+   * navigate" checkpoint used after most navigation actions, so a failure here should stop the
+   * test immediately rather than let it wander through subsequent page-specific steps on the
+   * wrong page.
+   *
    * @param pageName - Readable page name, used only in the step/log/failure-message text.
    * @param title - The exact expected title.
    */
@@ -99,12 +110,10 @@ export class CommonSteps extends BaseSteps {
     await this.step(
       `Validate that application ${pageName} page have the expected title`,
       async () => {
-        await expect
-          .soft(
-            this.page,
-            `${pageName} page should have the expected title: ${title} `,
-          )
-          .toHaveTitle(title);
+        await expect(
+          this.page,
+          `${pageName} page should have the expected title: ${title} `,
+        ).toHaveTitle(title);
       },
     );
   }

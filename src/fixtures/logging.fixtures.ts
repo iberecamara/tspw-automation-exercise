@@ -32,6 +32,15 @@ export const test = base.extend<LoggingFixtures>({
     async ({ logger }, use, testInfo: TestInfo) => {
       logger.info("*".repeat(Environment.LOG_LINE_LENGTH));
       logger.info(NEWLINE);
+      if (Environment.TEST_DELAY > 0) {
+        logger.info(`Will wait Test Delay: ${Environment.TEST_DELAY} seconds`);
+      }
+      if (testInfo.retry > 0 && Environment.RETRY_DELAY > 0) {
+        logger.info(
+          `Will wait Test Retry Delay: ${testInfo.retry * Environment.RETRY_DELAY} seconds`,
+        );
+      }
+      logger.info(`Test Project: ${testInfo.project.name}`);
       logger.info(`Starting test: ${testInfo.title}`);
       logger.info(
         `Test tags: ${testInfo.tags.length > 0 ? testInfo.tags.join(", ") : "none"}`,

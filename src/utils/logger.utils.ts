@@ -1,5 +1,5 @@
 import { Environment } from "@configs/environment.config";
-import { EMPTY } from "@data/constants/string.constants";
+import { EMPTY, SPACE, UNDERLINE } from "@data/constants/constants";
 import { getDateTime } from "@utils/datetime.utils";
 import * as fs from "fs";
 import { TransformableInfo } from "logform";
@@ -171,7 +171,10 @@ export class TestAutomationLogger {
           path.basename(logFile),
         );
         const shardSuffix = TestAutomationLogger.getShardSuffix();
-        const outputFileName = `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`;
+        const project = TestAutomationLogger.extractProject(block);
+        const outputFileName = project
+          ? `${executionTag}-test-automation-${project}-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`
+          : `${executionTag}-test-automation-${Environment.APPLICATION_ENVIRONMENT}${shardSuffix}-${timestamp}.log`;
         fs.writeFileSync(
           path.join(outputDirectory, outputFileName),
           block,
@@ -181,12 +184,6 @@ export class TestAutomationLogger {
     }
 
     await TestAutomationLogger.removeTempFiles();
-
-    // resolvedSourceDirectory only differs from outputDirectory when sharded; clean up the
-    // now-empty shard-<N> directory so it doesn't linger next to the shared split output.
-    if (sourceDirectory !== outputDirectory) {
-      await fs.promises.rm(sourceDirectory, { recursive: true, force: true });
-    }
   }
 
   /**
@@ -199,6 +196,16 @@ export class TestAutomationLogger {
     await TestAutomationLogger.removeTempFilesFromDirectory(
       path.resolve(TestAutomationLogger.resolveLogDirectory()),
     );
+
+    const sourceDirectory = path.resolve(
+      TestAutomationLogger.resolveLogDirectory(),
+    );
+    const outputDirectory = path.resolve(
+      TestAutomationLogger.resolveLogBaseDirectory(),
+    );
+    if (sourceDirectory !== outputDirectory) {
+      await fs.promises.rm(sourceDirectory, { recursive: true, force: true });
+    }
   }
 
   /**
@@ -440,6 +447,12 @@ export class TestAutomationLogger {
       content.match(TAGGED_EXECUTION_PATTERN) ??
       content.match(BARE_EXECUTION_PATTERN);
     return match ? match[0].replace(/^@/, EMPTY) : EMPTY;
+  }
+
+  private static extractProject(content: string): string {
+    const regex = /(?<=Test Project:\s).+$/m;
+    const match = content.match(regex);
+    return match ? match[0].toLowerCase().replaceAll(SPACE, UNDERLINE) : EMPTY;
   }
 
   /** Returns whether a block has any content beyond its `*`/`#` marker lines — guards against writing out an effectively-empty split file. */

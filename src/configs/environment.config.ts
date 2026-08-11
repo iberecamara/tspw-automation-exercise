@@ -26,22 +26,25 @@ config({
 
 /** Shape of every environment variable this framework reads, after Joi validation/defaulting. */
 interface EnvVars {
+  // Sharding variables
+  SHARD_INDEX: string;
+  SHARD_TOTAL: string;
+
   // Playwright variables
   WORKERS: number;
   RETRIES: number;
   HEADLESS: boolean;
   SLOWMO: number;
+  TEST_DELAY: number;
+  RETRY_DELAY: number;
   VIEWPORT_HEIGHT: number | null;
   VIEWPORT_WIDTH: number | null;
+  SNAPSHOT_ENV?: "local" | "docker" | "github";
 
   // Application variables
   APPLICATION: string;
   APPLICATION_ENVIRONMENT?: "local" | "dev" | "qa" | "stg" | "uat" | "prd";
   BASE_URL: string;
-
-  // Sharding variables
-  SHARD_INDEX: string;
-  SHARD_TOTAL: string;
 
   // Logger variables
   LOG_CONSOLE: boolean;
@@ -56,13 +59,20 @@ interface EnvVars {
 }
 
 const variables = {
+  // Sharding variables (set by CI when the suite is split across Playwright shards)
+  SHARD_INDEX: Joi.string().allow("").empty("").default(""),
+  SHARD_TOTAL: Joi.string().allow("").empty("").default("1"),
+
   // Playwright variables
   WORKERS: Joi.number().integer().positive().empty("").default(1),
   RETRIES: Joi.number().integer().positive().empty("").default(0),
   HEADLESS: Joi.boolean().empty("").default(true),
   SLOWMO: Joi.number().integer().positive().empty("").default(0),
+  TEST_DELAY: Joi.number().integer().positive().empty("").default(0),
+  RETRY_DELAY: Joi.number().integer().positive().empty("").default(0),
   VIEWPORT_HEIGHT: Joi.number().integer().positive().empty("").default(null),
   VIEWPORT_WIDTH: Joi.number().integer().positive().empty("").default(null),
+  SNAPSHOT_ENV: Joi.string().empty("").valid("local", "docker", "github"),
 
   // Application variables
   APPLICATION: Joi.string().required(),
@@ -70,10 +80,6 @@ const variables = {
     .empty("")
     .valid("local", "dev", "qa", "stg", "uat", "prd"),
   BASE_URL: Joi.string().uri().required(),
-
-  // Sharding variables (set by CI when the suite is split across Playwright shards)
-  SHARD_INDEX: Joi.string().allow("").empty("").default(""),
-  SHARD_TOTAL: Joi.string().allow("").empty("").default("1"),
 
   // Logger variables
   LOG_CONSOLE: Joi.boolean().empty("").default(false),
@@ -122,10 +128,41 @@ interface Viewport {
  * handful of values derived from them (e.g. the `*_API_URL` endpoints, built from `BASE_URL`).
  */
 export class Environment {
+  // CI/CD
+  static readonly CI: boolean = process.env.CI ? true : false;
+  /** True when running inside a GitHub Actions runner (set automatically by GitHub, not by us). */
+  static readonly RUNNING_IN_GITHUB_ACTIONS: boolean =
+    process.env.GITHUB_ACTIONS === "true";
+  /** True when running inside this project's Docker image (set via `ENV` in the Dockerfile). */
+  static readonly RUNNING_IN_DOCKER: boolean =
+    process.env.RUNNING_IN_DOCKER === "true";
+  /**
+   * Which set of visual-regression baselines this run should read from/write to. Font rendering
+   * and anti-aliasing differ enough between a local machine, this project's Docker image, and the
+   * GitHub Actions runner image to produce false-positive screenshot diffs across environments,
+   * so each keeps its own baselines (see `playwright.config.ts`'s `snapshotPathTemplate`, which
+   * nests screenshots under a folder named for this value, e.g.
+   * `home.visual.spec.ts-snapshots/docker/...`).
+   *
+   * Auto-detected from `RUNNING_IN_GITHUB_ACTIONS`/`RUNNING_IN_DOCKER` (GitHub takes priority, in
+   * case tests are ever run inside Docker from within a GitHub Actions job); can be overridden
+   * explicitly via the `SNAPSHOT_ENV` environment variable if needed.
+   */
+  static readonly SNAPSHOT_ENV: "local" | "docker" | "github" =
+    envValues.SNAPSHOT_ENV ??
+    (Environment.RUNNING_IN_GITHUB_ACTIONS
+      ? "github"
+      : Environment.RUNNING_IN_DOCKER
+        ? "docker"
+        : "local");
+
+  // Playwright
   static readonly WORKERS: number = envValues.WORKERS;
   static readonly RETRIES: number = envValues.RETRIES;
   static readonly HEADLESS: boolean = envValues.HEADLESS;
   static readonly SLOWMO: number = envValues.SLOWMO;
+  static readonly TEST_DELAY: number = envValues.TEST_DELAY;
+  static readonly RETRY_DELAY: number = envValues.RETRY_DELAY;
   static readonly VIEWPORT: Viewport | null =
     envValues.VIEWPORT_HEIGHT && envValues.VIEWPORT_WIDTH
       ? {
@@ -133,14 +170,13 @@ export class Environment {
           width: envValues.VIEWPORT_WIDTH,
         }
       : null;
-
-  static readonly APPLICATION: string = envValues.APPLICATION;
-  static readonly APPLICATION_ENVIRONMENT: string =
-    envValues.APPLICATION_ENVIRONMENT ?? "dev";
-
   static readonly SHARD_INDEX: string = envValues.SHARD_INDEX;
   static readonly SHARD_TOTAL: string = envValues.SHARD_TOTAL;
 
+  // Application
+  static readonly APPLICATION: string = envValues.APPLICATION;
+  static readonly APPLICATION_ENVIRONMENT: string =
+    envValues.APPLICATION_ENVIRONMENT ?? "dev";
   static readonly BASE_URL: string = envValues.BASE_URL;
   static readonly BASE_API_URL: string = `${Environment.BASE_URL}/api`;
   static readonly CREATE_ACCOUNT_API_URL: string = `${Environment.BASE_API_URL}/createAccount`;
@@ -152,12 +188,14 @@ export class Environment {
   static readonly BRAND_LIST_API_URL: string = `${Environment.BASE_API_URL}/brandsList`;
   static readonly VERIFY_LOGIN_API_URL: string = `${Environment.BASE_API_URL}/verifyLogin`;
 
+  // Logging
   static readonly LOG_CONSOLE: boolean = envValues.LOG_CONSOLE;
   static readonly LOG_TYPE: string = envValues.LOG_TYPE;
   static readonly LOG_LEVEL: string = envValues.LOG_LEVEL;
   static readonly LOG_TIMESTAMP_FORMAT: string = envValues.LOG_TIMESTAMP_FORMAT;
   static readonly LOG_LINE_LENGTH: number = envValues.LOG_LINE_LENGTH;
 
+  // Project
   static readonly JIRA_BOARD: string = envValues.JIRA_BOARD ?? "";
   /** The Jira board key formatted as a Playwright tag prefix, e.g. `@SAMPLE`. */
   static readonly PROJECT_TAG: string = `@${Environment.JIRA_BOARD}`;
@@ -168,6 +206,7 @@ export class Environment {
     return `${Environment.PROJECT_TAG}-${id}`;
   };
 
+  // Miscellaneous
   static readonly ALLURE_REPORT_REMOVE_STATUS: Status =
     envValues.ALLURE_REPORT_REMOVE_STATUS;
 }

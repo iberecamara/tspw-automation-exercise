@@ -1,195 +1,204 @@
-name: Vanilla Playwright Test Automation Framework for Automation Exercise website
+name: Vanilla Playwright Test Automation Framework for Automation Exercise website - All Browsers (Sequential)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-env:
-  BASE_URL: https://automationexercise.com
-  APPLICATION: Automation Exercise
-  WORKERS: 4
-  RETRIES: 2
-  LOG_LINE_LENGTH: 100
-  LOG_CONSOLE: true
-  LOG_LEVEL: verbose
-  HEADLESS: true
-  JIRA_BOARD: SAMPLE
-  SHARDS_TOTAL: 4
+    group: "pages"
+    cancel-in-progress: false
 
 jobs:
-  static-checks:
-    name: Type check, lint, and format check
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
+    static-checks:
+        name: Type check, lint, and format check
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci --prefer-offline
+
+            - name: Run type check, lint, and format check
+              run: npm run codestandards
+
+    chromium:
+        name: Chromium
+        needs: static-checks
+        uses: ./.github/workflows/playwright-browser.yml
         with:
-          node-version: 24
-          cache: npm
+            browser: chromium
+            script: test:chromium
+            install_pkg: chromium
 
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Run type check, lint, and format check
-        run: npm run codestandards
-  test:
-    name: Test (shard ${{ matrix.shardIndex }}/4)
-    needs: static-checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        shardIndex: [1, 2, 3, 4]
-    env:
-      SHARD_INDEX: ${{ matrix.shardIndex }}
-      SHARD_TOTAL: 4
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v5
-        id: pw-cache
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-
-      - name: Install Playwright OS deps only
-        run: npx playwright install-deps
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-
-      - name: Run Tests (shard ${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }})
-        id: run-tests
-        run: npm test -- --shard=${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }}
-        continue-on-error: true
-
-      - name: Upload raw Allure results (for merging)
-        uses: actions/upload-artifact@v7
+    chrome:
+        name: Chrome
+        needs: chromium
         if: ${{ !cancelled() }}
+        uses: ./.github/workflows/playwright-browser.yml
         with:
-          name: allure-results-shard-${{ matrix.shardIndex }}
-          path: artifacts/reports/allure/allure-results
-          retention-days: 30
-          if-no-files-found: warn
+            browser: chrome
+            script: test:chrome
+            install_pkg: chrome
+            cache_extra_path: "/opt/google/chrome"
 
-      - name: Upload logs (for merging)
-        uses: actions/upload-artifact@v7
+    firefox:
+        name: Firefox
+        needs: chrome
         if: ${{ !cancelled() }}
+        uses: ./.github/workflows/playwright-browser.yml
         with:
-          name: automation-logs-shard-${{ matrix.shardIndex }}
-          path: artifacts/logs/**/**/*.log
-          retention-days: 30
-          if-no-files-found: warn
+            browser: firefox
+            script: test:firefox
+            install_pkg: firefox
 
-      - name: Fail job if tests failed
-        if: steps.run-tests.outcome == 'failure'
-        run: |
-          echo "::error::Test suite failed for shard ${{ matrix.shardIndex }}/${{ env.SHARDS_TOTAL }}. See Allure Report/logs artifacts for details."
-          exit 1
-
-  merge-reports:
-    name: Merge logs and generate single-file Allure Report
-    needs: test
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci --prefer-offline
-
-      - name: Download and merge Allure results from all shards
-        uses: actions/download-artifact@v6
-        with:
-          pattern: allure-results-*
-          path: artifacts/reports/allure/allure-results
-          merge-multiple: true
-
-      - name: Download and merge logs from all shards
-        uses: actions/download-artifact@v6
-        with:
-          pattern: automation-logs-*
-          path: artifacts/logs
-          merge-multiple: true
-
-      - name: Generate single file Allure Report (all shards combined)
-        run: npm run report:allure:export
-
-      - name: Upload Allure Report - Zipped File
-        uses: actions/upload-artifact@v7
+    webkit:
+        name: Safari
+        needs: firefox
         if: ${{ !cancelled() }}
+        uses: ./.github/workflows/playwright-browser.yml
         with:
-          name: Allure Report
-          path: artifacts/reports/allure/allure-report-single
-          retention-days: 30
-          overwrite: true
-          if-no-files-found: warn
+            browser: webkit
+            script: test:safari
+            install_pkg: webkit
 
-      - name: Upload logs
-        uses: actions/upload-artifact@v7
+    edge:
+        name: Edge
+        needs: webkit
         if: ${{ !cancelled() }}
+        uses: ./.github/workflows/playwright-browser.yml
         with:
-          name: Automation Logs
-          path: artifacts/logs/**/**/*.log
-          retention-days: 30
-          if-no-files-found: warn
+            browser: edge
+            script: test:edge
+            install_pkg: msedge
+            cache_extra_path: "/opt/microsoft/msedge"
 
-      - name: Upload Report for Pages (build-time)
-        uses: actions/upload-pages-artifact@v4
+    build-hub:
+        name: Build Allure hub and assemble Pages site
+        needs: [chromium, chrome, firefox, webkit, edge]
         if: ${{ !cancelled() }}
-        with:
-          path: artifacts/reports/allure/allure-report-single
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v7
 
-  deploy:
-    needs: merge-reports
-    if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
+            - name: Create site layout
+              run: mkdir -p pages-site
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+            - name: Download Chromium report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-chromium
+                  path: pages-site/chromium
+
+            - name: Download Chrome report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-chrome
+                  path: pages-site/chrome
+
+            - name: Download Firefox report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-firefox
+                  path: pages-site/firefox
+
+            - name: Download WebKit report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-webkit
+                  path: pages-site/webkit
+
+            - name: Download Edge report
+              uses: actions/download-artifact@v6
+              continue-on-error: true
+              with:
+                  name: allure-report-edge
+                  path: pages-site/edge
+
+            - name: Generate hub index page from template
+              env:
+                  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                  CHROMIUM_STATUS: ${{ needs.chromium.result }}
+                  CHROMIUM_TOTAL: ${{ needs.chromium.outputs.total }}
+                  CHROMIUM_PASSED: ${{ needs.chromium.outputs.passed }}
+                  CHROMIUM_FAILED: ${{ needs.chromium.outputs.failed }}
+                  CHROMIUM_SKIPPED: ${{ needs.chromium.outputs.skipped }}
+                  CHROMIUM_RETRIES: ${{ needs.chromium.outputs.retries }}
+                  CHROME_STATUS: ${{ needs.chrome.result }}
+                  CHROME_TOTAL: ${{ needs.chrome.outputs.total }}
+                  CHROME_PASSED: ${{ needs.chrome.outputs.passed }}
+                  CHROME_FAILED: ${{ needs.chrome.outputs.failed }}
+                  CHROME_SKIPPED: ${{ needs.chrome.outputs.skipped }}
+                  CHROME_RETRIES: ${{ needs.chrome.outputs.retries }}
+                  FIREFOX_STATUS: ${{ needs.firefox.result }}
+                  FIREFOX_TOTAL: ${{ needs.firefox.outputs.total }}
+                  FIREFOX_PASSED: ${{ needs.firefox.outputs.passed }}
+                  FIREFOX_FAILED: ${{ needs.firefox.outputs.failed }}
+                  FIREFOX_SKIPPED: ${{ needs.firefox.outputs.skipped }}
+                  FIREFOX_RETRIES: ${{ needs.firefox.outputs.retries }}
+                  WEBKIT_STATUS: ${{ needs.webkit.result }}
+                  WEBKIT_TOTAL: ${{ needs.webkit.outputs.total }}
+                  WEBKIT_PASSED: ${{ needs.webkit.outputs.passed }}
+                  WEBKIT_FAILED: ${{ needs.webkit.outputs.failed }}
+                  WEBKIT_SKIPPED: ${{ needs.webkit.outputs.skipped }}
+                  WEBKIT_RETRIES: ${{ needs.webkit.outputs.retries }}
+                  EDGE_STATUS: ${{ needs.edge.result }}
+                  EDGE_TOTAL: ${{ needs.edge.outputs.total }}
+                  EDGE_PASSED: ${{ needs.edge.outputs.passed }}
+                  EDGE_FAILED: ${{ needs.edge.outputs.failed }}
+                  EDGE_SKIPPED: ${{ needs.edge.outputs.skipped }}
+                  EDGE_RETRIES: ${{ needs.edge.outputs.retries }}
+              run: python3 .github/scripts/generate_hub.py
+
+            - name: Upload Allure Report Hub - Zipped File
+              uses: actions/upload-artifact@v7
+              if: ${{ !cancelled() }}
+              with:
+                  name: Allure Report - Hub (All Browsers)
+                  path: pages-site
+                  retention-days: 30
+                  overwrite: true
+                  if-no-files-found: warn
+
+            - name: Upload Report for Pages (build-time)
+              uses: actions/upload-pages-artifact@v4
+              if: ${{ !cancelled() }}
+              with:
+                  path: pages-site
+
+    deploy:
+        needs: build-hub
+        if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Setup Pages
+              uses: actions/configure-pages@v6
+
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v5

@@ -57,8 +57,7 @@
         }
     },
     "include": [
-        "src/**/*.ts",
-        "src/tests/ui/visual/test-cases.visual.spec.ts",
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules",

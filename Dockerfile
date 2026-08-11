@@ -14,9 +14,13 @@ FROM node:24-bookworm-slim
 # that files written into the bind-mounted artifacts/ folder end up owned by that user, not root.
 # An arbitrary UID with no /etc/passwd entry has no resolvable $HOME, which would otherwise make
 # Playwright unable to find the browser it installed at build time.
+# RUNNING_IN_DOCKER lets the framework (src/configs/environment.config.ts, Environment.SNAPSHOT_ENV)
+# detect it's executing inside this image, so visual regression tests read/write the "docker"
+# baseline set instead of "local" or "github" (see playwright.config.ts's snapshotPathTemplate).
 ENV CI=true \
     APPLICATION_ENVIRONMENT=dev \
-    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+    PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    RUNNING_IN_DOCKER=true
 
 WORKDIR /app
 
@@ -24,17 +28,16 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
+
 # Now copy the rest of the project (see .dockerignore for what's excluded, e.g. node_modules,
 # artifacts, .git).
 COPY . .
 
-# Only the Chromium browser is needed: it's the only project configured in
-# src/configs/playwright.config.ts. --with-deps also installs the OS-level libraries Chromium
-# needs to run on this base image (fonts, codecs, etc.). Installed to PLAYWRIGHT_BROWSERS_PATH
-# (set above); chmod afterwards makes it readable/executable by any UID, since it's installed
+# Installed to PLAYWRIGHT_BROWSERS_PATH # (set above); 
+# chmod afterwards makes it readable/executable by any UID, since it's installed
 # here as root but will actually be run as the host user at container start.
-RUN npx playwright install --with-deps chromium && \
-    chmod -R o+rX "$PLAYWRIGHT_BROWSERS_PATH"
+RUN npx playwright install --with-deps chromium firefox webkit chrome msedge && \
+    chmod -R o+rX "$PLAYWRIGHT_BROWSERS_PATH" /opt/google/chrome /opt/microsoft/msedge
 
 # /app itself is owned by root (created via COPY above). The app only writes to artifacts/ at
 # runtime (logs, reports, and downloaded test files — see DOWNLOADS_DIR in src/configs/paths.ts),

@@ -59,24 +59,19 @@ export class ProductApiSteps extends BaseSteps {
     options?: { search?: string },
   ): Promise<void> {
     await this.step("Validate raw response from API - Get All Brands", () => {
-      expect
-        .soft(
-          response.statusCode,
-          "Status Code (from response) for Get All Products should be 200",
-        )
-        .toBe(200);
-      expect
-        .soft(
-          response.statusText,
-          `Status Text (from response) for Get All Products should be 'OK'`,
-        )
-        .toBe("OK");
-      expect
-        .soft(
-          response.body.responseCode,
-          "Response Code (from body) for Get All Products should be 200",
-        )
-        .toBe(200);
+      // Hard gate: confirms the call actually succeeded before asserting on body shape below.
+      expect(
+        response.statusCode,
+        "Status Code (from response) for Get All Products should be 200",
+      ).toBe(200);
+      expect(
+        response.statusText,
+        `Status Text (from response) for Get All Products should be 'OK'`,
+      ).toBe("OK");
+      expect(
+        response.body.responseCode,
+        "Response Code (from body) for Get All Products should be 200",
+      ).toBe(200);
       expect
         .soft(
           response.body,
@@ -140,12 +135,10 @@ export class ProductApiSteps extends BaseSteps {
     await this.step(
       "Validate Method Not Allowed - POST - Get All Products endpoint",
       () => {
-        expect
-          .soft(
-            response.body.responseCode,
-            "Response Code (from body) for POST into Get All Products should be 405",
-          )
-          .toBe(405);
+        expect(
+          response.body.responseCode,
+          "Response Code (from body) for POST into Get All Products should be 405",
+        ).toBe(405);
         const expectedMessage = "This request method is not supported.";
         expect
           .soft(
@@ -162,12 +155,10 @@ export class ProductApiSteps extends BaseSteps {
     await this.step(
       "Validate Missing Parameter - search_product - Search Products endpoint",
       () => {
-        expect
-          .soft(
-            response.body.responseCode,
-            `Response Code (from body) for POST without 'search_product' into Search Products should be 400`,
-          )
-          .toBe(400);
+        expect(
+          response.body.responseCode,
+          `Response Code (from body) for POST without 'search_product' into Search Products should be 400`,
+        ).toBe(400);
         const expectedMessage =
           "Bad request, search_product parameter is missing in POST request.";
         expect

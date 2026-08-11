@@ -74,7 +74,9 @@ function run(cmd: string): void {
 }
 
 function generate(): void {
-  run(`npx allure generate '${ALLURE_RESULTS_DIR}' -o '${ALLURE_REPORT_DIR}'`);
+  run(
+    `npx allure generate '${ALLURE_RESULTS_DIR}' -o '${ALLURE_REPORT_DIR}' --config src/configs/allurerc.mjs`,
+  );
 }
 
 function open(): void {
@@ -83,7 +85,7 @@ function open(): void {
 
 function exportSingleFile(): void {
   run(
-    `npx allure awesome generate '${ALLURE_RESULTS_DIR}' -o '${ALLURE_REPORT_SINGLE_FILE_DIR}' --single-file`,
+    `npx allure awesome generate '${ALLURE_RESULTS_DIR}' -o '${ALLURE_REPORT_SINGLE_FILE_DIR}' --single-file --config src/configs/allurerc.mjs`,
   );
 }
 

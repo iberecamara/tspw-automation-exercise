@@ -1,3 +1,4 @@
+import { SECOND_IN_MILLISECONDS } from "@data/constants/common.constants";
 import { DOWNLOAD_FILEPATH } from "@files/download/download.filepath";
 import { BasePage } from "@pages.base/base.page";
 import { PaymentLocators } from "@pages.base/locators/page/payment.locators";
@@ -54,7 +55,9 @@ export class PaymentPage extends BasePage {
    * its contents.
    */
   async downloadInvoice(): Promise<string> {
-    const downloadPromise = this.page.waitForEvent("download");
+    const downloadPromise = this.page.waitForEvent("download", {
+      timeout: 15 * SECOND_IN_MILLISECONDS,
+    });
     await this.click(this.locators.downloadInvoiceButton);
     const download = await downloadPromise;
     const filepath = `${DOWNLOAD_FILEPATH}/${download.suggestedFilename()}`;

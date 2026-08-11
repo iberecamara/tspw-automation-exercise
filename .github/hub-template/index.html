@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Automation Exercise - Allure Report Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --au-bg: #0b0c10;
+            --au-card-bg: #14161c;
+            --au-card-hover: #191b22;
+            --au-border: #23252e;
+            --au-text: #e7e8ec;
+            --au-text-muted: #8b8fa3;
+            --au-text-faint: #5f6377;
+            --au-accent: #7c6cf0;
+            --au-passed: #3fd77c;
+            --au-failed: #e2574c;
+            --au-broken: #f2b84b;
+            --au-skipped: #6b6f80;
+            --au-track: #2b2d38;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--au-bg);
+            color: var(--au-text);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .au-topbar {
+            height: 4px;
+            width: 100%;
+            background: linear-gradient(90deg, #5b21b6, #8b5cf6, #5b21b6);
+        }
+
+        .au-navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--au-border);
+        }
+
+        .au-logo-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #1c1e26;
+            border: 1px solid var(--au-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .au-logo-mark {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: conic-gradient(#f2b84b 0deg 90deg, #3fd77c 90deg 180deg, #7c6cf0 180deg 270deg, #4ec7e0 270deg 360deg);
+        }
+
+        .au-navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .au-run-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--au-text-muted);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: color .15s ease;
+        }
+
+        .au-run-link:hover {
+            color: var(--au-accent);
+        }
+
+        .au-run-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .au-moon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--au-text-muted);
+        }
+
+        .au-moon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 48px 40px 72px;
+        }
+
+        .au-page-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 4px;
+            color: #ffffff;
+        }
+
+        .au-page-sub {
+            color: var(--au-text-muted);
+            margin: 0 0 32px;
+            font-size: 0.88rem;
+        }
+
+        .au-retries-summary {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            margin: -14px 0 24px;
+            padding: 6px 14px 6px 10px;
+            border-radius: 999px;
+            background: rgba(242, 184, 75, 0.12);
+            border: 1px solid rgba(242, 184, 75, 0.3);
+            color: var(--au-broken);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .au-retries-summary.visible {
+            display: inline-flex;
+        }
+
+        .au-retries-summary svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .au-retries-summary strong {
+            color: #ffffff;
+        }
+
+        .au-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        a.au-card {
+            background: var(--au-card-bg);
+            border: 1px solid var(--au-border);
+            border-radius: 12px;
+            padding: 24px;
+            text-decoration: none;
+            color: var(--au-text);
+            display: block;
+            transition: border-color .15s ease, background .15s ease, transform .15s ease;
+        }
+
+        a.au-card:hover {
+            border-color: var(--au-accent);
+            background: var(--au-card-hover);
+            transform: translateY(-1px);
+        }
+
+        .au-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .au-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--au-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .au-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.35;
+            max-width: 260px;
+        }
+
+        .au-timestamp {
+            font-size: 0.78rem;
+            color: var(--au-text-faint);
+            margin-top: 6px;
+        }
+
+        .au-status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .au-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 10px 3px 6px;
+            border-radius: 999px;
+            color: #14161c;
+            white-space: nowrap;
+        }
+
+        .au-status-pill svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .au-status-pill.passed {
+            background: var(--au-passed);
+        }
+
+        .au-status-pill.failed {
+            background: var(--au-failed);
+            color: #ffffff;
+        }
+
+        .au-status-pill.skipped {
+            background: var(--au-skipped);
+            color: #ffffff;
+        }
+
+        .au-duration {
+            font-size: 0.78rem;
+            color: var(--au-text-faint);
+        }
+
+        .au-icon-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .au-icon-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--au-text-muted);
+        }
+
+        .au-icon-item svg {
+            width: 14px;
+            height: 14px;
+            color: var(--au-text-faint);
+        }
+
+        .au-donut {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .au-donut-inner {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border-radius: 50%;
+            background: var(--au-card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .au-stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--au-border);
+        }
+
+        .au-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .au-stat-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--au-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .au-stat-value {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--au-text);
+        }
+
+        .au-tick {
+            width: 3px;
+            height: 14px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .au-tick.total {
+            background: #b8bacc;
+        }
+
+        .au-tick.failed {
+            background: var(--au-failed);
+        }
+
+        .au-tick.passed {
+            background: var(--au-passed);
+        }
+
+        .au-tick.skipped {
+            background: var(--au-skipped);
+        }
+
+        footer {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--au-text-faint);
+            font-size: 0.8rem;
+        }
+
+        footer .au-footer-logo {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: conic-gradient(#f2b84b 0deg 90deg, #3fd77c 90deg 180deg, #7c6cf0 180deg 270deg, #4ec7e0 270deg 360deg);
+        }
+
+        footer strong {
+            color: var(--au-text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="au-topbar"></div>
+    <header class="au-navbar">
+        <div class="au-logo-btn"><span class="au-logo-mark"></span></div>
+        <div class="au-navbar-right">
+            <a class="au-run-link" href="__RUN_URL__" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                View workflow run
+            </a>
+            <span class="au-moon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </span>
+        </div>
+    </header>
+
+    <main>
+        <p class="au-page-title">Test Reports by Browser</p>
+        <p class="au-page-sub">Select a browser to open its full Allure report for this run</p>
+        <div class="au-retries-summary" id="retries-summary"></div>
+        <div class="au-grid" id="report-grid"></div>
+    </main>
+
+    <footer>
+        <span class="au-footer-logo"></span>
+        Powered by <strong>Allure Report</strong>
+    </footer>
+
+    <script>
+        const ICONS = {
+            passed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+            failed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+            skipped: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>',
+            clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg>',
+            retry: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+            flaky: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+        };
+
+        const RUN_DATE = "__RUN_DATE__";
+        const REPORTS = __REPORTS_JSON__;
+        const TOTAL_RETRIES = __TOTAL_RETRIES__;
+
+        const retriesSummary = document.getElementById('retries-summary');
+        if (TOTAL_RETRIES > 0) {
+            retriesSummary.classList.add('visible');
+            retriesSummary.innerHTML = `${ICONS.retry}<span><strong>${TOTAL_RETRIES}</strong> retried attempt${TOTAL_RETRIES === 1 ? '' : 's'} across all browsers this run</span>`;
+        }
+
+        const grid = document.getElementById('report-grid');
+
+        REPORTS.forEach(r => {
+            const total = r.total || 0;
+            const passed = r.passed || 0;
+            const failed = r.failed || 0;
+            const skipped = r.skipped || 0;
+            const retries = r.retries || 0;
+
+            let statusKey = 'skipped';
+            if (total > 0) {
+                statusKey = failed > 0 ? 'failed' : 'passed';
+            } else if (r.job_status === 'failure') {
+                statusKey = 'failed';
+            } else if (r.job_status === 'success') {
+                statusKey = 'passed';
+            }
+            const statusLabel = statusKey.charAt(0).toUpperCase() + statusKey.slice(1);
+
+            const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+            const passDeg = total > 0 ? (passed / total) * 360 : 0;
+            const failDeg = total > 0 ? (failed / total) * 360 : 0;
+            const gradient = `conic-gradient(var(--au-passed) 0deg ${passDeg}deg, var(--au-failed) ${passDeg}deg ${passDeg + failDeg}deg, var(--au-track) ${passDeg + failDeg}deg 360deg)`;
+
+            const card = document.createElement('a');
+            card.className = 'au-card';
+            card.href = `./${r.slug}/index.html`;
+            card.innerHTML = `
+        <div class="au-card-top">
+          <div class="au-card-info">
+            <div class="au-eyebrow">${r.label}</div>
+            <div class="au-title">Automation Exercise — ${r.label} Report</div>
+            <div class="au-timestamp">${RUN_DATE}</div>
+            <div class="au-status-row">
+              <span class="au-status-pill ${statusKey}">${ICONS[statusKey]}${statusLabel}</span>
+              <span class="au-duration">${total} test${total === 1 ? '' : 's'} run</span>
+            </div>
+            <div class="au-icon-row">
+              <span class="au-icon-item">${ICONS.clipboard}${total}</span>
+              <span class="au-icon-item">${ICONS.retry}${retries}</span>
+              <span class="au-icon-item">${ICONS.flaky}\u2013</span>
+            </div>
+          </div>
+          <div class="au-donut" style="background: ${gradient}">
+            <div class="au-donut-inner">${passRate}%</div>
+          </div>
+        </div>
+        <div class="au-stats-row">
+          <div class="au-stat">
+            <span class="au-stat-label">Total</span>
+            <span class="au-stat-value"><i class="au-tick total"></i>${total}</span>
+          </div>
+          <div class="au-stat">
+            <span class="au-stat-label">Failed</span>
+            <span class="au-stat-value"><i class="au-tick failed"></i>${failed}</span>
+          </div>
+          <div class="au-stat">
+            <span class="au-stat-label">Passed</span>
+            <span class="au-stat-value"><i class="au-tick passed"></i>${passed}</span>
+          </div>
+          <div class="au-stat">
+            <span class="au-stat-label">Skipped</span>
+            <span class="au-stat-value"><i class="au-tick skipped"></i>${skipped}</span>
+          </div>
+        </div>
+      `;
+            grid.appendChild(card);
+        });
+    </script>
+</body>
+
+</html>
