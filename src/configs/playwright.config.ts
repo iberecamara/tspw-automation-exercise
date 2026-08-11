@@ -152,7 +152,7 @@ export default defineConfig({
       name: "Safari",
       testIgnore: [
         "src/tests/ui/visual/**",
-        "src/tests/ui/feature/download.ts",
+        "src/tests/ui/feature/download.spec.ts",
       ],
       use: {
         ...devices["Desktop Safari"],
@@ -163,7 +163,7 @@ export default defineConfig({
       name: "iPhone 14 Pro Max",
       testIgnore: [
         "src/tests/ui/visual/**",
-        "src/tests/ui/feature/download.ts",
+        "src/tests/ui/feature/download.spec.ts",
       ],
       use: { ...devices["iPhone 14 Pro Max"], deviceScaleFactor: undefined },
     },
