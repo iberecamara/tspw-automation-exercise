@@ -20,7 +20,6 @@ export class VisualSteps extends BaseSteps {
     await this.page.evaluate(() => document.fonts.ready);
   }
 
-
   async validatePageScreenshot(
     webPage: SitePages,
     screenshot: string,

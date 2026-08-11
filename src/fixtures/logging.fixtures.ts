@@ -22,7 +22,7 @@ interface LoggingFixtures {
  *   split each worker's raw log into one file per test.
  */
 export const test = base.extend<LoggingFixtures>({
-  logger: async ({}, use, testInfo) => {
+  logger: async ({ }, use, testInfo) => {
     const log = TestAutomationLogger.getInstance(
       testInfo.workerIndex.toString(),
     );
@@ -37,7 +37,7 @@ export const test = base.extend<LoggingFixtures>({
       }
       if (testInfo.retry > 0 && Environment.RETRY_DELAY > 0) {
         logger.info(
-          `Will wait Test Retry Delay: ${Environment.RETRY_DELAY} seconds`,
+          `Will wait Test Retry Delay: ${testInfo.retry * Environment.RETRY_DELAY} seconds`,
         );
       }
       logger.info(`Test Project: ${testInfo.project.name}`);
