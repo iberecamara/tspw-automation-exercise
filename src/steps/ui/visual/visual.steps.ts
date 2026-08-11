@@ -15,11 +15,18 @@ export class VisualSteps extends BaseSteps {
     this.page = page;
   }
 
+  private async waitPageToBeStable(): Promise<void> {
+    await this.page.waitForLoadState("networkidle");
+    await this.page.evaluate(() => document.fonts.ready);
+  }
+
+
   async validatePageScreenshot(
     webPage: SitePages,
     screenshot: string,
   ): Promise<void> {
     await this.step(`Validate visual regression for ${webPage}`, async () => {
+      await this.waitPageToBeStable();
       await expect(
         this.page,
         `${webPage} screenshot should match existing one '${screenshot}'.`,
@@ -36,6 +43,7 @@ export class VisualSteps extends BaseSteps {
       `Validate visual regression for ${elementName} element`,
       async () => {
         await element.scrollIntoViewIfNeeded();
+        await this.waitPageToBeStable();
         await expect(
           element,
           `${elementName} element screenshot should match existing one '${screenshot}'.`,

@@ -80,4 +80,11 @@ export default defineConfig([
       "playwright/no-wait-for-timeout": "off",
     },
   },
+  {
+    // Wait for network when handling visual regression
+    files: ["src/steps/ui/visual/visual.steps.ts"],
+    rules: {
+      "playwright/no-networkidle": "off",
+    },
+  },
 ]);
